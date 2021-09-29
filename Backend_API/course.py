@@ -1,16 +1,18 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from os import environ
 from flask_cors import CORS
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/Course'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql'\
+    '+mysqlconnector://root@localhost:3306/Course'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
 db = SQLAlchemy(app)
 CORS(app)
+
 
 class course_info(db.Model):
     __tablename__ = 'Course'
@@ -25,7 +27,11 @@ class course_info(db.Model):
         self.course_description = course_description
 
     def json(self):
-        return {"course_id": self.course_id, "course_name": self.course_name, "course_description": self.course_description}
+        return {
+            "course_id": self.course_id, 
+            "course_name": self.course_name, 
+            "course_description": self.course_description
+        }
 
 class class_info(db.Model):
     __tablename__ = 'Class'
@@ -45,7 +51,14 @@ class class_info(db.Model):
 
 
     def json(self):
-        return {"class_id": self.class_id, "start_date": self.start_date, "end_date": self.end_date, "course_id": self.course_id, "trainer_id": self.trainer_id}
+        return {
+            "class_id": self.class_id, 
+            "start_date": self.start_date, 
+            "end_date": self.end_date, 
+            "course_id": self.course_id, 
+            "trainer_id": self.trainer_id
+        }
+
 
 class prerequisite_info(db.Model):
     __tablename__ = 'Prerequisite'
@@ -53,14 +66,13 @@ class prerequisite_info(db.Model):
     course_id = db.Column(db.Integer, primary_key=True)
     prereq_id = db.Column(db.Integer, primary_key=True)
     
-
     def __init__(self, course_id, prereq_id):
         self.course_id = course_id
         self.prereq_id = prereq_id
         
-
     def json(self):
         return {"course_id": self.course_id, "prereq_id": self.prereq_id}
+
 
 @app.route("/course")
 def course_all():
@@ -82,6 +94,7 @@ def course_all():
         }
     ), 404
 
+
 @app.route("/course/<string:course_id>")
 def find_course(course_id):
     course = course_info.query.filter_by(course_id=course_id).first()
@@ -99,6 +112,7 @@ def find_course(course_id):
             "message": "Course cannot be found"
         }
     ), 404
+
 
 @app.route("/create_course", methods=['POST'])
 def create_course():
@@ -123,7 +137,8 @@ def create_course():
             "data": course.json()
         }
     ), 201
-    
+
+
 @app.route("/class")
 def class_all():
     class_list = class_info.query.all()
@@ -143,7 +158,8 @@ def class_all():
             "message": "There are no classes available."
         }
     ), 404
-       
+
+
 @app.route("/class/<string:class_id>")
 def find_class(class_id):
     a_class = class_info.query.filter_by(class_id=class_id).first()
@@ -162,7 +178,8 @@ def find_class(class_id):
             'data': class_id
         }
     ), 404
-    
+
+
 @app.route("/create_class", methods=['POST'])
 def create_class():
     data = request.get_json()
@@ -186,6 +203,7 @@ def create_class():
             "data": classes.json()
         }
     ), 201
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5100, debug=True)
