@@ -3,19 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from os import environ
 from flask_cors import CORS
 
-# - Only import if need to use - #
-
-# from datetime import datetime
-# import json
-
 app = Flask(__name__)
-
-# - Below database connection used for dockerfile configuration - #
-
-# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-# - Below database connection used for locally hosted flask configuration - #
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/Course'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

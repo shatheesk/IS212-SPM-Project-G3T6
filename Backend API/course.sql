@@ -34,7 +34,7 @@ CREATE TABLE Class (
 );
 
 --
--- Dumping data for table `Course`
+-- Dumping data for table `Course`, 'Prerequisite' and 'Class'
 --
 
 INSERT INTO Course(course_id, course_name, course_description) VALUES
