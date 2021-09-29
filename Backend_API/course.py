@@ -28,10 +28,11 @@ class course_info(db.Model):
 
     def json(self):
         return {
-            "course_id": self.course_id, 
-            "course_name": self.course_name, 
+            "course_id": self.course_id,
+            "course_name": self.course_name,
             "course_description": self.course_description
         }
+
 
 class class_info(db.Model):
     __tablename__ = 'Class'
@@ -49,13 +50,12 @@ class class_info(db.Model):
         self.course_id = course_id
         self.trainer_id = trainer_id
 
-
     def json(self):
         return {
-            "class_id": self.class_id, 
-            "start_date": self.start_date, 
-            "end_date": self.end_date, 
-            "course_id": self.course_id, 
+            "class_id": self.class_id,
+            "start_date": self.start_date,
+            "end_date": self.end_date,
+            "course_id": self.course_id,
             "trainer_id": self.trainer_id
         }
 
@@ -65,11 +65,11 @@ class prerequisite_info(db.Model):
 
     course_id = db.Column(db.Integer, primary_key=True)
     prereq_id = db.Column(db.Integer, primary_key=True)
-    
+
     def __init__(self, course_id, prereq_id):
         self.course_id = course_id
         self.prereq_id = prereq_id
-        
+
     def json(self):
         return {"course_id": self.course_id, "prereq_id": self.prereq_id}
 
@@ -123,7 +123,7 @@ def create_course():
         db.session.add(course)
         db.session.commit()
 
-    except Exception as e:
+    except Exception:
         return jsonify(
             {
                 "code": 500,
@@ -189,7 +189,7 @@ def create_class():
         db.session.add(classes)
         db.session.commit()
 
-    except Exception as e:
+    except Exception:
         return jsonify(
             {
                 "code": 500,
