@@ -54,8 +54,8 @@
             <a href="#" class="small mr-3"><span class="icon-envelope-o mr-2"></span> info@mydomain.com</a> 
           </div>
           <div class="col-lg-3 text-right">
-            <a href="login.html" class="small mr-3"><span class="icon-unlock-alt"></span> Log In</a>
-            <a href="register.html" class="small btn btn-primary px-4 py-2 rounded-0"><span class="icon-users"></span> Register</a>
+            <a href="login.php" class="small mr-3"><span class="icon-unlock-alt"></span> Log In</a>
+            <a href="register.php" class="small btn btn-primary px-4 py-2 rounded-0"><span class="icon-users"></span> Register</a>
           </div>
         </div>
       </div>
@@ -65,7 +65,7 @@
       <div class="container">
         <div class="d-flex align-items-center">
           <div class="site-logo">
-            <a href="index.html" class="d-block">
+            <a href="index.php" class="d-block">
               <img src="images/logo.jpg" alt="Image" class="img-fluid">
             </a>
           </div>
@@ -73,23 +73,23 @@
             <nav class="site-navigation position-relative text-right" role="navigation">
               <ul class="site-menu main-menu js-clone-nav mr-auto d-none d-lg-block">
                 <li class="active">
-                  <a href="index.html" class="nav-link text-left">Home</a>
+                  <a href="index.php" class="nav-link text-left">Home</a>
                 </li>
                 <li class="has-children">
-                  <a href="about.html" class="nav-link text-left">About Us</a>
+                  <a href="about.php" class="nav-link text-left">About Us</a>
                   <ul class="dropdown">
-                    <li><a href="teachers.html">Our Teachers</a></li>
-                    <li><a href="about.html">Our School</a></li>
+                    <li><a href="teachers.php">Our Teachers</a></li>
+                    <li><a href="about.php">Our School</a></li>
                   </ul>
                 </li>
                 <li>
-                  <a href="admissions.html" class="nav-link text-left">Admissions</a>
+                  <a href="admissions.php" class="nav-link text-left">Admissions</a>
                 </li>
                 <li>
-                  <a href="courses.html" class="nav-link text-left">Courses</a>
+                  <a href="courses.php" class="nav-link text-left">Courses</a>
                 </li>
                 <li>
-                    <a href="contact.html" class="nav-link text-left">Contact</a>
+                    <a href="contact.php" class="nav-link text-left">Contact</a>
                   </li>
               </ul>                                                                                                                                                                                                                                                                                          </ul>
             </nav>
@@ -208,7 +208,7 @@
               <div class="owl-slide-3 owl-carousel">
                   <div class="course-1-item">
                     <figure class="thumnail">
-                      <a href="course-single.html"><img src="images/course_1.jpg" alt="Image" class="img-fluid"></a>
+                      <a href="course-single.php"><img src="images/course_1.jpg" alt="Image" class="img-fluid"></a>
                       <div class="price">$99.00</div>
                       <div class="category"><h3>Mobile Application</h3></div>  
                     </figure>
@@ -222,13 +222,13 @@
                         <span class="icon-star2 text-warning"></span>
                       </div>
                       <p class="desc mb-4">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Similique accusantium ipsam.</p>
-                      <p><a href="course-single.html" class="btn btn-primary rounded-0 px-4">Enroll In This Course</a></p>
+                      <p><a href="course-single.php" class="btn btn-primary rounded-0 px-4">Enroll In This Course</a></p>
                     </div>
                   </div>
       
                   <div class="course-1-item">
                     <figure class="thumnail">
-                      <a href="course-single.html"><img src="images/course_2.jpg" alt="Image" class="img-fluid"></a>
+                      <a href="course-single.php"><img src="images/course_2.jpg" alt="Image" class="img-fluid"></a>
                       <div class="price">$99.00</div>
                       <div class="category"><h3>Web Design</h3></div>  
                     </figure>
@@ -242,13 +242,13 @@
                         <span class="icon-star2 text-warning"></span>
                       </div>
                       <p class="desc mb-4">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Similique accusantium ipsam.</p>
-                      <p><a href="course-single.html" class="btn btn-primary rounded-0 px-4">Enroll In This Course</a></p>
+                      <p><a href="course-single.php" class="btn btn-primary rounded-0 px-4">Enroll In This Course</a></p>
                     </div>
                   </div>
       
                   <div class="course-1-item">
                     <figure class="thumnail">
-                      <a href="course-single.html"><img src="images/course_3.jpg" alt="Image" class="img-fluid"></a>
+                      <a href="course-single.php"><img src="images/course_3.jpg" alt="Image" class="img-fluid"></a>
                       <div class="price">$99.00</div>
                       <div class="category"><h3>Arithmetic</h3></div>  
                     </figure>
@@ -262,13 +262,13 @@
                         <span class="icon-star2 text-warning"></span>
                       </div>
                       <p class="desc mb-4">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Similique accusantium ipsam.</p>
-                      <p><a href="courses-single.html" class="btn btn-primary rounded-0 px-4">Enroll In This Course</a></p>
+                      <p><a href="courses-single.php" class="btn btn-primary rounded-0 px-4">Enroll In This Course</a></p>
                     </div>
                   </div>
 
                   <div class="course-1-item">
                     <figure class="thumnail">
-                        <a href="course-single.html"><img src="images/course_4.jpg" alt="Image" class="img-fluid"></a>
+                        <a href="course-single.php"><img src="images/course_4.jpg" alt="Image" class="img-fluid"></a>
                       <div class="price">$99.00</div>
                       <div class="category"><h3>Mobile Application</h3></div>  
                     </figure>
@@ -282,13 +282,13 @@
                         <span class="icon-star2 text-warning"></span>
                       </div>
                       <p class="desc mb-4">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Similique accusantium ipsam.</p>
-                      <p><a href="course-single.html" class="btn btn-primary rounded-0 px-4">Enroll In This Course</a></p>
+                      <p><a href="course-single.php" class="btn btn-primary rounded-0 px-4">Enroll In This Course</a></p>
                     </div>
                   </div>
       
                   <div class="course-1-item">
                     <figure class="thumnail">
-                        <a href="course-single.html"><img src="images/course_5.jpg" alt="Image" class="img-fluid"></a>
+                        <a href="course-single.php"><img src="images/course_5.jpg" alt="Image" class="img-fluid"></a>
                       <div class="price">$99.00</div>
                       <div class="category"><h3>Web Design</h3></div>  
                     </figure>
@@ -302,13 +302,13 @@
                         <span class="icon-star2 text-warning"></span>
                       </div>
                       <p class="desc mb-4">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Similique accusantium ipsam.</p>
-                      <p><a href="course-single.html" class="btn btn-primary rounded-0 px-4">Enroll In This Course</a></p>
+                      <p><a href="course-single.php" class="btn btn-primary rounded-0 px-4">Enroll In This Course</a></p>
                     </div>
                   </div>
       
                   <div class="course-1-item">
                     <figure class="thumnail">
-                        <a href="course-single.html"><img src="images/course_6.jpg" alt="Image" class="img-fluid"></a>
+                        <a href="course-single.php"><img src="images/course_6.jpg" alt="Image" class="img-fluid"></a>
                       <div class="price">$99.00</div>
                       <div class="category"><h3>Mobile Application</h3></div>  
                     </figure>
@@ -322,7 +322,7 @@
                         <span class="icon-star2 text-warning"></span>
                       </div>
                       <p class="desc mb-4">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Similique accusantium ipsam.</p>
-                      <p><a href="course-single.html" class="btn btn-primary rounded-0 px-4">Enroll In This Course</a></p>
+                      <p><a href="course-single.php" class="btn btn-primary rounded-0 px-4">Enroll In This Course</a></p>
                     </div>
                   </div>
       
@@ -490,51 +490,51 @@
             <div class="row">
               <div class="col-lg-6">
                 <div class="post-entry-big">
-                  <a href="news-single.html" class="img-link"><img src="images/blog_large_1.jpg" alt="Image" class="img-fluid"></a>
+                  <a href="news-single.php" class="img-link"><img src="images/blog_large_1.jpg" alt="Image" class="img-fluid"></a>
                   <div class="post-content">
                     <div class="post-meta"> 
                       <a href="#">June 6, 2019</a>
                       <span class="mx-1">/</span>
                       <a href="#">Admission</a>, <a href="#">Updates</a>
                     </div>
-                    <h3 class="post-heading"><a href="news-single.html">Campus Camping and Learning Session</a></h3>
+                    <h3 class="post-heading"><a href="news-single.php">Campus Camping and Learning Session</a></h3>
                   </div>
                 </div>
               </div>
               <div class="col-lg-6">
                 <div class="post-entry-big horizontal d-flex mb-4">
-                  <a href="news-single.html" class="img-link mr-4"><img src="images/blog_1.jpg" alt="Image" class="img-fluid"></a>
+                  <a href="news-single.php" class="img-link mr-4"><img src="images/blog_1.jpg" alt="Image" class="img-fluid"></a>
                   <div class="post-content">
                     <div class="post-meta">
                       <a href="#">June 6, 2019</a>
                       <span class="mx-1">/</span>
                       <a href="#">Admission</a>, <a href="#">Updates</a>
                     </div>
-                    <h3 class="post-heading"><a href="news-single.html">Campus Camping and Learning Session</a></h3>
+                    <h3 class="post-heading"><a href="news-single.php">Campus Camping and Learning Session</a></h3>
                   </div>
                 </div>
 
                 <div class="post-entry-big horizontal d-flex mb-4">
-                  <a href="news-single.html" class="img-link mr-4"><img src="images/blog_2.jpg" alt="Image" class="img-fluid"></a>
+                  <a href="news-single.php" class="img-link mr-4"><img src="images/blog_2.jpg" alt="Image" class="img-fluid"></a>
                   <div class="post-content">
                     <div class="post-meta">
                       <a href="#">June 6, 2019</a>
                       <span class="mx-1">/</span>
                       <a href="#">Admission</a>, <a href="#">Updates</a>
                     </div>
-                    <h3 class="post-heading"><a href="news-single.html">Campus Camping and Learning Session</a></h3>
+                    <h3 class="post-heading"><a href="news-single.php">Campus Camping and Learning Session</a></h3>
                   </div>
                 </div>
 
                 <div class="post-entry-big horizontal d-flex mb-4">
-                  <a href="news-single.html" class="img-link mr-4"><img src="images/blog_1.jpg" alt="Image" class="img-fluid"></a>
+                  <a href="news-single.php" class="img-link mr-4"><img src="images/blog_1.jpg" alt="Image" class="img-fluid"></a>
                   <div class="post-content">
                     <div class="post-meta">
                       <a href="#">June 6, 2019</a>
                       <span class="mx-1">/</span>
                       <a href="#">Admission</a>, <a href="#">Updates</a>
                     </div>
-                    <h3 class="post-heading"><a href="news-single.html">Campus Camping and Learning Session</a></h3>
+                    <h3 class="post-heading"><a href="news-single.php">Campus Camping and Learning Session</a></h3>
                   </div>
                 </div>
               </div>
