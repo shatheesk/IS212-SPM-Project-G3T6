@@ -1,7 +1,7 @@
 <?php
-  $user = 'charles'; # HR
+  // $user = 'charles'; # HR
   // $user = 'vera'; # trainer
-  // $user = 'marcus'; # learner
+  $user = 'marcus'; # learner
   $courses = [
     "PF1" => [
       "img" => "images/course_1.jpg",
