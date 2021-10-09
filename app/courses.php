@@ -28,7 +28,7 @@
       "code" => 'PF3', 
       "title" => 'Printer Advanced Concepts', 
       "desc" => 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Similique accusantium ipsam.', 
-      "prereq" => ['PF1', 'PF2'], 
+      "prereq" => ['PF1', 'PF2','PF1'], 
       "stddte" => '01 Dec 2021', 
       "enddte" => '01 Mar 2022',
       "eligible" => FALSE
@@ -51,7 +51,7 @@
 <html lang="en">
 
 <head>
-  <title>Academics &mdash; Website by Colorlib</title>
+  <title>All-In-One</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -84,18 +84,17 @@
 
   <div class="site-wrap">
 
-    <div class="site-mobile-menu site-navbar-target">
+    <!-- <div class="site-mobile-menu site-navbar-target">
       <div class="site-mobile-menu-header">
         <div class="site-mobile-menu-close mt-3">
           <span class="icon-close2 js-menu-toggle"></span>
         </div>
       </div>
       <div class="site-mobile-menu-body"></div>
-    </div>
-
+    </div> -->
 
     <div class="py-2 bg-light">
-      <div class="container">
+      <!-- <div class="container">
         <div class="row align-items-center">
           <div class="col-lg-9 d-none d-lg-block">
             <a href="#" class="small mr-3"><span class="icon-question-circle-o mr-2"></span> Have a questions?</a> 
@@ -107,66 +106,17 @@
             <a href="register.php" class="small btn btn-primary px-4 py-2 rounded-0"><span class="icon-users"></span> Register</a>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
-    <header class="site-navbar py-4 js-sticky-header site-navbar-target" role="banner">
-
-      <div class="container">
-        <div class="d-flex align-items-center">
-          <div class="site-logo">
-            <a href="index.php" class="d-block">
-              <img src="images/logo.jpg" alt="Image" class="img-fluid">
-            </a>
-          </div>
-          <div class="mr-auto">
-            <nav class="site-navigation position-relative text-right" role="navigation">
-              <ul class="site-menu main-menu js-clone-nav mr-auto d-none d-lg-block">
-                <li>
-                  <a href="index.php" class="nav-link text-left">Home</a>
-                </li>
-                <li class="has-children">
-                  <a href="about.php" class="nav-link text-left">About Us</a>
-                  <ul class="dropdown">
-                    <li><a href="teachers.php">Our Teachers</a></li>
-                    <li><a href="about.php">Our School</a></li>
-                  </ul>
-                </li>
-                <li>
-                  <a href="admissions.php" class="nav-link text-left">Admissions</a>
-                </li>
-                <li class="active">
-                  <a href="courses.php" class="nav-link text-left">Courses</a>
-                </li>
-                <li>
-                    <a href="contact.php" class="nav-link text-left">Contact</a>
-                  </li>
-              </ul>                                                                                                                                                                                                                                                                                          </ul>
-            </nav>
-
-          </div>
-          <div class="ml-auto">
-            <div class="social-wrap">
-              <a href="#"><span class="icon-facebook"></span></a>
-              <a href="#"><span class="icon-twitter"></span></a>
-              <a href="#"><span class="icon-linkedin"></span></a>
-
-              <a href="#" class="d-inline-block d-lg-none site-menu-toggle js-menu-toggle text-black"><span
-                class="icon-menu h3"></span></a>
-            </div>
-          </div>
-         
-        </div>
-      </div>
-
-    </header>
-
+    
+    <?php include 'navbar.php';?>
     
     <div class="site-section ftco-subscribe-1 site-blocks-cover pb-4" style="background-image: url('images/bg_1.jpg')">
         <div class="container">
           <div class="row align-items-end">
             <div class="col-lg-7">
-              <h2 class="mb-0">Courses</h2>
-              <p>Lorem ipsum dolor sit amet consectetur adipisicing.</p>
+              <h2 class="mb-4">Courses</h2>
+              <!-- <p>Lorem ipsum dolor sit amet consectetur adipisicing.</p> -->
             </div>
           </div>
         </div>
@@ -182,91 +132,77 @@
     </div>
 
     <div class="site-section">
-        <div class="container">
-            <?php if ($user == 'charles'){ ?>
-            <div class = "row">
-              <div class="col-lg-12 col-md-12 mb-4">
-              <a href="create-edit-course.php" class="btn btn-primary rounded-0 px-4" style="float: right">Create a course!</a>
-              </div>
-            </div>
-            <?php
-            }
-            ?>
-            <div class="row">
-                <?php
-                  foreach ($courses as $course => $details) { ?>
-                    <div class="col-lg-4 col-md-6 mb-4">
-                      <div class="course-1-item">
-                          <figure class="thumnail">
-                          <a href="course-single.php?code=<?php echo $details['code']?>"><img src="<?php echo $details['img']?>" alt="Image" class="img-fluid"></a>
-                          <div class="price"><?php echo $details['code']?></div>
-                          <div class="category"><h3><?php echo $details['title']?></h3></div>   
-                          </figure>
-                          <div class="course-1-content pb-4">
-                            <p class="desc mb-4"><?php echo $details['desc']?>
-                          </p>
-                            <p class="">
-                            <h2>Prerequisites: 
-                              <?php if (!$details['prereq']) {
-                                echo 'NIL';
-                              }
-                              else {
-                                $pr = '';
-                                foreach ($details['prereq'] as $prereq){
-                                  $pr .= $prereq;
-                                  $pr .= ', ';
-                                }
-                                echo substr_replace($pr, "", -2);
-                              }?>
-                            </h2>
-                            <h2>Course Start Date: <?php echo $details['stddte']?> <br> Course End Date: <?php echo $details['enddte']?></h2>
-                            <?php
-                            if ($user == 'vera' || $user == 'marcus'){
-                              if ($details['eligible']) {?>
-                                <a href="course-single.php?code=<?php echo $details['code']?>" class="btn btn-primary rounded-0 px-4">Enroll In This Course</a>
-                              <?php
-                              }
-                              else{?>
-                                <h4><i>Ineligible to enroll</i></h4>
-                              <?php
-                              }
-                            }
-                            else { ?>
-                              <a href="create-course.php?code=<?php echo $details['code']?>" class="btn btn-primary rounded-0 px-4">Edit</a>
-                              <a class="btn btn-primary rounded-0 px-4" href="#" onclick="document.getElementById('remove-dialog').style.display='block'" >Remove</a>
+      <div class="container">
 
-                            <?php
-                            }
-                            ?>
-                            </p>
-                          </div>
-                      </div>
-                    </div>
-                    
-                    <?php
-                  }
-                ?>
-            </div>
-        </div>
-    </div>
-
-    <!-- dialog box for removing course -->
-    <!-- <div id="remove-dialog" class="remove-modal">
-      <span onclick="document.getElementById('remove-dialog').style.display='none'" class="close" title="Close">&times;</span>
-      <form class="remove-modal-content" action="/action_page.php">
-        <div class="container">
-          <h1>Delete Course</h1>
-          <p>Are you sure you want to delete this course?</p>
-
-          <div class="clearfix">
-            <button type="button" class="cancelbtn">Cancel</button>
-            <button type="button" class="deletebtn">Delete</button>
+        <?php if ($user == 'charles'){ ?>
+        <div class = "row">
+          <div class="col-lg-12 col-md-12 mb-4">
+            <a href="create-edit-course.php" class="btn btn-primary rounded-0 px-4" style="float: right">Create a course!</a>
           </div>
         </div>
-      </form>
-    </div> -->
+        <?php } ?>
+        
+        <div class="row">
+          <?php foreach ($courses as $course => $details) { ?>
+              <div class="col-lg-4 col-md-6 mb-4">
+                <div class="course-1-item">
+                  <figure class="thumnail">
+                    <a><img src="<?php echo $details['img']?>" alt="Image" class="img-fluid"></a>
+                    <!-- <div class="price"><?php echo $details['code']?></div> -->
+                    <div class="category"><h3><?php echo $details['title']?></h3></div>   
+                  </figure>
 
-    <div class="section-bg style-1" style="background-image: url('images/hero_1.jpg');">
+                  <div class="course-1-content pb-4">
+                    <p class="desc mb-4">
+                      <?php echo $details['desc']?>
+                    </p>
+
+                    <p class="">
+                      <h2>Prerequisites: 
+                        <?php if (!$details['prereq']) {
+                          echo 'NIL';
+                        }
+                        else {
+                          $pr = '';
+                          foreach ($details['prereq'] as $prereq){
+                            $pr .= $prereq;
+                            $pr .= ', ';
+                          }
+                          echo substr_replace($pr, "", -2);
+                        }?>
+                      </h2>
+
+                      <!-- <h2>
+                        Course Start Date: <?php echo $details['stddte']?> <br> Course End Date: <?php echo $details['enddte']?>
+                      </h2> -->
+                      
+                      <?php
+                      if ($user == 'vera' || $user == 'marcus'){
+                        if ($details['eligible']) {?>
+                          <a href="course-single.php?code=<?php echo $details['code']?>" class="btn btn-primary rounded-0 px-4">Enroll In This Course</a>
+                        <?php
+                        }
+                        else{?>
+                          <h4><i>Ineligible to enroll</i></h4>
+                        <?php
+                        }
+                      }
+                      else { ?>
+                        <a href="create-course.php?code=<?php echo $details['code']?>" class="btn btn-primary rounded-0 px-4">Edit</a>
+                        <a class="btn btn-primary rounded-0 px-4" href="#" onclick="document.getElementById('remove-dialog').style.display='block'" >Remove</a>
+                      <?php
+                      }
+                      ?>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            <?php } ?>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="section-bg style-1" style="background-image: url('images/hero_1.jpg');">
         <div class="container">
           <div class="row">
             <div class="col-lg-4 col-md-6 mb-5 mb-lg-0">
@@ -288,66 +224,10 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
       
-
-    <div class="footer">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-3">
-            <p class="mb-4"><img src="images/logo.png" alt="Image" class="img-fluid"></p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae nemo minima qui dolor, iusto iure.</p>  
-            <p><a href="#">Learn More</a></p>
-          </div>
-          <div class="col-lg-3">
-            <h3 class="footer-heading"><span>Our Campus</span></h3>
-            <ul class="list-unstyled">
-                <li><a href="#">Acedemic</a></li>
-                <li><a href="#">News</a></li>
-                <li><a href="#">Our Interns</a></li>
-                <li><a href="#">Our Leadership</a></li>
-                <li><a href="#">Careers</a></li>
-                <li><a href="#">Human Resources</a></li>
-            </ul>
-          </div>
-          <div class="col-lg-3">
-              <h3 class="footer-heading"><span>Our Courses</span></h3>
-              <ul class="list-unstyled">
-                  <li><a href="#">Math</a></li>
-                  <li><a href="#">Science &amp; Engineering</a></li>
-                  <li><a href="#">Arts &amp; Humanities</a></li>
-                  <li><a href="#">Economics &amp; Finance</a></li>
-                  <li><a href="#">Business Administration</a></li>
-                  <li><a href="#">Computer Science</a></li>
-              </ul>
-          </div>
-          <div class="col-lg-3">
-              <h3 class="footer-heading"><span>Contact</span></h3>
-              <ul class="list-unstyled">
-                  <li><a href="#">Help Center</a></li>
-                  <li><a href="#">Support Community</a></li>
-                  <li><a href="#">Press</a></li>
-                  <li><a href="#">Share Your Story</a></li>
-                  <li><a href="#">Our Supporters</a></li>
-              </ul>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-12">
-            <div class="copyright">
-                <p>
-                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                    Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="icon-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank" >Colorlib</a>
-                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                    </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <?php include 'footer.php'; ?>
     
-
   </div>
   <!-- .site-wrap -->
 
