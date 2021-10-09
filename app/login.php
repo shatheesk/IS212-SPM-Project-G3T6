@@ -120,11 +120,27 @@
 
   <script>
     function login(){
-      let desig = 'admin';
       let name = document.getElementById('emp_name').value;
-      sessionStorage.setItem('designation', desig);
-      sessionStorage.setItem('emp_name', name);
-      location.href = "index.php";
+
+      const request = new XMLHttpRequest();
+      url = 'http://192.168.50.80:5000/currentDesignation/' + name
+      
+      request.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200){
+          let response = JSON.parse(this.responseText);
+          let designation = response.data.currentDesignation
+
+          sessionStorage.setItem('designation', designation);
+          sessionStorage.setItem('emp_name', name);
+          location.href = "index.php";
+
+        }
+        else if (this.status == 404) {
+          console.log('its a 404')
+        }
+      }
+      request.open("GET", url, true);
+      request.send();      
     }
   </script>
 

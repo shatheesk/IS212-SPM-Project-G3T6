@@ -1,51 +1,10 @@
-<?php
-  // $user = 'charles'; # HR
-  // $user = 'vera'; # trainer
-  $user = 'marcus'; # learner
-  $courses = [
-    "PF1" => [
-      "img" => "images/course_1.jpg",
-      "code" => 'PF1',
-      "title" => 'Printer Fundamentals',
-      "desc" => 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Similique accusantium ipsam.',
-      "prereq" => [],
-      "stddte" => '01 Sep 2021',
-      "enddte" => '01 Oct 2021',
-      "eligible" => TRUE
-    ],
-    "PF2" => [
-      "img" => 'images/course_2.jpg',
-      "code" => 'PF2',
-      "title" => 'Printer Concepts',
-      "desc" => 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Similique accusantium ipsam.', 
-      "prereq" => ['PF1'], 
-      "stddte" => '01 Nov 2021',
-      "enddte" => '01 Feb 2022',
-      "eligible" => FALSE
-    ],
-    "PF3" => [
-      "img" => 'images/course_3.jpg',
-      "code" => 'PF3', 
-      "title" => 'Printer Advanced Concepts', 
-      "desc" => 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Similique accusantium ipsam.', 
-      "prereq" => ['PF1', 'PF2','PF1'], 
-      "stddte" => '01 Dec 2021', 
-      "enddte" => '01 Mar 2022',
-      "eligible" => FALSE
-    ],
-    "IF1" => [
-      "img" => 'images/course_4.jpg',
-      "code" => 'IF1', 
-      "title" => 'Ink Fundamentals', 
-      "desc" => 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Similique accusantium ipsam.', 
-      "prereq" => [], 
-      "stddte" => '01 Sep 2021', 
-      "enddte" => '01 Oct 2021',
-      "eligible" => TRUE
-    ]
-  ];
-?>
-
+<script>
+  var current_designation = sessionStorage.getItem('designation');
+  var emp_name = sessionStorage.getItem('emp_name');
+  console.log(current_designation)
+  console.log(emp_name)
+  
+</script>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -134,74 +93,22 @@
     <div class="site-section">
       <div class="container">
 
-        <?php if ($user == 'charles'){ ?>
-        <div class = "row">
+        <!-- <div class = "row">
           <div class="col-lg-12 col-md-12 mb-4">
             <a href="create-edit-course.php" class="btn btn-primary rounded-0 px-4" style="float: right">Create a course!</a>
           </div>
-        </div>
-        <?php } ?>
+        </div> -->
         
-        <div class="row">
-          <?php foreach ($courses as $course => $details) { ?>
-              <div class="col-lg-4 col-md-6 mb-4">
-                <div class="course-1-item">
-                  <figure class="thumnail">
-                    <a><img src="<?php echo $details['img']?>" alt="Image" class="img-fluid"></a>
-                    <!-- <div class="price"><?php echo $details['code']?></div> -->
-                    <div class="category"><h3><?php echo $details['title']?></h3></div>   
-                  </figure>
-
-                  <div class="course-1-content pb-4">
-                    <p class="desc mb-4">
-                      <?php echo $details['desc']?>
-                    </p>
-
-                    <p class="">
-                      <h2>Prerequisites: 
-                        <?php if (!$details['prereq']) {
-                          echo 'NIL';
-                        }
-                        else {
-                          $pr = '';
-                          foreach ($details['prereq'] as $prereq){
-                            $pr .= $prereq;
-                            $pr .= ', ';
-                          }
-                          echo substr_replace($pr, "", -2);
-                        }?>
-                      </h2>
-
-                      <!-- <h2>
-                        Course Start Date: <?php echo $details['stddte']?> <br> Course End Date: <?php echo $details['enddte']?>
-                      </h2> -->
-                      
-                      <?php
-                      if ($user == 'vera' || $user == 'marcus'){
-                        if ($details['eligible']) {?>
-                          <a href="course-single.php?code=<?php echo $details['code']?>" class="btn btn-primary rounded-0 px-4">Enroll In This Course</a>
-                        <?php
-                        }
-                        else{?>
-                          <h4><i>Ineligible to enroll</i></h4>
-                        <?php
-                        }
-                      }
-                      else { ?>
-                        <a href="create-course.php?code=<?php echo $details['code']?>" class="btn btn-primary rounded-0 px-4">Edit</a>
-                        <a class="btn btn-primary rounded-0 px-4" href="#" onclick="document.getElementById('remove-dialog').style.display='block'" >Remove</a>
-                      <?php
-                      }
-                      ?>
-                    </p>
-                  </div>
-                </div>
-              </div>
-            <?php } ?>
+        <div class="row" id="allCourses">
+          
         </div>
+
       </div>
     </div>
-
+    
+    <script>
+      
+    </script>
     <!-- <div class="section-bg style-1" style="background-image: url('images/hero_1.jpg');">
         <div class="container">
           <div class="row">
@@ -253,6 +160,83 @@
 
 
   <script src="js/main.js"></script>
+
+  <script>
+    const request = new XMLHttpRequest();
+    url = 'http://192.168.50.80:5000/viewAllCourses'
+    
+    request.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200){
+        let response = JSON.parse(this.responseText);
+        let courses = response.courses
+        let prereq = response.prerequisites
+        html = ''
+
+        for (c in courses) {
+          html += `
+          <div class="col-lg-4 col-md-6 mb-4">
+            <div class="course-1-item">
+
+              <figure class="thumnail">
+                <a><img src="${courses[c].courseImage}" alt="Image" class="img-fluid"></a>
+                <div class="category"><h3>${courses[c].courseName}</h3></div>   
+              </figure>
+
+              <div class="course-1-content pb-4">
+                <p class="desc mb-4">
+                  ${courses[c].courseDescription}
+                </p>
+
+                <p class="">
+                  <h2>Prerequisites:` 
+                  for (p in prereq) {
+                    if (prereq[p].courseName == courses[c].courseName){
+                      html += `<br> ${prereq[p].prerequisite}`+ `, `
+                    }
+                  }
+                  html = html.substring(0, html.length - 2);
+                  html += 
+                  `</h2>
+                  <div id="eligibility">
+
+                  </div>
+                </p>
+              </div>
+
+            </div>
+          </div>
+          `
+        }
+        document.getElementById('allCourses').innerHTML = html
+      }
+      else if (this.status == 404) {
+        console.log('its a 404')
+      }
+    }
+    request.open("GET", url, true);
+    request.send();
+
+    if (current_designation == 'Learner' || current_designation == 'trainer'){
+      // const request = new XMLHttpRequest();
+      // url2 = 'http://192.168.50.80:5000/viewAllBadges' + emp_name
+      
+      // request.onreadystatechange = function () {
+      //   if (this.readyState == 4 && this.status == 200){
+      //     let response = JSON.parse(this.responseText);
+      //     let courses = response.courses
+      //     let prereq = response.prerequisites
+      //     html = ''
+
+      //   }
+      //   else if (this.status == 404) {
+      //     console.log('its a 404')
+      //   }
+      // }
+      // request.open("GET", url, true);
+      // request.send();
+    }
+    
+  </script>
 
 </body>
 
