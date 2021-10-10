@@ -40,9 +40,9 @@
                   <a href="index.php" class="nav-link text-left">Home</a>
                 </li>
                 
-                <li>
+                <!-- <li>
                   <a href="#" class="nav-link text-left">About Us</a>
-                </li>
+                </li> -->
 
                 <li <?php if ($page_navcat == 'courses') { ?> class="active" <?php } ?> >
                   <a href="courses.php" class="nav-link text-left">Courses</a>
@@ -75,7 +75,7 @@
     </div>
 
     <script>
-      if (current_designation == 'admin') {
+      if (current_designation == 'Admin') {
         document.getElementById('admissions').innerHTML = `<a href="admissions.php" class="nav-link text-left">Admissions</a>`
         document.getElementById('assignment').innerHTML = `<a href="assignment.php" class="nav-link text-left">Assignment</a>`
 
@@ -90,7 +90,7 @@
         if (current_designation  == 'trainer' ){
           result +=`<li><a href="#">Teaching Courses</a></li>`
         }
-        if (current_designation == 'trainer' || current_designation == 'learner' ){
+        if (current_designation == 'trainer' || current_designation == 'Learner' ){
           result +=`<li><a href="enrolled-courses.php">Enrolled Courses</a></li>
               <li><a href="pending-courses.php">Pending Courses</a></li>
               <li><a href="completed-courses.php">Completed Courses</a></li>`
