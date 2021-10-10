@@ -415,27 +415,25 @@ def processRequest(learnerName, courseName, cohortName):
     result = enrollmentRequest.query.filter_by(learnerName = learnerName, courseNameRequest= courseName, cohortNameRequest=cohortName).first()
 
     if result:
-
         cohortResult = cohort.query.filter_by(courseName=courseName, cohortName=cohortName).first()
-
         slotLeft = cohortResult.get_slotLeft()
 
         if slotLeft > 0:
             # update slot
-            slotLeft += 1
+            slotLeft -= 1
             cohortResult.slotLeft = slotLeft
             db.session.commit()
             db.session.close()
             
             # # # delete from request table
-            # request = enrollmentRequest.query.filter_by(learnerName = learnerName, courseNameRequest=courseName, cohortNameRequest=cohortName).first()
+            request = enrollmentRequest.query.filter_by(learnerName = learnerName, courseNameRequest=courseName, cohortNameRequest=cohortName).first()
             db.session.delete(request)
             db.session.commit()
 
             # add into enrollment
-            enrollment = enrollmentRequest(courseName, cohortName, learnerName)
+            enrollment_info = enrollment(learnerName, courseName, cohortName)
 
-            db.session.add(enrollment)
+            db.session.add(enrollment_info)
             db.session.commit()
 
         return jsonify(
