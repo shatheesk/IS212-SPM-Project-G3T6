@@ -11,15 +11,8 @@ CREATE TABLE course (
   courseName varchar(100) NOT NULL,
   courseImage varchar(100) NOT NULL,
   courseDescription varchar(200) NOT NULL,
+  prerequisite varchar(500) NOT NULL,
   PRIMARY KEY (courseName)
-);
-
-DROP TABLE IF EXISTS prerequisites;
-CREATE TABLE prerequisites (
-  courseName varchar(100) NOT NULL,
-  prerequisite varchar(100) NOT NULL,
-  PRIMARY KEY (courseName, prerequisite),
-  foreign key (prerequisite) references course(courseName)
 );
 
 DROP TABLE IF EXISTS employee;
@@ -86,16 +79,11 @@ INSERT INTO employee(employeeName, userName, currentDesignation, department) VAL
 ('Bob', 'Bob_02', 'Learner', 'Operations'),
 ('Charles', 'Charles_03', 'trainer', 'Operations');
 
-INSERT INTO course(courseName, courseImage, courseDescription) VALUES
-('Introduction to python', 'images/course_1.jpg', 'This course introduces learners to the python langauge'),
-('Introduction to HTML', 'images/course_2.jpg', 'This course introduces learners to HTML'),
-('Finance and accounting', 'images/course_3.jpg', 'This course introduces learners to the world of money'),
-('Big questions', 'images/course_4.jpg', 'This course introduces learners to the biggest questions in life');
-
-INSERT INTO prerequisites(courseName, prerequisite) VALUES
-('Introduction to HTML', 'Introduction to python'),
-('Introduction to HTML', 'Finance and accounting'),
-('Introduction to python', 'Big questions');
+INSERT INTO course(courseName, courseImage, courseDescription, prerequisite) VALUES
+('Introduction to python', 'images/course_1.jpg', 'This course introduces learners to the python langauge', ''),
+('Introduction to HTML', 'images/course_2.jpg', 'This course introduces learners to HTML', 'Introduction to python'),
+('Finance and accounting', 'images/course_3.jpg', 'This course introduces learners to the world of money', 'Introduction to HTML,Introduction to python' ),
+('Big questions', 'images/course_4.jpg', 'This course introduces learners to the biggest questions in life', 'Finance and accounting,Introduction to HTML');
 
 INSERT INTO cohort(courseName, cohortName, enrollmentStartDate, enrollmentStartTime, enrollmentEndDate, enrollmentEndTime, cohortStartDate, cohortStartTime, cohortEndDate, cohortEndTime, trainerName, cohortSize, slotLeft) VALUES
 ('Introduction to python', 'G1', '08|10|1998', '00:00', '18|10|1998', '23:59', '01|11|1998', '08:00', '30|11|1998', '20:00', 'Charles', '30', 5),
@@ -105,6 +93,17 @@ INSERT INTO cohort(courseName, cohortName, enrollmentStartDate, enrollmentStartT
 ('Finance and accounting', 'G1', '08|10|2021', '00:00', '18|10|2021', '23:59', '01|11|2021', '08:00', '30|11|2021', '20:00', 'Charles', '30', 30),
 ('Big questions', 'G1', '08|10|2021', '00:00', '18|10|2021', '23:59', '01|11|2021', '08:00', '30|11|2021', '20:00', 'Charles', '30', 30);
 
+INSERT INTO enrollment(employeeName, courseNameEnrolled, cohortNameEnrolled) VALUES
+('Alice','Introduction to python','G3'),
+('Charles', 'Finance and accounting', 'G1'),
+('Alice', 'Big questions', 'G1'),
+('Bob','Finance and accounting','G1');
 
 INSERT INTO badges(employeeName, badges, cohortName) VALUES
-('Alice', 'Introduction to python', 'G1');
+('Alice', 'Introduction to python', 'G1'),
+('Alice', 'Introduction to HTML', 'G1');
+
+INSERT INTO enrollmentRequest(courseNameRequest, cohortNameRequest, LearnerName) VALUES
+('Introduction to Python', 'G1', 'Bob'),
+('Big questions', 'G1', 'Charles'),
+('Finance and accounting', 'G1','Charles');

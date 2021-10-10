@@ -20,40 +20,22 @@ class course(db.Model):
     courseName = db.Column(db.String(100), primary_key=True)
     courseImage = db.Column(db.String(100), nullable=False)
     courseDescription = db.Column(db.String(200), nullable=False)
+    prerequisite = db.Column(db.String(500), nullable=False)
 
-    def __init__(self, courseName, courseImage, courseDescription):
+    def __init__(self, courseName, courseImage, courseDescription, prerequisite):
         self.courseName = courseName
         self.courseImage = courseImage
         self.courseDescription = courseDescription
+        self.prerequisite = prerequisite
 
     def get_course_info(self):
+        prerequisites = self.prerequisite.split(',')
+
         return {
             "courseName": self.courseName,
             "courseImage": self.courseImage,
-            "courseDescription": self.courseDescription
-        }
-
-
-class prerequisites(db.Model):
-    __tablename__ = 'prerequisites'
-
-    courseName = db.Column(db.String(100), primary_key=True)
-    prerequisite = db.Column(db.String(100), db.ForeignKey(course.courseName), nullable=False, primary_key=True)
-
-    def __init__(self, courseName, prerequisite):
-        self.courseName = courseName
-        self.prerequisite = prerequisite
-
-
-    def get_prerequisite(self):
-        return {
-            "prerequisite": self.prerequisite
-        }
-
-    def json(self):
-        return {
-            "courseName": self.courseName,
-            "prerequisite": self.prerequisite
+            "courseDescription": self.courseDescription,
+            "prerequisite": prerequisites
         }
 
 class employee(db.Model):
@@ -107,6 +89,39 @@ class cohort(db.Model):
         self.cohortSize = cohortSize
         self.slotLeft = slotLeft
 
+    def get_cohort_info(self):
+        return {
+            'courseName': self.courseName,
+            'cohortName': self.cohortName,
+            'enrollmentStartDate': self.enrollmentStartDate,
+            'enrollmentStartTime': self.enrollmentStartTime,
+            'enrollmentEndDate': self.enrollmentEndDate,
+            'enrollmentEndTime': self.enrollmentEndTime,
+            'cohortStartDate': self.cohortStartDate,
+            'cohortStartTime': self.cohortStartTime,
+            'cohortEndDate': self.cohortEndDate,
+            'cohortEndTime': self.cohortEndTime,
+            'trainerName': self.trainerName,
+            'cohortSize': self.cohortSize,
+            'slotLeft': self.slotLeft
+        }
+
+    def get_enrollment_info(self):
+        return {
+            'courseName': self.courseName,
+            'cohortName': self.cohortName,
+            'cohortStartDate': self.cohortStartDate,
+            'cohortStartTime': self.cohortStartTime,
+            'cohortEndDate': self.cohortEndDate,
+            'cohortEndTime': self.cohortEndTime,
+            'trainerName': self.trainerName,
+            'cohortSize': self.cohortSize,
+            'slotLeft': self.slotLeft
+        }
+
+    def get_slotLeft(self):
+        return self.slotLeft
+
 class badges(db.Model):
     __tablename__ = 'badges'
 
@@ -120,8 +135,12 @@ class badges(db.Model):
         self.cohortName = cohortName
 
     def get_badges(self):
+        return self.badges
+
+    def get_badges_cohort(self):
         return {
-            'badges': self.badges
+            'badges': self.badges,
+            'cohortName': self.cohortName
         }
 
     def json(self):
@@ -142,6 +161,12 @@ class enrollment(db.Model):
         self.employeeName = employeeName
         self.courseNameEnrolled = courseNameEnrolled
         self.cohortNameEnrolled = cohortNameEnrolled
+    
+    def get_enrollment_info(self):
+        return {
+            'courseNameEnrolled' : self.courseNameEnrolled,
+            'cohortNameEnrolled' : self.cohortNameEnrolled
+        }
 
 class enrollmentRequest(db.Model):
     __tablename__ = 'enrollmentRequest'
@@ -154,6 +179,13 @@ class enrollmentRequest(db.Model):
         self.courseNameRequest = courseNameRequest
         self.cohortNameRequest = cohortNameRequest
         self.learnerName = learnerName
+    
+    def get_request_info(self):
+        return {
+            'courseNameRequest' : self.courseNameRequest,
+            'cohortNameRequest' : self.cohortNameRequest,
+            'learnerName' : self.learnerName
+        }
 
 @app.route("/currentDesignation/<string:employeeName>")
 def getCurrentDesignation(employeeName):
@@ -177,21 +209,19 @@ def getCurrentDesignation(employeeName):
 @app.route("/viewAllCourses")
 def viewAllCourses():
     courses = course.query.all()
-    print(courses)
-    prerequisites_result = prerequisites.query.all()
-    if courses and prerequisites_result:
+
+    if courses:
         return jsonify(
             {
                 "code": 200,
-                "courses": [element.get_course_info() for element in courses],
-                "prerequisites": [element.json() for element in prerequisites_result]
+                "courses": [element.get_course_info() for element in courses]
             }
         )
 
     return jsonify(
         {
             "code": 404,
-            "message": "courses or prerequisites not found"
+            "message": "Courses not found"
         }
     ), 404
 
@@ -203,7 +233,7 @@ def viewAllBadges(employeeName):
         return jsonify(
             {
                 "code": 200,
-                "data": [element.json() for element in result]
+                "badges": [element.get_badges() for element in result]
             }
         )
 
@@ -211,6 +241,214 @@ def viewAllBadges(employeeName):
         {
             "code": 404,
             "message": "EmployeeName does not exist in database"
+        }
+    ), 404
+    
+@app.route("/viewBadgesCohort/<string:employeeName>")
+def viewBadgesCohort(employeeName):
+    result = badges.query.filter_by(employeeName=employeeName)
+
+    if result:
+        return jsonify(
+            {
+                "code": 200,
+                "badges_cohort": [element.get_badges_cohort() for element in result]
+            }
+        )
+
+    return jsonify(
+        {
+            "code": 404,
+            "message": "EmployeeName does not exist in database"
+        }
+    ), 404
+
+@app.route("/viewAllEnrolledCourses/<string:employeeName>")
+def viewAllEnrolledCourses(employeeName):
+    result = enrollment.query.filter_by(employeeName=employeeName)
+
+    if result:
+        output = []
+
+        enrollment_info = [element.get_enrollment_info() for element in result]
+        
+        for element in enrollment_info:
+            courseName = element['courseNameEnrolled']
+            cohortName = element['cohortNameEnrolled']
+
+            result = cohort.query.filter_by(courseName=courseName, cohortName=cohortName).first()
+            output.append(result.get_enrollment_info())
+            
+        return jsonify(
+            {
+                "code": 200,
+                "enrollments": output
+            }
+        )
+
+    return jsonify(
+        {
+            "code": 404,
+            "message": "No enrollments"
+        }
+    ), 404
+
+@app.route("/viewAllRequests/<string:learnerName>")
+def viewAllRequests(learnerName):
+    result = enrollmentRequest.query.filter_by(learnerName=learnerName)
+
+    if result:
+        output = []
+
+        request_info = [element.get_request_info() for element in result]
+        
+        for element in request_info:
+            courseName = element['courseNameRequest']
+            cohortName = element['cohortNameRequest']
+
+            result = cohort.query.filter_by(courseName=courseName, cohortName=cohortName).first()
+            output.append(result.get_cohort_info())
+            
+        return jsonify(
+            {
+                "code": 200,
+                "requests": output
+            }
+        )
+
+    return jsonify(
+        {
+            "code": 404,
+            "message": "No requests"
+        }
+    ), 404
+
+@app.route("/adminViewAllRequests")
+def adminViewAllRequests():
+    result = enrollmentRequest.query.all()
+
+    if result:
+        output = []
+
+        request_info = [element.get_request_info() for element in result]
+        
+        for element in request_info:
+            courseName = element['courseNameRequest']
+            cohortName = element['cohortNameRequest']
+            learnerName = element['learnerName']
+
+            result = cohort.query.filter_by(courseName=courseName, cohortName=cohortName).first()
+            result = result.get_cohort_info()
+            result['learnerName'] = learnerName
+            output.append(result)
+
+        result = {}
+
+        for element in output:
+            courseName = element['courseName']
+            
+            if courseName not in result:
+                result[courseName] = []
+
+            result[courseName].append(element)
+            
+        return jsonify(
+            {
+                "code": 200,
+                "requests": result
+            }
+        )
+
+    return jsonify(
+        {
+            "code": 404,
+            "message": "No requests"
+        }
+    ), 404
+
+
+@app.route("/delete/<string:learnerName>/<string:courseNameRequest>/<string:cohortNameRequest>", methods=['DELETE'])
+def delete_request(learnerName, courseNameRequest, cohortNameRequest):
+
+    request = enrollmentRequest.query.filter_by(learnerName=learnerName, courseNameRequest=courseNameRequest, cohortNameRequest=cohortNameRequest).first()
+
+    if request:
+        db.session.delete(request)
+        db.session.commit()
+        
+        return jsonify(
+            {
+                "code": 200,
+                "message": 'Request Deleted Sucessfully'
+            }
+        )
+
+    return jsonify(
+        {
+            "code": 404,
+            "message": "Request not found"
+        }
+    ), 404
+
+
+@app.route("/viewAllCohort/<string:courseName>")
+def viewAllCohort(courseName):
+    result = cohort.query.filter_by(courseName=courseName)
+
+    if result:
+        return jsonify(
+            {
+                "code": 200,
+                "badges": [element.get_cohort_info() for element in result]
+            }
+        )
+
+    return jsonify(
+        {
+            "code": 404,
+            "message": "No Cohort available"
+        }
+    ), 404
+
+@app.route("/processRequest/<string:learnerName>/<string:courseName>/<string:cohortName>", methods=['DELETE'])
+def processRequest(learnerName, courseName, cohortName):
+    result = enrollmentRequest.query.filter_by(learnerName = learnerName, courseNameRequest= courseName, cohortNameRequest=cohortName).first()
+
+    if result:
+
+        cohortResult = cohort.query.filter_by(courseName=courseName, cohortName=cohortName).first()
+
+        slotLeft = cohortResult.get_slotLeft()
+
+        if slotLeft > 0:
+            # update slot
+            slotLeft += 1
+            cohortResult.slotLeft = slotLeft
+            db.session.commit()
+            db.session.close()
+            
+            # # # delete from request table
+            # request = enrollmentRequest.query.filter_by(learnerName = learnerName, courseNameRequest=courseName, cohortNameRequest=cohortName).first()
+            db.session.delete(request)
+            db.session.commit()
+
+            # add into enrollment
+            enrollment = enrollmentRequest(courseName, cohortName, learnerName)
+
+            db.session.add(enrollment)
+            db.session.commit()
+
+        return jsonify(
+            {
+                "code": 200,
+                'message': "Request approved"
+            }
+        )
+
+    return jsonify(
+        {
+            "code": 404,
+            "message": "Unable to Process Request"
         }
     ), 404
 
