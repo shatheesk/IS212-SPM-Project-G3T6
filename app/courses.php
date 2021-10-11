@@ -3,7 +3,6 @@
   var emp_name = sessionStorage.getItem('emp_name');
   console.log(current_designation)
   console.log(emp_name)
-  
 </script>
 
 <!DOCTYPE html>
@@ -43,29 +42,7 @@
 
   <div class="site-wrap">
 
-    <!-- <div class="site-mobile-menu site-navbar-target">
-      <div class="site-mobile-menu-header">
-        <div class="site-mobile-menu-close mt-3">
-          <span class="icon-close2 js-menu-toggle"></span>
-        </div>
-      </div>
-      <div class="site-mobile-menu-body"></div>
-    </div> -->
-
-    <div class="py-2 bg-light">
-      <!-- <div class="container">
-        <div class="row align-items-center">
-          <div class="col-lg-9 d-none d-lg-block">
-            <a href="#" class="small mr-3"><span class="icon-question-circle-o mr-2"></span> Have a questions?</a> 
-            <a href="#" class="small mr-3"><span class="icon-phone2 mr-2"></span> 10 20 123 456</a> 
-            <a href="#" class="small mr-3"><span class="icon-envelope-o mr-2"></span> info@mydomain.com</a> 
-          </div>
-          <div class="col-lg-3 text-right">
-            <a href="login.php" class="small mr-3"><span class="icon-unlock-alt"></span> Log In</a>
-            <a href="register.php" class="small btn btn-primary px-4 py-2 rounded-0"><span class="icon-users"></span> Register</a>
-          </div>
-        </div>
-      </div> -->
+    <div class="py-2 ">
     </div>
     
     <?php include 'navbar.php';?>
@@ -81,7 +58,6 @@
         </div>
       </div> 
     
-
     <div class="custom-breadcrumns border-bottom">
       <div class="container">
         <a href="index.php">Home</a>
@@ -105,33 +81,6 @@
 
       </div>
     </div>
-    
-    <script>
-      
-    </script>
-    <!-- <div class="section-bg style-1" style="background-image: url('images/hero_1.jpg');">
-        <div class="container">
-          <div class="row">
-            <div class="col-lg-4 col-md-6 mb-5 mb-lg-0">
-              <span class="icon flaticon-mortarboard"></span>
-              <h3>Our Philosphy</h3>
-              <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reiciendis recusandae, iure repellat quis delectus ea? Dolore, amet reprehenderit.</p>
-            </div>
-            <div class="col-lg-4 col-md-6 mb-5 mb-lg-0">
-              <span class="icon flaticon-school-material"></span>
-              <h3>Academics Principle</h3>
-              <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reiciendis recusandae, iure repellat quis delectus ea?
-                Dolore, amet reprehenderit.</p>
-            </div>
-            <div class="col-lg-4 col-md-6 mb-5 mb-lg-0">
-              <span class="icon flaticon-library"></span>
-              <h3>Key of Success</h3>
-              <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reiciendis recusandae, iure repellat quis delectus ea?
-                Dolore, amet reprehenderit.</p>
-            </div>
-          </div>
-        </div>
-      </div> -->
       
     <?php include 'footer.php'; ?>
     
@@ -156,23 +105,24 @@
   <script src="js/jquery.sticky.js"></script>
   <script src="js/jquery.mb.YTPlayer.min.js"></script>
 
-
-
-
   <script src="js/main.js"></script>
 
   <script>
+    var totalCourses = ''
+    var prereqs = []
     const request = new XMLHttpRequest();
-    url = 'http://192.168.50.80:5000/viewAllCourses'
+    url = 'http://10.124.2.10:5000/viewAllCourses'
     
     request.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200){
         let response = JSON.parse(this.responseText);
         let courses = response.courses
-        let prereq = response.prerequisites
+        totalCourses = courses
+        
         html = ''
 
         for (c in courses) {
+          prereqs.push(courses[c].prerequisite)
           html += `
           <div class="col-lg-4 col-md-6 mb-4">
             <div class="course-1-item">
@@ -189,15 +139,19 @@
 
                 <p class="">
                   <h2>Prerequisites:` 
-                  for (p in prereq) {
-                    if (prereq[p].courseName == courses[c].courseName){
-                      html += `<br> ${prereq[p].prerequisite}`+ `, `
-                    }
+                  if ([courses[c].prerequisite][0] == ''){
+                    html += ``
                   }
-                  html = html.substring(0, html.length - 2);
+                  else {
+                    for (p in courses[c].prerequisite) {
+                      html += `<br> ${courses[c].prerequisite[p]}`
+                      html += `, `
+                    }
+                    html = html.substring(0, html.length - 2);
+                  }
                   html += 
                   `</h2>
-                  <div id="eligibility">
+                  <div id="eligibility${c}">
 
                   </div>
                 </p>
@@ -213,27 +167,70 @@
         console.log('its a 404')
       }
     }
-    request.open("GET", url, true);
+    request.open("GET", url, false);
     request.send();
 
-    if (current_designation == 'Learner' || current_designation == 'trainer'){
-      // const request = new XMLHttpRequest();
-      // url2 = 'http://192.168.50.80:5000/viewAllBadges' + emp_name
+    if (current_designation == 'Learner'){
+      const request = new XMLHttpRequest();
+      url2 = 'http://10.124.2.10:5000/viewAllBadges/' + emp_name
       
-      // request.onreadystatechange = function () {
-      //   if (this.readyState == 4 && this.status == 200){
-      //     let response = JSON.parse(this.responseText);
-      //     let courses = response.courses
-      //     let prereq = response.prerequisites
-      //     html = ''
+      request.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200){
+          let response = JSON.parse(this.responseText);
+          let completedCourses = response.badges
+          
+          function isTrue(arr, arr2){
+            return arr.every(i => arr2.includes(i));
+          }
 
-      //   }
-      //   else if (this.status == 404) {
-      //     console.log('its a 404')
-      //   }
-      // }
-      // request.open("GET", url, true);
-      // request.send();
+          for (course in totalCourses) {
+            idname = 'eligibility' + course
+            prereqCheck = isTrue(prereqs[course], completedCourses)
+
+            if (completedCourses.includes(totalCourses[course].courseName)) {
+              document.getElementById(idname).innerHTML = '<h4><i>Completed</i></h4>'
+            }
+            else if (prereqCheck) {
+              document.getElementById(idname).innerHTML = `<a href="course-single.php?cname=${totalCourses[course].courseName}" class="btn btn-primary rounded-0 px-4">Enroll In This Course</a>`
+            }
+            else {
+              document.getElementById(idname).innerHTML = '<h4><i>Ineligible to enrol</i></h4>'
+            }
+          }
+        }
+        else if (this.status == 404) {
+          console.log('its a 404')
+        }
+      }
+      request.open("GET", url2, false);
+      request.send();
+    }
+
+    if (current_designation == 'Learner'){
+      const request = new XMLHttpRequest();
+      url3 = 'http://10.124.2.10:5000/viewAllEnrolledCourses/' + emp_name
+      
+      request.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200){
+          let response = JSON.parse(this.responseText);
+          let enrolledCourses = response.enrollments
+
+          for (course in totalCourses) {
+            idname = 'eligibility' + course
+
+            for (c in enrolledCourses){
+              if (enrolledCourses[c].courseName == totalCourses[course].courseName) {
+                document.getElementById(idname).innerHTML = '<h4><i>Currently enrolled</i></h4>'
+              }
+            }
+          }
+        }
+        else if (this.status == 404) {
+          console.log('its a 404')
+        }
+      }
+      request.open("GET", url3, false);
+      request.send();
     }
     
   </script>

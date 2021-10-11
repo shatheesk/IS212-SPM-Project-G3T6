@@ -243,7 +243,8 @@ def viewAllBadges(employeeName):
             "message": "EmployeeName does not exist in database"
         }
     ), 404
-    
+
+# completed courses (learner view)    
 @app.route("/viewBadgesCohort/<string:employeeName>")
 def viewBadgesCohort(employeeName):
     result = badges.query.filter_by(employeeName=employeeName)
@@ -263,6 +264,7 @@ def viewBadgesCohort(employeeName):
         }
     ), 404
 
+#enrolled courses (learner view)
 @app.route("/viewAllEnrolledCourses/<string:employeeName>")
 def viewAllEnrolledCourses(employeeName):
     result = enrollment.query.filter_by(employeeName=employeeName)
@@ -293,6 +295,7 @@ def viewAllEnrolledCourses(employeeName):
         }
     ), 404
 
+#pendin courses (learner view)
 @app.route("/viewAllRequests/<string:learnerName>")
 def viewAllRequests(learnerName):
     result = enrollmentRequest.query.filter_by(learnerName=learnerName)
@@ -323,6 +326,7 @@ def viewAllRequests(learnerName):
         }
     ), 404
 
+#view all requests (admin view)
 @app.route("/adminViewAllRequests")
 def adminViewAllRequests():
     result = enrollmentRequest.query.all()
@@ -366,7 +370,7 @@ def adminViewAllRequests():
         }
     ), 404
 
-
+#withdraw (learner), reject learner (admin)
 @app.route("/delete/<string:learnerName>/<string:courseNameRequest>/<string:cohortNameRequest>", methods=['DELETE'])
 def delete_request(learnerName, courseNameRequest, cohortNameRequest):
 
@@ -379,7 +383,7 @@ def delete_request(learnerName, courseNameRequest, cohortNameRequest):
         return jsonify(
             {
                 "code": 200,
-                "message": 'Request Deleted Sucessfully'
+                "message": 'Request Deleted Successfully'
             }
         )
 
@@ -390,7 +394,7 @@ def delete_request(learnerName, courseNameRequest, cohortNameRequest):
         }
     ), 404
 
-
+#courses page (learner)
 @app.route("/viewAllCohort/<string:courseName>")
 def viewAllCohort(courseName):
     result = cohort.query.filter_by(courseName=courseName)
@@ -399,7 +403,7 @@ def viewAllCohort(courseName):
         return jsonify(
             {
                 "code": 200,
-                "badges": [element.get_cohort_info() for element in result]
+                "cohorts": [element.get_cohort_info() for element in result]
             }
         )
 
@@ -410,6 +414,7 @@ def viewAllCohort(courseName):
         }
     ), 404
 
+# approve a learner's request (admin view)
 @app.route("/processRequest/<string:learnerName>/<string:courseName>/<string:cohortName>", methods=['DELETE'])
 def processRequest(learnerName, courseName, cohortName):
     result = enrollmentRequest.query.filter_by(learnerName = learnerName, courseNameRequest= courseName, cohortNameRequest=cohortName).first()
@@ -449,6 +454,8 @@ def processRequest(learnerName, courseName, cohortName):
             "message": "Unable to Process Request"
         }
     ), 404
+
+#self-enrol request (learner)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

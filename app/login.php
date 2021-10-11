@@ -45,7 +45,7 @@
     </div> -->
 
 
-    <div class="py-2 bg-light">
+    <div class="py-2 ">
       <!-- <div class="container">
         <div class="row align-items-center">
           <div class="col-lg-9 d-none d-lg-block">
@@ -123,7 +123,7 @@
       let name = document.getElementById('emp_name').value;
 
       const request = new XMLHttpRequest();
-      url = 'http://192.168.50.80:5000/currentDesignation/' + name
+      url = 'http://10.124.2.10:5000/currentDesignation/' + name
       
       request.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200){

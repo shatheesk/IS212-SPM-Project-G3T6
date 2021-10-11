@@ -45,7 +45,7 @@
     </div>
 
 
-    <div class="py-2 bg-light">
+    <div class="py-2 ">
       <div class="container">
         <div class="row align-items-center">
           <div class="col-lg-9 d-none d-lg-block">
