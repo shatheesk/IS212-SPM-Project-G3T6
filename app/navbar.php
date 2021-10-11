@@ -17,8 +17,8 @@
   elseif (in_array($page_name, ['admissions'])){
     $page_navcat = 'admissions';
   }
-  elseif (in_array($page_name, ['assignment'])){
-    $page_navcat = 'assignment';
+  elseif (in_array($page_name, ['assign'])){
+    $page_navcat = 'assign';
   }
 ?>
 
@@ -56,7 +56,7 @@
 
                 </li>
 
-                <li id='assignment' <?php if ($page_navcat == 'assignment') { ?> class="active" <?php } ?> >
+                <li id='assign' <?php if ($page_navcat == 'assign') { ?> class="active" <?php } ?> >
 
                 </li>
 
@@ -77,7 +77,7 @@
     <script>
       if (current_designation == 'Admin') {
         document.getElementById('admissions').innerHTML = `<a href="admissions.php" class="nav-link text-left">Admissions</a>`
-        document.getElementById('assignment').innerHTML = `<a href="assignment.php" class="nav-link text-left">Assignment</a>`
+        document.getElementById('assign').innerHTML = `<a href="assign.php" class="nav-link text-left">Assign</a>`
 
       }
       if (emp_name) {
