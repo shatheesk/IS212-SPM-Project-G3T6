@@ -38,6 +38,7 @@ class course(db.Model):
             "prerequisite": prerequisites
         }
 
+
 class employee(db.Model):
     __tablename__ = 'employee'
 
@@ -56,6 +57,7 @@ class employee(db.Model):
         return {
             'currentDesignation': self.currentDesignation
         }
+
 
 class cohort(db.Model):
     __tablename__ = 'cohort'
@@ -122,6 +124,7 @@ class cohort(db.Model):
     def get_slotLeft(self):
         return self.slotLeft
 
+
 class badges(db.Model):
     __tablename__ = 'badges'
 
@@ -150,6 +153,7 @@ class badges(db.Model):
             'cohortName': self.cohortName
         }
 
+
 class enrollment(db.Model):
     __tablename__ = 'enrollment'
 
@@ -161,12 +165,13 @@ class enrollment(db.Model):
         self.employeeName = employeeName
         self.courseNameEnrolled = courseNameEnrolled
         self.cohortNameEnrolled = cohortNameEnrolled
-    
+
     def get_enrollment_info(self):
         return {
             'courseNameEnrolled' : self.courseNameEnrolled,
             'cohortNameEnrolled' : self.cohortNameEnrolled
         }
+
 
 class enrollmentRequest(db.Model):
     __tablename__ = 'enrollmentRequest'
@@ -179,13 +184,14 @@ class enrollmentRequest(db.Model):
         self.courseNameRequest = courseNameRequest
         self.cohortNameRequest = cohortNameRequest
         self.learnerName = learnerName
-    
+
     def get_request_info(self):
         return {
             'courseNameRequest' : self.courseNameRequest,
             'cohortNameRequest' : self.cohortNameRequest,
             'learnerName' : self.learnerName
         }
+
 
 @app.route("/currentDesignation/<string:employeeName>")
 def getCurrentDesignation(employeeName):
@@ -197,14 +203,15 @@ def getCurrentDesignation(employeeName):
                 "code": 200,
                 "data": result.get_designation()
             }
-        )
+        ), 200
 
     return jsonify(
         {
             "code": 404,
-            "message": "EmployeeName does not exist in database"
+            "message": "Error occured while retrieving employee's designation"
         }
     ), 404
+
 
 @app.route("/viewAllCourses")
 def viewAllCourses():
@@ -216,14 +223,15 @@ def viewAllCourses():
                 "code": 200,
                 "courses": [element.get_course_info() for element in courses]
             }
-        )
+        ), 200
 
     return jsonify(
         {
             "code": 404,
-            "message": "Courses not found"
+            "message": "Error occured while viewing all courses"
         }
     ), 404
+
 
 @app.route("/viewAllBadges/<string:employeeName>")
 def viewAllBadges(employeeName):
@@ -240,9 +248,10 @@ def viewAllBadges(employeeName):
     return jsonify(
         {
             "code": 404,
-            "message": "EmployeeName does not exist in database"
+            "message": "Error occured while retrieving employee's badges"
         }
     ), 404
+
 
 # completed courses (learner view)    
 @app.route("/viewBadgesCohort/<string:employeeName>")
@@ -255,14 +264,15 @@ def viewBadgesCohort(employeeName):
                 "code": 200,
                 "badges_cohort": [element.get_badges_cohort() for element in result]
             }
-        )
+        ), 200
 
     return jsonify(
         {
             "code": 404,
-            "message": "EmployeeName does not exist in database"
+            "message": "Error occured while retrieving employee's badges"
         }
     ), 404
+
 
 #enrolled courses (learner view)
 @app.route("/viewAllEnrolledCourses/<string:employeeName>")
@@ -286,14 +296,15 @@ def viewAllEnrolledCourses(employeeName):
                 "code": 200,
                 "enrollments": output
             }
-        )
+        ), 200
 
     return jsonify(
         {
             "code": 404,
-            "message": "No enrollments"
+            "message": "Error occured while retrieving all enrolled courses"
         }
     ), 404
+
 
 #pendin courses (learner view)
 @app.route("/viewAllRequests/<string:learnerName>")
@@ -317,12 +328,12 @@ def viewAllRequests(learnerName):
                 "code": 200,
                 "requests": output
             }
-        )
+        ), 200
 
     return jsonify(
         {
             "code": 404,
-            "message": "No requests"
+            "message": "Error occured while retrieving all requests"
         }
     ), 404
 
@@ -355,20 +366,21 @@ def adminViewAllRequests():
                 result[courseName] = []
 
             result[courseName].append(element)
-            
+
         return jsonify(
             {
                 "code": 200,
                 "requests": result
             }
-        )
+        ), 200
 
     return jsonify(
         {
             "code": 404,
-            "message": "No requests"
+            "message": "Error occured while retrieving all requests"
         }
     ), 404
+
 
 #withdraw (learner), reject learner (admin)
 @app.route("/delete/<string:learnerName>/<string:courseNameRequest>/<string:cohortNameRequest>", methods=['DELETE'])
@@ -377,22 +389,32 @@ def delete_request(learnerName, courseNameRequest, cohortNameRequest):
     request = enrollmentRequest.query.filter_by(learnerName=learnerName, courseNameRequest=courseNameRequest, cohortNameRequest=cohortNameRequest).first()
 
     if request:
-        db.session.delete(request)
-        db.session.commit()
-        
-        return jsonify(
-            {
-                "code": 200,
-                "message": 'Request Deleted Successfully'
-            }
-        )
+        try:
+            db.session.delete(request)
+            db.session.commit()
+            
+            return jsonify(
+                {
+                    "code": 200,
+                    "message": 'Request Deleted Successfully'
+                }
+            )
+
+        except:
+            return jsonify(
+                {
+                    "code": 404,
+                    "message": "Error occured while deleting enrollment request"
+                }
+            ), 404
 
     return jsonify(
         {
             "code": 404,
-            "message": "Request not found"
+            "message": "Error occured while deleting enrollment request"
         }
     ), 404
+
 
 #courses page (learner)
 @app.route("/viewAllCohort/<string:courseName>")
@@ -405,17 +427,18 @@ def viewAllCohort(courseName):
                 "code": 200,
                 "cohorts": [element.get_cohort_info() for element in result]
             }
-        )
+        ), 200
 
     return jsonify(
         {
             "code": 404,
-            "message": "No Cohort available"
+            "message": "Error occured while retrieving all cohort records."
         }
     ), 404
 
+
 # approve a learner's request (admin view)
-@app.route("/processRequest/<string:learnerName>/<string:courseName>/<string:cohortName>", methods=['DELETE'])
+@app.route("/processRequest/<string:learnerName>/<string:courseName>/<string:cohortName>")
 def processRequest(learnerName, courseName, cohortName):
     result = enrollmentRequest.query.filter_by(learnerName = learnerName, courseNameRequest= courseName, cohortNameRequest=cohortName).first()
 
@@ -424,38 +447,78 @@ def processRequest(learnerName, courseName, cohortName):
         slotLeft = cohortResult.get_slotLeft()
 
         if slotLeft > 0:
-            # update slot
-            slotLeft -= 1
-            cohortResult.slotLeft = slotLeft
-            db.session.commit()
-            db.session.close()
-            
-            # # # delete from request table
-            request = enrollmentRequest.query.filter_by(learnerName = learnerName, courseNameRequest=courseName, cohortNameRequest=cohortName).first()
-            db.session.delete(request)
-            db.session.commit()
+            try:
+                # update slot
+                slotLeft -= 1
+                cohortResult.slotLeft = slotLeft
+                db.session.commit()
+                db.session.close()
+                
+                # # # delete from request table
+                requests = enrollmentRequest.query.filter_by(learnerName = learnerName, courseNameRequest=courseName)
 
-            # add into enrollment
-            enrollment_info = enrollment(learnerName, courseName, cohortName)
+                for request in requests:
+                    db.session.delete(request)
+                    db.session.commit()
 
-            db.session.add(enrollment_info)
-            db.session.commit()
+                if slotLeft == 0:
+                    requests = enrollmentRequest.query.filter_by(courseNameRequest=courseName, cohortNameRequest=cohortName)
 
-        return jsonify(
-            {
-                "code": 200,
-                'message': "Request approved"
-            }
-        )
+                    for request in requests:
+                        db.session.delete(request)
+                        db.session.commit()
+
+                # add into enrollment
+                enrollment_info = enrollment(learnerName, courseName, cohortName)
+
+                db.session.add(enrollment_info)
+                db.session.commit()
+                
+                return jsonify(
+                    {
+                        "code": 200,
+                        "message": "Successfully processed request."
+                    }
+                ), 200
+
+            except:
+                return jsonify(
+                    {
+                        "code": 404,
+                        "message": "Error occured while processing request."
+                    }
+                ), 404
 
     return jsonify(
         {
             "code": 404,
-            "message": "Unable to Process Request"
+            "message": "Error occured while processing request."
         }
     ), 404
 
 #self-enrol request (learner)
+@app.route("/self_enrol_request/<string:courseName>/<string:cohortName>/<string:learnerName>")
+def self_enrol_request(courseName, cohortName, learnerName):
+    request = enrollmentRequest(courseName, cohortName, learnerName)
+
+    try:
+        db.session.add(request)
+        db.session.commit()
+
+        return jsonify(
+            {
+                "code": 200,
+                "message": "Enrollment request created successfully."
+            }
+        ), 200
+
+    except:
+        return jsonify( 
+            {
+                "code": 404,
+                "message": "Error occured while creating enrollment request."
+            }
+        ), 404
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
