@@ -1,3 +1,47 @@
+<script>
+  var current_designation = sessionStorage.getItem('designation');
+  var emp_name = sessionStorage.getItem('emp_name');
+  console.log(current_designation)
+  console.log(emp_name)
+
+  //to be editted
+  function accept(learnerName, courseName, cohortName) {
+    const request6 = new XMLHttpRequest();
+    url6 = 'http://127.0.0.1:5000/processRequest/' + learnerName + '/' + courseName + '/' + cohortName
+    
+    request6.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200){
+        location.reload();
+      }
+
+      else if (this.status == 404) {
+        console.log('its a 404')
+      }
+    }
+    // requests.put(url, params={key: value}, args)
+
+    request6.open("GET", url6, false);
+    request6.send();
+  }
+
+  function withdraw(learnerName, courseName, cohortName) {
+    const request5 = new XMLHttpRequest();
+    url5 = 'http://127.0.0.1:5000/delete/' + learnerName + '/' + courseName + '/' + cohortName
+    
+    request5.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200){
+        location.reload();
+      }
+
+      else if (this.status == 404) {
+        console.log('its a 404')
+      }
+    }
+    request5.open("DELETE", url5, false);
+    request5.send();
+  }
+
+</script>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -52,7 +96,7 @@
           </div>
           <div class="col-lg-3 text-right">
             <a href="login.php" class="small mr-3"><span class="icon-unlock-alt"></span> Log In</a>
-            <a href="register.php" class="small btn btn-primary px-4 py-2 rounded-2"><span class="icon-users"></span> Register</a>
+            <a href="register.php" class="small btn btn-primary px-4 py-2 rounded-0"><span class="icon-users"></span> Register</a>
           </div>
         </div>
       </div> -->
@@ -80,23 +124,38 @@
       </div>
     </div>
 
-    <div class="site-section">
+<br>
+<center><h1>Course List</h1></center>
+<br>
+
+<div class="container" id="here">
+</div>
+
+<br>
+<br>
+
+    <!-- <div class="site-section">
       <div class="container">
   
-        <div class="accordion" id="accordionPanelsStayOpenExample">
+        <div class="accordion" id="accordionPanelsStayOpenExample"> -->
 
-          <div class="accordion-item">
-            <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+          <!--loop here-->
+          <!-- <div class="accordion-item"> -->
+            <!--courseName-->
+            <!-- <h2 class="accordion-header" id="panelsStayOpen-headingOne">
               <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
                 Accordion Item #1
               </button>
-            </h2>
-            <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingOne">
+            </h2> -->
+
+            <!--cohortName-->
+
+            <!-- <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingOne">
               <div class="accordion-body">
-                <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+              CohortName, learnerName, It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
               </div>
             </div>
-          </div>
+          </div> 
 
           <div class="accordion-item">
             <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
@@ -115,7 +174,8 @@
 
       </div>
     </div>
-
+-->
+    
     <?php include 'footer.php'; ?>
 
   </div>
@@ -140,10 +200,100 @@
   <script src="js/jquery.mb.YTPlayer.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
-
-
-
   <script src="js/main.js"></script>
+
+  <script>
+  const request = new XMLHttpRequest();
+    // let cName= "Introduction to python";
+    url = 'http://127.0.0.1:5000/adminViewAllRequests' 
+    
+    request.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200){
+        let response = JSON.parse(this.responseText);
+        let courseRequest = response.requests;
+        console.log(courseRequest); //dictionary list
+        html = ''
+      
+        let counter = 0;
+        
+        for (course in courseRequest){
+          // accordian set 
+   
+          for (index in courseRequest[course]){
+            console.log(index);
+            console.log(courseRequest[course]);
+            // console.log(courseRequest[course][index].cohortName);
+            counter += 1;
+            html+=
+                    `
+                      <div class="accordion-item">
+                      <!--courseName-->
+                      <h2 class="accordion-header" id="panelsStayOpen-heading${counter}">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse${counter}" aria-expanded="false" aria-controls="panelsStayOpen-collapse${counter}">
+                          <p>
+                            ${course}
+                            <span class="badge badge-info">${courseRequest[course].length}</span>
+                          </p>
+                        </button>
+                      </h2>
+                      
+                    
+                
+        
+            <!--cohortName-->
+                      <div id="panelsStayOpen-collapse${counter}" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading${counter}">
+                        <div class="accordion-body" id="insert">
+                        <center><p>
+                        ${course} 's enrollment requests
+                        </p>
+                        </center>
+
+                        <table class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">Cohort Name</th>
+                            <th scope="col">Learner Name</th>
+                            <th scope="col">Reject</th>
+                            <th scope="col">Approve</th>
+                          </tr>
+                        </thead>
+
+                        <tr>
+                        <td>
+                        ${courseRequest[course][index].cohortName} 
+                        </td>
+                        <td>
+                        ${courseRequest[course][index].learnerName}
+                        </td>
+                        <td>
+                        <button type="button" class="btn btn-danger" onclick="withdraw('${courseRequest[course][index].learnerName}', '${courseRequest[course][index].courseName}', '${courseRequest[course][index].cohortName}');">Reject</button>
+                        </td>
+                        <td>
+                        <button type="button" class="btn btn-primary" onclick="accept('${courseRequest[course][index].learnerName}', '${courseRequest[course][index].courseName}', '${courseRequest[course][index].cohortName}');">Accept</button>
+                        </td>
+                        </tr>
+                        </table>
+                        
+                        </div>
+                      </div>
+                      </div>
+          
+            `               
+          }           
+        }
+           document.getElementById('here').innerHTML = html ;
+      }
+
+      else if (this.status == 404) {
+        console.log('its a 404')
+      }
+    }
+    request.open("GET", url, false);
+    request.send();
+
+
+
+  </script>
 
 </body>
 

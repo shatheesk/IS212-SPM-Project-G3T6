@@ -28,7 +28,7 @@
 
           <div class="site-logo">
             <a href="index.php" class="d-block">
-              <img src="images/logo.jpg" alt="Image" class="img-fluid">
+              <img src="images/AIOlogo.png" style="width: 160px; height: 50px !important;" alt="Image" class="img-fluid">
             </a>
           </div>
 

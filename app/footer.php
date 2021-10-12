@@ -4,7 +4,7 @@
         <div class="row">
 
         <div class="col-lg-4">
-            <p class="mb-4"><img src="images/logo.jpg" alt="Image" class="img-fluid"></p>
+            <p class="mb-4"><img src="images/AIOfooterlogo.png" style="width: 160px; height: 50px !important;" alt="Image" class="img-fluid"></p>
             <p>All-In-One is a leading Printing Solution Equipment Servicing company. We operate in the sale, lease, repair and maintenance of copying and printing solutions for businesses.</p>
             <!-- <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae nemo minima qui dolor, iusto iure.</p>   -->
             <!-- <p><a href="#">Learn More</a></p> -->
