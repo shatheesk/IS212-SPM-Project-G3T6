@@ -71,7 +71,7 @@
 
         <!-- <div class = "row">
           <div class="col-lg-12 col-md-12 mb-4">
-            <a href="create-edit-course.php" class="btn btn-primary rounded-0 px-4" style="float: right">Create a course!</a>
+            <a href="create-edit-course.php" class="btn btn-primary rounded-2 px-4" style="float: right">Create a course!</a>
           </div>
         </div> -->
         
@@ -111,7 +111,7 @@
     var totalCourses = ''
     var prereqs = []
     const request = new XMLHttpRequest();
-    url = 'http://10.124.2.10:5000/viewAllCourses'
+    url = 'http://192.168.50.80:5000/viewAllCourses'
     
     request.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200){
@@ -140,7 +140,7 @@
                 <p class="">
                   <h2>Prerequisites:` 
                   if ([courses[c].prerequisite][0] == ''){
-                    html += ``
+                    html += `<br>NIL`
                   }
                   else {
                     for (p in courses[c].prerequisite) {
@@ -172,7 +172,7 @@
 
     if (current_designation == 'Learner'){
       const request = new XMLHttpRequest();
-      url2 = 'http://10.124.2.10:5000/viewAllBadges/' + emp_name
+      url2 = 'http://192.168.50.80:5000/viewAllBadges/' + emp_name
       
       request.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200){
@@ -191,7 +191,7 @@
               document.getElementById(idname).innerHTML = '<h4><i>Completed</i></h4>'
             }
             else if (prereqCheck) {
-              document.getElementById(idname).innerHTML = `<a href="course-single.php?cname=${totalCourses[course].courseName}" class="btn btn-primary rounded-0 px-4">Enroll In This Course</a>`
+              document.getElementById(idname).innerHTML = `<a href="course-single.php?cname=${totalCourses[course].courseName}" class="btn btn-primary rounded-2 px-4">Enroll In This Course</a>`
             }
             else {
               document.getElementById(idname).innerHTML = '<h4><i>Ineligible to enrol</i></h4>'
@@ -208,7 +208,7 @@
 
     if (current_designation == 'Learner'){
       const request = new XMLHttpRequest();
-      url3 = 'http://10.124.2.10:5000/viewAllEnrolledCourses/' + emp_name
+      url3 = 'http://192.168.50.80:5000/viewAllEnrolledCourses/' + emp_name
       
       request.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200){

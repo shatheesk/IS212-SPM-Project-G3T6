@@ -3,6 +3,41 @@
   var emp_name = sessionStorage.getItem('emp_name');
   console.log(current_designation)
   console.log(emp_name)
+
+  function enroll(courseName, cohortName) {
+    const request4 = new XMLHttpRequest();
+    url4 = 'http://192.168.50.80:5000/self_enrol_request/' + courseName + '/' + cohortName + '/' + emp_name
+    
+    request4.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200){
+        location.reload();
+      }
+
+      else if (this.status == 404) {
+        console.log('its a 404')
+      }
+    }
+    request4.open("GET", url4, false);
+    request4.send();
+  }
+
+  function withdraw(courseName, cohortName) {
+    const request5 = new XMLHttpRequest();
+    url5 = 'http://192.168.50.80:5000/delete/' + emp_name + '/' + courseName + '/' + cohortName
+    
+    request5.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200){
+        location.reload();
+      }
+
+      else if (this.status == 404) {
+        console.log('its a 404')
+      }
+    }
+    request5.open("DELETE", url5, false);
+    request5.send();
+  }
+
 </script>
 
 <!DOCTYPE html>
@@ -73,7 +108,7 @@
       <div class="container">
         <!-- <div class = "row">
           <div class="col-lg-12 col-md-12 mb-4">
-            <a href="create-edit-class.php" class="btn btn-primary rounded-0 px-4" style="float: right">Create a class!</a>
+            <a href="create-edit-class.php" class="btn btn-primary rounded-2 px-4" style="float: right">Create a class!</a>
           </div>
         </div> -->
         
@@ -123,7 +158,7 @@
     document.getElementById('cTitle1').innerText = cname
 
     const request = new XMLHttpRequest();
-    url = 'http://10.124.2.10:5000/viewAllCourses'
+    url = 'http://192.168.50.80:5000/viewAllCourses'
     
     request.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200){
@@ -174,7 +209,7 @@
 
 
     const request1 = new XMLHttpRequest();
-    url2 = 'http://10.124.2.10:5000/viewAllCohort/' + cname
+    url2 = 'http://192.168.50.80:5000/viewAllCohort/' + cname
     
     request1.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200){
@@ -221,25 +256,32 @@
             }
             else{
               const request2 = new XMLHttpRequest();
-              url3 = 'http://10.124.2.10:5000/viewAllRequests/' + emp_name
+              url3 = 'http://192.168.50.80:5000/viewAllRequests/' + emp_name
 
               request2.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200){
                   let response = JSON.parse(this.responseText);
                   let existingReq = response.requests
                   let counter = 0
-                  for (r in existingReq) {
-                    if (existingReq[r].courseName == cname && existingReq[r].cohortName == cohorts[c].cohortName) {
-                      html2 += `<td><a href="#" class="btn btn-secondary rounded-0 px-4">Withdraw</a></td>`
-                      break
-                    }
-                    else{
-                      counter +=1
-                      if (counter == existingReq.length){
-                        html2 += `<td><a href="#" class="btn btn-primary rounded-0 px-4">Enroll</a></td>`
+                  console.log(existingReq)
+                  if (existingReq.length == 0) {
+                    html2 += `<td><a href="#" class="btn btn-primary rounded-2 px-4" onclick="enroll('${cname}', '${cohorts[c].cohortName}');">Enroll</a></td>`
+                  }
+                  else{
+                    for (r in existingReq) {
+                      if (existingReq[r].courseName == cname && existingReq[r].cohortName == cohorts[c].cohortName) {
+                        html2 += `<td><a class="btn btn-secondary rounded-2 px-4" href="#" onclick="withdraw('${cname}', '${cohorts[c].cohortName}');">Withdraw</a></td>`
+                        break
+                      }
+                      else{
+                        counter +=1
+                        if (counter == existingReq.length){
+                          html2 += `<td><a href="#" class="btn btn-primary rounded-2 px-4" onclick="enroll('${cname}', '${cohorts[c].cohortName}');">Enroll</a></td>`
+                        }
                       }
                     }
                   }
+                  
                 }
                 else if (this.status == 404) {
                   console.log('its a 404')
@@ -264,6 +306,7 @@
     request1.open("GET", url2, false);
     request1.send();
 
+    
   </script>
 
 </body>

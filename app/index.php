@@ -52,7 +52,7 @@
           </div>
           <div class="col-lg text-right">
             <a href="login.php" class="small mr-3"><span class="icon-unlock-alt"></span> Log In</a>
-            <a href="register.php" class="small btn btn-primary px-4 py-2 rounded-0"><span class="icon-users"></span> Register</a>
+            <a href="register.php" class="small btn btn-primary px-4 py-2 rounded-2"><span class="icon-users"></span> Register</a>
           </div>
         </div>
       </div> -->
@@ -108,7 +108,7 @@
                 <h2>Personalize Learning</h2>
                 <p>You are able to decide on the pace and timing of your own learning experience!</p>
                 <!-- <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit morbi hendrerit elit</p> -->
-                <!-- <p><a href="#" class="btn btn-primary px-4 rounded-0">Learn More</a></p> -->
+                <!-- <p><a href="#" class="btn btn-primary px-4 rounded-2">Learn More</a></p> -->
               </div>
             </div>
           </div>
@@ -122,7 +122,7 @@
                 <h2>Trusted Courses</h2>
                 <p>Get enrolled in courses organised and conducted by our own senior engineers!</p>
                 <!-- <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit morbi hendrerit elit</p> -->
-                <!-- <p><a href="#" class="btn btn-primary px-4 rounded-0">Learn More</a></p> -->
+                <!-- <p><a href="#" class="btn btn-primary px-4 rounded-2">Learn More</a></p> -->
               </div>
             </div> 
           </div>
@@ -135,7 +135,7 @@
               <div class="feature-1-content">
                 <h2>Maximum Flexibility</h2>
                 <p>Self-enrol and complete courses you are interested in to upskill yourself now!</p>
-                <!-- <p><a href="#" class="btn btn-primary px-4 rounded-0">Learn More</a></p> -->
+                <!-- <p><a href="#" class="btn btn-primary px-4 rounded-2">Learn More</a></p> -->
               </div>
             </div> 
           </div>
@@ -178,7 +178,7 @@
                         <span class="icon-star2 text-warning"></span>
                       </div>
                       <p class="desc mb-4">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Similique accusantium ipsam.</p>
-                      <p><a href="course-single.php" class="btn btn-primary rounded-0 px-4">Enroll In This Course</a></p>
+                      <p><a href="course-single.php" class="btn btn-primary rounded-2 px-4">Enroll In This Course</a></p>
                     </div>
                   </div>
       
@@ -198,7 +198,7 @@
                         <span class="icon-star2 text-warning"></span>
                       </div>
                       <p class="desc mb-4">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Similique accusantium ipsam.</p>
-                      <p><a href="course-single.php" class="btn btn-primary rounded-0 px-4">Enroll In This Course</a></p>
+                      <p><a href="course-single.php" class="btn btn-primary rounded-2 px-4">Enroll In This Course</a></p>
                     </div>
                   </div>
       
@@ -218,7 +218,7 @@
                         <span class="icon-star2 text-warning"></span>
                       </div>
                       <p class="desc mb-4">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Similique accusantium ipsam.</p>
-                      <p><a href="courses-single.php" class="btn btn-primary rounded-0 px-4">Enroll In This Course</a></p>
+                      <p><a href="courses-single.php" class="btn btn-primary rounded-2 px-4">Enroll In This Course</a></p>
                     </div>
                   </div>
 
@@ -238,7 +238,7 @@
                         <span class="icon-star2 text-warning"></span>
                       </div>
                       <p class="desc mb-4">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Similique accusantium ipsam.</p>
-                      <p><a href="course-single.php" class="btn btn-primary rounded-0 px-4">Enroll In This Course</a></p>
+                      <p><a href="course-single.php" class="btn btn-primary rounded-2 px-4">Enroll In This Course</a></p>
                     </div>
                   </div>
       
@@ -258,7 +258,7 @@
                         <span class="icon-star2 text-warning"></span>
                       </div>
                       <p class="desc mb-4">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Similique accusantium ipsam.</p>
-                      <p><a href="course-single.php" class="btn btn-primary rounded-0 px-4">Enroll In This Course</a></p>
+                      <p><a href="course-single.php" class="btn btn-primary rounded-2 px-4">Enroll In This Course</a></p>
                     </div>
                   </div>
       
@@ -278,7 +278,7 @@
                         <span class="icon-star2 text-warning"></span>
                       </div>
                       <p class="desc mb-4">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Similique accusantium ipsam.</p>
-                      <p><a href="course-single.php" class="btn btn-primary rounded-0 px-4">Enroll In This Course</a></p>
+                      <p><a href="course-single.php" class="btn btn-primary rounded-2 px-4">Enroll In This Course</a></p>
                     </div>
                   </div>
       
