@@ -190,6 +190,9 @@
             if (completedCourses.includes(totalCourses[course].courseName)) {
               document.getElementById(idname).innerHTML = '<h4><i>Completed</i></h4>'
             }
+            else if (prereqs[course][0] == ''){
+              document.getElementById(idname).innerHTML = `<a href="course-single.php?cname=${totalCourses[course].courseName}" class="btn btn-primary rounded-2 px-4">Enroll In This Course</a>`
+            }
             else if (prereqCheck) {
               document.getElementById(idname).innerHTML = `<a href="course-single.php?cname=${totalCourses[course].courseName}" class="btn btn-primary rounded-2 px-4">Enroll In This Course</a>`
             }

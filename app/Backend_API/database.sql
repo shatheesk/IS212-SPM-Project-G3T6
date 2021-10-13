@@ -80,6 +80,7 @@ INSERT INTO employee(employeeName, userName, currentDesignation, department) VAL
 ('Charles', 'Charles_03', 'trainer', 'Operations');
 
 INSERT INTO course(courseName, courseImage, courseDescription, prerequisite) VALUES
+('Introduction to life', 'images/course_6.jpg', 'This course introduces learners to life', ''),
 ('Introduction to flask', 'images/course_5.jpg', 'This course introduces learners to the flask langauge', ''),
 ('Introduction to python', 'images/course_1.jpg', 'This course introduces learners to the python langauge', ''),
 ('Introduction to HTML', 'images/course_2.jpg', 'This course introduces learners to HTML', 'Introduction to python'),
@@ -97,7 +98,8 @@ INSERT INTO cohort(courseName, cohortName, enrollmentStartDate, enrollmentStartT
 ('Introduction to HTML', 'G4', '08 Oct 2021', '00:00', '28 Oct 2021', '23:59', '10 Nov 2021', '08:00', '20 Nov 2021', '20:00', 'Charles', '30', 30),
 ('Finance and accounting', 'G1', '08 Oct 2021', '00:00', '18 Oct 2021', '23:59', '01 Nov 2021', '08:00', '30 Nov 2021', '20:00', 'Charles', '30', 30),
 ('Big questions', 'G1', '08 Oct 2021', '00:00', '18 Oct 2021', '23:59', '01 Nov 2021', '08:00', '30 Nov 2021', '20:00', 'Charles', '30', 30),
-('Introduction to flask', 'G1', '08 Oct 2021', '00:00', '18 Oct 2021', '23:59', '01 Nov 2021', '08:00', '30 Nov 2021', '20:00', 'Charles', '30', 30);
+('Introduction to flask', 'G1', '08 Oct 2021', '00:00', '18 Oct 2021', '23:59', '01 Nov 2021', '08:00', '30 Nov 2021', '20:00', 'Charles', '30', 30),
+('Introduction to life', 'G1', '08 Oct 2021', '00:00', '18 Oct 2021', '23:59', '01 Nov 2021', '08:00', '30 Nov 2021', '20:00', 'Charles', '30', 30);
 
 
 INSERT INTO enrollment(employeeName, courseNameEnrolled, cohortNameEnrolled) VALUES

@@ -9,8 +9,12 @@ login.php -> user log in
 index.php -> homepage
 courses.php -> view all courses
 course-single.php -> view a specific course
+
 admissions.php -> for accepting/rejecting enrollment requests (HR ONLY)
+assign.php -> to assign engineers to classes (HR ONLY)
+
 enrolled-courses.php -> view enrolled courses - both ongoing and ones that are going to start (LEARNER ONLY)
 pending-courses.php -> view pending courses (LEARNER ONLY)
 completed-courses.php -> view completed courses (LEARNER ONLY)
-assign.php -> to assign engineers to classes (HR ONLY)
+
+teaching-courses.php -> for trainers to see the classes they are teaching (TRAINER ONLY)

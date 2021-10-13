@@ -184,7 +184,7 @@
                 </p>
                 <h5>Prerequisites:` 
                 if ([courses[c].prerequisite][0] == ''){
-                  html += ``
+                  html += `<br>NIL`
                 }
                 else {
                   for (p in courses[c].prerequisite) {

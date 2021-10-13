@@ -8,7 +8,7 @@
   $page_name = substr($page_name, 0, -4);
 
   $page_navcat = '';
-  if (in_array($page_name,['courses', 'course-single'])){
+  if (in_array($page_name,['courses', 'course-single','completed-courses','enrolled-courses','pending-courses'])){
     $page_navcat = 'courses';
   }
   elseif (in_array($page_name, ['index'])){
@@ -19,6 +19,9 @@
   }
   elseif (in_array($page_name, ['assign'])){
     $page_navcat = 'assign';
+  }
+  elseif (in_array($page_name, ['teaching-courses'])){
+    $page_navcat = 'teaching-courses';
   }
 ?>
 
@@ -60,6 +63,10 @@
 
                 </li>
 
+                <li id='teaching-courses' <?php if ($page_navcat == 'teaching-courses') { ?> class="active" <?php } ?> >
+
+                </li>
+
               </ul>
               
             </nav>
@@ -78,8 +85,12 @@
       if (current_designation == 'Admin') {
         document.getElementById('admissions').innerHTML = `<a href="admissions.php" class="nav-link text-left">Admissions</a>`
         document.getElementById('assign').innerHTML = `<a href="assign.php" class="nav-link text-left">Assign</a>`
-
       }
+
+      if (current_designation == 'trainer') {
+        document.getElementById('teaching-courses').innerHTML = `<a href="teaching-courses.php" class="nav-link text-left">Teaching Courses</a>`
+      }
+
       if (emp_name) {
         let result = 
         `<ul class="site-menu main-menu js-clone-nav ml-auto d-none d-lg-block">
@@ -87,10 +98,8 @@
             <a class="nav-link text-left">${emp_name}</a>
             <ul class="dropdown">
               <li><a href="#">Profile</a></li>`
-        if (current_designation  == 'trainer' ){
-          result +=`<li><a href="#">Teaching Courses</a></li>`
-        }
-        if (current_designation == 'trainer' || current_designation == 'Learner' ){
+              
+        if (current_designation == 'Learner' ){
           result +=`<li><a href="enrolled-courses.php">Enrolled Courses</a></li>
               <li><a href="pending-courses.php">Pending Courses</a></li>
               <li><a href="completed-courses.php">Completed Courses</a></li>`
