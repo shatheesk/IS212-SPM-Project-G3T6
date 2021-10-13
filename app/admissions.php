@@ -6,12 +6,11 @@
 
   function accept(learnerName, courseName, cohortName) {
     const request6 = new XMLHttpRequest();
-    url6 = 'http://10.124.2.10:5000/processRequest/' + learnerName + '/' + courseName + '/' + cohortName
+    url6 = 'http://127.0.0.1:5000/processRequest/' + learnerName + '/' + courseName + '/' + cohortName
 
     
     request6.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200){
-        // let acceptingRequest = response.message
         location.reload();
       }
 
@@ -22,12 +21,12 @@
     // requests.put(url, params={key: value}, args)
 
     request6.open("DELETE", url6, false);
-    request6.send();
+    request6.send();  
   }
 
   function withdraw(learnerName, courseName, cohortName) {
     const request5 = new XMLHttpRequest();
-    url5 = 'http://10.124.2.10:5000/delete/' + learnerName + '/' + courseName + '/' + cohortName
+    url5 = 'http://127.0.0.1:5000/delete/' + learnerName + '/' + courseName + '/' + cohortName
     
     request5.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200){
@@ -78,6 +77,7 @@
   <div class="site-wrap">
 
     <div class="py-2 ">
+     
     </div>
 
     <?php include 'navbar.php'; ?>
@@ -87,7 +87,6 @@
           <div class="row align-items-end">
             <div class="col-lg-7">
               <h2 class="mb-4">Admissions</h2>
-              <!-- <p>Lorem ipsum dolor sit amet consectetur adipisicing.</p> -->
             </div>
           </div>
         </div>
@@ -184,7 +183,7 @@
   <script>
   const request = new XMLHttpRequest();
     // let cName= "Introduction to python";
-    url = 'http://10.124.2.10:5000/adminViewAllRequests' 
+    url = 'http://127.0.0.1:5000/adminViewAllRequests' 
     
     request.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200){
@@ -193,78 +192,31 @@
         console.log(courseRequest); //dictionary list
         html = ''
         
-        // let accordianCounter = 0;
         let counter = 0;
-        // let courseRequestLength = courseRequest.length;
         // console.log([courseRequest][1].length);
  
-        // console.log(i);
-
+        let index = 0;
         for (course in courseRequest){
-          console.log(course)
           // accordian set 
           // counter += 1; //number of course
-          // if (courseRequest[course].length > 1) {
-          //   html += `         
-          //       <div class="accordion-item">
-          //         <!--courseName-->
-          //         <h2 class="accordion-header" id="panelsStayOpen-heading${counter-1}">
-          //           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse${counter}" aria-expanded="false" aria-controls="panelsStayOpen-collapse${counter}">
-          //             <p>
-          //               ${course}
-          //               <span class="badge badge-info">${courseRequest[course].length}</span>
-          //             </p>
-          //           </button>
-          //         </h2>
-          //       `
-          //   for (c in courseRequest[course])
-          // }
-          // else {
-          //   html += `         
-          //       <div class="accordion-item">
-          //         <!--courseName-->
-          //         <h2 class="accordion-header" id="panelsStayOpen-heading${counter-1}">
-          //           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse${counter}" aria-expanded="false" aria-controls="panelsStayOpen-collapse${counter}">
-          //             <p>
-          //               ${course}
-          //               <span class="badge badge-info">${courseRequest[course].length}</span>
-          //             </p>
-          //           </button>
-          //         </h2>
-          //       `
-          // }
-
-            for (index in courseRequest[course]){
-              console.log(index);
-              // console.log(courseRequest[course]);
-              // accordianCounter += 0;
-              counter += 1; //number of course
-              if (courseRequest[course].length > 1){
-                html += `         
-                <div class="accordion-item">
-                  <!--courseName-->
-                  <h2 class="accordion-header" id="panelsStayOpen-heading${counter-1}">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse${counter}" aria-expanded="false" aria-controls="panelsStayOpen-collapse${counter}">
-                      <p>
-                        ${course}
-                        <span class="badge badge-info">${courseRequest[course].length}</span>
-                      </p>
-                    </button>
-                  </h2>
-                `
-                for (cohort in courseRequest[course]) {
-                  // console.log(cohort); // number
-                  // console.log(courseRequest[course][cohort]);
-                    html +=
-                    `
-                    <!--cohortName-->
-                        <div id="panelsStayOpen-collapse${counter-1}" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading${counter-1}">
+          
+          //when there are more than we request for a course
+          if (courseRequest[course].length > 1){
+            counter += 1;
+            html += `         
+                      <div class="accordion-item">
+                        <!--courseName-->
+                        <h2 class="accordion-header" id="panelsStayOpen-heading${counter}">
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse${counter}" aria-expanded="false" aria-controls="panelsStayOpen-collapse${counter}">
+                            <p>
+                              ${course}
+                              <span class="badge badge-info">${courseRequest[course].length}</span>
+                            </p>
+                          </button>
+                        </h2>
+                        <!--cohortName-->
+                        <div id="panelsStayOpen-collapse${counter}" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading${counter}">
                           <div class="accordion-body" id="insert">
-                          <center><p>
-                          ${courseRequest[course][cohort].courseName} 's enrollment requests
-                          </p>
-                          </center>
-
                           <table class="table">
                           <thead>
                             <tr>
@@ -274,7 +226,13 @@
                               <th scope="col">Approve</th>
                             </tr>
                           </thead>
-
+                `
+            // loop the rows in the same accordian
+            for (cohort in courseRequest[course]) {
+              console.log(cohort); // number
+              console.log(courseRequest[course][cohort]);
+              html +=
+                    `                       
                           <tr>
                           <td>
                           ${courseRequest[course][cohort].cohortName} 
@@ -289,17 +247,29 @@
                           <button type="button" class="btn btn-primary" onclick="accept('${courseRequest[course][index].learnerName}', '${courseRequest[course][index].courseName}', '${courseRequest[course][index].cohortName}');">Accept</button>
                           </td>
                           </tr>
+                          `
+            }
+            //end table for the specific course
+            html+=
+              `
                           </table>
                           
                           </div>
                         </div>
                         </div>
                     `
-                }
+            
+          }
 
-              }
-              else{ // less that one request in the course
-                html+= 
+          //this is for one request per course
+          else{
+   
+            for (index in courseRequest[course]){
+              console.log(index);
+              // console.log(courseRequest[course]);
+         
+              counter += 1; //number of course
+              html+= 
                       `
                         <div class="accordion-item">
                         <!--courseName-->
@@ -311,17 +281,11 @@
                             </p>
                           </button>
                         </h2>
-                        
-                      
-                  
-          
+                          
               <!--cohortName-->
                         <div id="panelsStayOpen-collapse${counter}" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading${counter}">
                           <div class="accordion-body" id="insert">
-                          <center><p>
-                          ${course} 's enrollment requests
-                          </p>
-                          </center>
+                       
 
                           <table class="table">
                           <thead>
@@ -354,16 +318,14 @@
                         </div>
             
               `
-              } //else
-              // console.log(courseRequest[course][index].cohortName);
+            }//end for  
+                
+          } //end else
               
-            } //small for          
-        }
+        }//end all the course in courseRequest
     
-     
-      
            document.getElementById('here').innerHTML = html ;
-      }
+      }// 2--
 
       else if (this.status == 404) {
         console.log('its a 404')
