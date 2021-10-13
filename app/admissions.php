@@ -4,14 +4,13 @@
   console.log(current_designation)
   console.log(emp_name)
 
+  //to be editted
   function accept(learnerName, courseName, cohortName) {
     const request6 = new XMLHttpRequest();
     url6 = 'http://127.0.0.1:5000/processRequest/' + learnerName + '/' + courseName + '/' + cohortName
-
     
     request6.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200){
-        // let acceptingRequest = response.message
         location.reload();
       }
 
@@ -21,7 +20,7 @@
     }
     // requests.put(url, params={key: value}, args)
 
-    request6.open("DELETE", url6, false);
+    request6.open("GET", url6, false);
     request6.send();
   }
 
@@ -125,7 +124,6 @@
       </div>
     </div>
 
-
 <br>
 <center><h1>Course List</h1></center>
 <br>
@@ -215,146 +213,74 @@
         let courseRequest = response.requests;
         console.log(courseRequest); //dictionary list
         html = ''
-        
-        // let accordianCounter = 0;
+      
         let counter = 0;
-        // let courseRequestLength = courseRequest.length;
-        // console.log([courseRequest][1].length);
- 
-        // console.log(i);
-
+        
         for (course in courseRequest){
           // accordian set 
-          // counter += 1; //number of course
-
-            for (index in courseRequest[course]){
-              console.log(index);
-              // console.log(courseRequest[course]);
-              // accordianCounter += 0;
-              counter += 1; //number of course
-              if (courseRequest[course].length > 1){
-                html += `         
-                <div class="accordion-item">
-                        <!--courseName-->
-                        <h2 class="accordion-header" id="panelsStayOpen-heading${counter-1}">
-                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse${counter}" aria-expanded="false" aria-controls="panelsStayOpen-collapse${counter}">
-                            <p>
-                              ${course}
-                              <span class="badge badge-info">${courseRequest[course].length}</span>
-                            </p>
-                          </button>
-                        </h2>
-                `
-
-                for (cohort in courseRequest[course]) {
-                  console.log(cohort); // number
-                  console.log(courseRequest[course][cohort]);
-                    html +=
+   
+          for (index in courseRequest[course]){
+            console.log(index);
+            console.log(courseRequest[course]);
+            // console.log(courseRequest[course][index].cohortName);
+            counter += 1;
+            html+=
                     `
-                    <!--cohortName-->
-                        <div id="panelsStayOpen-collapse${counter-1}" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading${counter-1}">
-                          <div class="accordion-body" id="insert">
-                          <center><p>
-                          ${courseRequest[course][cohort].courseName} 's enrollment requests
+                      <div class="accordion-item">
+                      <!--courseName-->
+                      <h2 class="accordion-header" id="panelsStayOpen-heading${counter}">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse${counter}" aria-expanded="false" aria-controls="panelsStayOpen-collapse${counter}">
+                          <p>
+                            ${course}
+                            <span class="badge badge-info">${courseRequest[course].length}</span>
                           </p>
-                          </center>
-
-                          <table class="table">
-                          <thead>
-                            <tr>
-                              <th scope="col">Cohort Name</th>
-                              <th scope="col">Learner Name</th>
-                              <th scope="col">Reject</th>
-                              <th scope="col">Approve</th>
-                            </tr>
-                          </thead>
-
-                          <tr>
-                          <td>
-                          ${courseRequest[course][cohort].cohortName} 
-                          </td>
-                          <td>
-                          ${courseRequest[course][cohort].learnerName}
-                          </td>
-                          <td>
-                          <button type="button" class="btn btn-danger" onclick="withdraw('${courseRequest[course][index].learnerName}', '${courseRequest[course][index].courseName}', '${courseRequest[course][index].cohortName}');">Reject</button>
-                          </td>
-                          <td>
-                          <button type="button" class="btn btn-primary" onclick="accept('${courseRequest[course][index].learnerName}', '${courseRequest[course][index].courseName}', '${courseRequest[course][index].cohortName}');">Accept</button>
-                          </td>
-                          </tr>
-                          </table>
-                          
-                          </div>
-                        </div>
-                        </div>
-                    `
-                }
-
-              }else{ // less that one request in the course
-                html+= 
-                      `
-                        <div class="accordion-item">
-                        <!--courseName-->
-                        <h2 class="accordion-header" id="panelsStayOpen-heading${counter}">
-                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse${counter}" aria-expanded="false" aria-controls="panelsStayOpen-collapse${counter}">
-                            <p>
-                              ${course}
-                              <span class="badge badge-info">${courseRequest[course].length}</span>
-                            </p>
-                          </button>
-                        </h2>
-                        
+                        </button>
+                      </h2>
                       
-                  
-          
-              <!--cohortName-->
-                        <div id="panelsStayOpen-collapse${counter}" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading${counter}">
-                          <div class="accordion-body" id="insert">
-                          <center><p>
-                          ${course} 's enrollment requests
-                          </p>
-                          </center>
+                    
+                
+        
+            <!--cohortName-->
+                      <div id="panelsStayOpen-collapse${counter}" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading${counter}">
+                        <div class="accordion-body" id="insert">
+                        <center><p>
+                        ${course} 's enrollment requests
+                        </p>
+                        </center>
 
-                          <table class="table">
-                          <thead>
-                            <tr>
-                              <th scope="col">Cohort Name</th>
-                              <th scope="col">Learner Name</th>
-                              <th scope="col">Reject</th>
-                              <th scope="col">Approve</th>
-                            </tr>
-                          </thead>
-
+                        <table class="table">
+                        <thead>
                           <tr>
-                          <td>
-                          ${courseRequest[course][index].cohortName} 
-                          </td>
-                          <td>
-                          ${courseRequest[course][index].learnerName}
-                          </td>
-                          <td>
-                          <button type="button" class="btn btn-danger" onclick="withdraw('${courseRequest[course][index].learnerName}', '${courseRequest[course][index].courseName}', '${courseRequest[course][index].cohortName}');">Reject</button>
-                          </td>
-                          <td>
-                          <button type="button" class="btn btn-primary" onclick="accept('${courseRequest[course][index].learnerName}', '${courseRequest[course][index].courseName}', '${courseRequest[course][index].cohortName}');">Accept</button>
-                          </td>
+                            <th scope="col">Cohort Name</th>
+                            <th scope="col">Learner Name</th>
+                            <th scope="col">Reject</th>
+                            <th scope="col">Approve</th>
                           </tr>
-                          </table>
-                          
-                          </div>
+                        </thead>
+
+                        <tr>
+                        <td>
+                        ${courseRequest[course][index].cohortName} 
+                        </td>
+                        <td>
+                        ${courseRequest[course][index].learnerName}
+                        </td>
+                        <td>
+                        <button type="button" class="btn btn-danger" onclick="withdraw('${courseRequest[course][index].learnerName}', '${courseRequest[course][index].courseName}', '${courseRequest[course][index].cohortName}');">Reject</button>
+                        </td>
+                        <td>
+                        <button type="button" class="btn btn-primary" onclick="accept('${courseRequest[course][index].learnerName}', '${courseRequest[course][index].courseName}', '${courseRequest[course][index].cohortName}');">Accept</button>
+                        </td>
+                        </tr>
+                        </table>
+                        
                         </div>
-                        </div>
-            
-              `
-              } //else
-              // console.log(courseRequest[course][index].cohortName);
-              
-            } //small for          
+                      </div>
+                      </div>
+          
+            `               
+          }           
         }
-    
-     
-      
            document.getElementById('here').innerHTML = html ;
       }
 
