@@ -77,6 +77,7 @@ CREATE TABLE enrollmentRequest (
 INSERT INTO employee(employeeName, userName, currentDesignation, department) VALUES
 ('Alice', 'Alice_01', 'Admin', 'HR'),
 ('Bob', 'Bob_02', 'Learner', 'Operations'),
+('Vera', 'Vera_04', 'Learner', 'Operations'),
 ('Charles', 'Charles_03', 'trainer', 'Operations');
 
 INSERT INTO course(courseName, courseImage, courseDescription, prerequisite) VALUES
@@ -95,7 +96,7 @@ INSERT INTO cohort(courseName, cohortName, enrollmentStartDate, enrollmentStartT
 ('Introduction to HTML', 'G1', '08 Oct 2021', '00:00', '18 Oct 2021', '23:59', '01 Nov 2021', '08:00', '30 Nov 2021', '20:00', 'Charles', '30', 30),
 ('Introduction to HTML', 'G2', '08 Oct 2021', '00:00', '18 Oct 2021', '23:59', '01 Nov 2021', '08:00', '30 Nov 2021', '20:00', 'Charles', '30', 0),
 ('Introduction to HTML', 'G3', '18 Oct 2021', '00:00', '28 Oct 2021', '23:59', '10 Nov 2021', '08:00', '20 Nov 2021', '20:00', 'Charles', '30', 30),
-('Introduction to HTML', 'G4', '08 Oct 2021', '00:00', '28 Oct 2021', '23:59', '10 Nov 2021', '08:00', '20 Nov 2021', '20:00', 'Charles', '30', 30),
+('Introduction to HTML', 'G4', '08 Oct 2021', '00:00', '28 Oct 2021', '23:59', '10 Nov 2021', '08:00', '20 Nov 2021', '20:00', 'Charles', '30', 1),
 ('Finance and accounting', 'G1', '08 Oct 2021', '00:00', '18 Oct 2021', '23:59', '01 Nov 2021', '08:00', '30 Nov 2021', '20:00', 'Charles', '30', 30),
 ('Big questions', 'G1', '08 Oct 2021', '00:00', '18 Oct 2021', '23:59', '01 Nov 2021', '08:00', '30 Nov 2021', '20:00', 'Charles', '30', 30),
 ('Introduction to flask', 'G1', '08 Oct 2021', '00:00', '18 Oct 2021', '23:59', '01 Nov 2021', '08:00', '30 Nov 2021', '20:00', 'Charles', '30', 30),
@@ -111,7 +112,8 @@ INSERT INTO enrollment(employeeName, courseNameEnrolled, cohortNameEnrolled) VAL
 INSERT INTO badges(employeeName, badges, cohortName) VALUES
 ('Alice', 'Introduction to python', 'G1'),
 ('Alice', 'Introduction to HTML', 'G1'),
-('Bob', 'Introduction to python', 'G1');
+('Bob', 'Introduction to python', 'G1'),
+('Vera', 'Introduction to python', 'G1');
 
 INSERT INTO enrollmentRequest(courseNameRequest, cohortNameRequest, LearnerName) VALUES
 ('Big questions', 'G1', 'Charles'),

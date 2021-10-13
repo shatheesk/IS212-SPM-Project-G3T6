@@ -6,7 +6,7 @@
 
   function accept(learnerName, courseName, cohortName) {
     const request6 = new XMLHttpRequest();
-    url6 = 'http://127.0.0.1:5000/processRequest/' + learnerName + '/' + courseName + '/' + cohortName
+    url6 = 'http://10.124.2.10:5000/processRequest/' + learnerName + '/' + courseName + '/' + cohortName
 
     
     request6.onreadystatechange = function () {
@@ -27,7 +27,7 @@
 
   function withdraw(learnerName, courseName, cohortName) {
     const request5 = new XMLHttpRequest();
-    url5 = 'http://127.0.0.1:5000/delete/' + learnerName + '/' + courseName + '/' + cohortName
+    url5 = 'http://10.124.2.10:5000/delete/' + learnerName + '/' + courseName + '/' + cohortName
     
     request5.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200){
@@ -77,30 +77,7 @@
 
   <div class="site-wrap">
 
-    <!-- <div class="site-mobile-menu site-navbar-target">
-      <div class="site-mobile-menu-header">
-        <div class="site-mobile-menu-close mt-3">
-          <span class="icon-close2 js-menu-toggle"></span>
-        </div>
-      </div>
-      <div class="site-mobile-menu-body"></div>
-    </div> -->
-
-
     <div class="py-2 ">
-      <!-- <div class="container">
-        <div class="row align-items-center">
-          <div class="col-lg-9 d-none d-lg-block">
-            <a href="#" class="small mr-3"><span class="icon-question-circle-o mr-2"></span> Have a questions?</a> 
-            <a href="#" class="small mr-3"><span class="icon-phone2 mr-2"></span> 10 20 123 456</a> 
-            <a href="#" class="small mr-3"><span class="icon-envelope-o mr-2"></span> info@mydomain.com</a> 
-          </div>
-          <div class="col-lg-3 text-right">
-            <a href="login.php" class="small mr-3"><span class="icon-unlock-alt"></span> Log In</a>
-            <a href="register.php" class="small btn btn-primary px-4 py-2 rounded-0"><span class="icon-users"></span> Register</a>
-          </div>
-        </div>
-      </div> -->
     </div>
 
     <?php include 'navbar.php'; ?>
@@ -207,7 +184,7 @@
   <script>
   const request = new XMLHttpRequest();
     // let cName= "Introduction to python";
-    url = 'http://127.0.0.1:5000/adminViewAllRequests' 
+    url = 'http://10.124.2.10:5000/adminViewAllRequests' 
     
     request.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200){
@@ -224,8 +201,38 @@
         // console.log(i);
 
         for (course in courseRequest){
+          console.log(course)
           // accordian set 
           // counter += 1; //number of course
+          // if (courseRequest[course].length > 1) {
+          //   html += `         
+          //       <div class="accordion-item">
+          //         <!--courseName-->
+          //         <h2 class="accordion-header" id="panelsStayOpen-heading${counter-1}">
+          //           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse${counter}" aria-expanded="false" aria-controls="panelsStayOpen-collapse${counter}">
+          //             <p>
+          //               ${course}
+          //               <span class="badge badge-info">${courseRequest[course].length}</span>
+          //             </p>
+          //           </button>
+          //         </h2>
+          //       `
+          //   for (c in courseRequest[course])
+          // }
+          // else {
+          //   html += `         
+          //       <div class="accordion-item">
+          //         <!--courseName-->
+          //         <h2 class="accordion-header" id="panelsStayOpen-heading${counter-1}">
+          //           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse${counter}" aria-expanded="false" aria-controls="panelsStayOpen-collapse${counter}">
+          //             <p>
+          //               ${course}
+          //               <span class="badge badge-info">${courseRequest[course].length}</span>
+          //             </p>
+          //           </button>
+          //         </h2>
+          //       `
+          // }
 
             for (index in courseRequest[course]){
               console.log(index);
@@ -235,20 +242,19 @@
               if (courseRequest[course].length > 1){
                 html += `         
                 <div class="accordion-item">
-                        <!--courseName-->
-                        <h2 class="accordion-header" id="panelsStayOpen-heading${counter-1}">
-                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse${counter}" aria-expanded="false" aria-controls="panelsStayOpen-collapse${counter}">
-                            <p>
-                              ${course}
-                              <span class="badge badge-info">${courseRequest[course].length}</span>
-                            </p>
-                          </button>
-                        </h2>
+                  <!--courseName-->
+                  <h2 class="accordion-header" id="panelsStayOpen-heading${counter-1}">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse${counter}" aria-expanded="false" aria-controls="panelsStayOpen-collapse${counter}">
+                      <p>
+                        ${course}
+                        <span class="badge badge-info">${courseRequest[course].length}</span>
+                      </p>
+                    </button>
+                  </h2>
                 `
-
                 for (cohort in courseRequest[course]) {
-                  console.log(cohort); // number
-                  console.log(courseRequest[course][cohort]);
+                  // console.log(cohort); // number
+                  // console.log(courseRequest[course][cohort]);
                     html +=
                     `
                     <!--cohortName-->
@@ -291,7 +297,8 @@
                     `
                 }
 
-              }else{ // less that one request in the course
+              }
+              else{ // less that one request in the course
                 html+= 
                       `
                         <div class="accordion-item">

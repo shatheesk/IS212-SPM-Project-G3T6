@@ -6,7 +6,7 @@
 
   function withdraw(courseName, cohortName) {
     const request5 = new XMLHttpRequest();
-    url5 = 'http://192.168.50.80:5000/delete/' + emp_name + '/' + courseName + '/' + cohortName
+    url5 = 'http://10.124.2.10:5000/delete/' + emp_name + '/' + courseName + '/' + cohortName
     
     request5.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200){
@@ -135,7 +135,7 @@
   <script>
 
     const request = new XMLHttpRequest();
-    url = 'http://192.168.50.80:5000/viewAllRequests/' + emp_name
+    url = 'http://10.124.2.10:5000/viewAllRequests/' + emp_name
     
     request.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200){
@@ -168,7 +168,7 @@
             <td>${pendingCourses[c].enrollmentStartDate} ${pendingCourses[c].enrollmentStartTime} to ${pendingCourses[c].enrollmentEndDate} ${pendingCourses[c].enrollmentEndTime}</td>
             <td>${pendingCourses[c].cohortStartDate} ${pendingCourses[c].cohortStartTime} to ${pendingCourses[c].cohortEndDate} ${pendingCourses[c].cohortEndTime}</td>
             <td>${pendingCourses[c].trainerName}</td>
-            <td><a class="btn btn-secondary rounded-2 px-4" href="#" onclick="withdraw('${pendingCourses[c].courseName}', '${pendingCourses[c].cohortName}');">Withdraw</a></td>
+            <td><a class="btn btn-danger rounded-2 px-4" href="#" onclick="withdraw('${pendingCourses[c].courseName}', '${pendingCourses[c].cohortName}');">Withdraw</a></td>
             </tr>
             `
         }

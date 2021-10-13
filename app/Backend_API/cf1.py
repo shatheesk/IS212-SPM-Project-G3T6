@@ -438,7 +438,7 @@ def viewAllCohort(courseName):
 
 
 # approve a learner's request (admin view)
-@app.route("/processRequest/<string:learnerName>/<string:courseName>/<string:cohortName>")
+@app.route("/processRequest/<string:learnerName>/<string:courseName>/<string:cohortName>", methods=['DELETE'])
 def processRequest(learnerName, courseName, cohortName):
     result = enrollmentRequest.query.filter_by(learnerName = learnerName, courseNameRequest= courseName, cohortNameRequest=cohortName).first()
 
