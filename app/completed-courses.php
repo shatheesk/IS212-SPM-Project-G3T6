@@ -118,7 +118,7 @@
   <script>
 
     const request = new XMLHttpRequest();
-    url = 'http://10.124.2.10:5000/viewBadgesCohort/' + emp_name
+    url = 'http://192.168.50.80:5000/viewBadgesCohort/' + emp_name
     
     request.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200){

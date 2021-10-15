@@ -16,3 +16,9 @@ else { ?>
 <?php
 }
 ?>
+
+
+eStdDte = document.getElementById('eStdDte').value;
+eStdTime = document.getElementById('eStdTime').value
+eEndDte = document.getElementById('eEndDte').value
+eEndTime = document.getElementById('eEndTime').value

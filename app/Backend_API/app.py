@@ -628,7 +628,7 @@ def retrieveQualifiedLearners(courseName,cohortName):
         return jsonify(
             {
                 "code": 200,
-                "Qualified learners": output
+                "QualifiedLearners": output
             }
         ), 200
 
@@ -679,7 +679,7 @@ def viewAllEnrolledLearners(courseName, cohortName):
         return jsonify(
             {
                 "code": 200,
-                "Enrolled learners": [element.get_employeeName() for element in result]
+                "EnrolledLearners": [element.get_employeeName() for element in result]
             }
         ), 200
 

@@ -17,7 +17,7 @@
   elseif (in_array($page_name, ['admissions'])){
     $page_navcat = 'admissions';
   }
-  elseif (in_array($page_name, ['assign'])){
+  elseif (in_array($page_name, ['assign', 'assign-learners'])){
     $page_navcat = 'assign';
   }
   elseif (in_array($page_name, ['teaching-courses'])){

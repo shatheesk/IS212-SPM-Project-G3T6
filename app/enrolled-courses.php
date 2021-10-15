@@ -118,7 +118,7 @@
   <script>
 
     const request = new XMLHttpRequest();
-    url = 'http://10.124.2.10:5000/viewAllEnrolledCourses/' + emp_name
+    url = 'http://192.168.50.80:5000/viewAllEnrolledCourses/' + emp_name
     
     request.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200){
@@ -142,16 +142,25 @@
             </tr>
           </thead>
           <tbody>`
+        
+        
         for (c in enrolledCourses) {
-            html += `
-            <tr>
-            <td>${enrolledCourses[c].courseName}</td>
-            <td>${enrolledCourses[c].cohortName}</td>
-            <td>${enrolledCourses[c].cohortStartDate} ${enrolledCourses[c].cohortStartTime} to ${enrolledCourses[c].cohortEndDate} ${enrolledCourses[c].cohortEndTime}</td>
-            <td>${enrolledCourses[c].trainerName}</td>
-            <td><a href="#" class="btn btn-info rounded-2 px-4">View Course Materials</a></td>
-            </tr>
-            `
+          compare1 = new Date(enrolledCourses[c].cohortStartDate)
+          compare2 = new Date(enrolledCourses[c].cohortEndDate)
+          today = new Date()
+          html += `
+          <tr>
+          <td>${enrolledCourses[c].courseName}</td>
+          <td>${enrolledCourses[c].cohortName}</td>
+          <td>${enrolledCourses[c].cohortStartDate} ${enrolledCourses[c].cohortStartTime} to ${enrolledCourses[c].cohortEndDate} ${enrolledCourses[c].cohortEndTime}</td>
+          <td>${enrolledCourses[c].trainerName}</td>`
+          if (today >= compare1){
+            html += `<td><a href="#" class="btn btn-info rounded-2 px-4">View Course Materials</a></td>`
+          }
+          else {
+            html += `<td><i>course not yet started</i></td>`
+          }
+          html+=`</tr>`
         }
         
         html += `</tbody>
