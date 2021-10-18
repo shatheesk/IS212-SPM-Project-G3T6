@@ -576,10 +576,12 @@ def retrieveQualifiedLearners(courseName,cohortName):
         learners_result = employee.query.all()
 
         for learner in learners_result:
+            designation = learner.get_designation()
             learner = learner.get_employeeName()
 
-            badges_result = badges.query.filter_by(employeeName=learner)
-            learners[learner] = [badge.get_badges() for badge in badges_result]
+            if designation['currentDesignation'] != 'Admin':
+                badges_result = badges.query.filter_by(employeeName=learner)
+                learners[learner] = [badge.get_badges() for badge in badges_result]
 
         # prerequisite of the course
         prerequisite_result = course.query.filter_by(courseName=courseName).first()
@@ -644,16 +646,34 @@ def retrieveQualifiedLearners(courseName,cohortName):
 @app.route("/assignLearners", methods=['POST'])
 def assignLearners():
     data = request.get_json()
-    
+
     cohortName = data['cohortNameRequest']
     courseName = data['courseNameRequest']
     selectedlearners = data['selectedLearners']
+
+    # check if have sufficient slots
+    number_learners = len(selectedlearners)
+
+    cohortResult = cohort.query.filter_by(courseName=courseName, cohortName=cohortName).first()
+    slotLeft = cohortResult.get_slotLeft()
+
+    if slotLeft < number_learners:
+        return jsonify(
+            {
+                "code": 404,
+                "message": "Insufficient number of slots"
+            }
+        ), 404
 
     try:
         for learners in selectedlearners:
             enrollment_obj = enrollment(learners, courseName, cohortName)
             db.session.add(enrollment_obj)
             db.session.commit()
+
+        slotLeft -= number_learners
+        cohortResult.slotLeft = slotLeft
+        db.session.commit()
 
         return jsonify(
             {
