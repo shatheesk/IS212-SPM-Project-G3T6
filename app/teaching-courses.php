@@ -4,12 +4,9 @@
   console.log(current_designation)
   console.log(emp_name)
 
-    // requests.put(url, params={key: value}, args)
-
-  
-
-  
+  // requests.put(url, params={key: value}, args)
 </script>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -74,7 +71,7 @@
 <center><h1>My Teaching Course List</h1></center>
 <br>
 
-<div class="container" id="here">
+<div class="container" id="teachingCoursesAccord">
 </div>
 
 <br>
@@ -152,227 +149,160 @@
 
   <script>
 
-
-    //logic: to separate multiple cohort courses and only one cohort course.
-    //1. Find multiple cohorts courses 
-    //for e in enrolledCourses --> [{"":""},{"":""},{"":""}, ...]
-
-    //trainer's perspective
-    const request = new XMLHttpRequest();
-    url = 'http://127.0.0.1:5000/viewAllEnrolledCourses/' + emp_name;
-    
-    request.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200){
-        let response = JSON.parse(this.responseText);
-        let enrolledCourses = response.enrollments;
-        console.log(enrolledCourses);
-        html = ''
-
-        let counter = 1;
-        let i = 1;
-        let singleCohortContainer = {"index": [],"courseName": [],"cohortName": [], "cohortSize": []};
-        let multipleCohortContainer = {"index": [], "courseName": [],"cohortName": [], "cohortSize": []};
+  const request = new XMLHttpRequest();
+  url = 'http://192.168.50.80:5000/viewAllCourses' 
+  
+  request.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200){
+      let response = JSON.parse(this.responseText);
+      let courses = response.courses;
+      html = '';
+      counter = 0;
+      index = 0;
+      
+      for (c in courses) {
+        const request1 = new XMLHttpRequest();
+        url1 = 'http://192.168.50.80:5000/viewAllCohort/' + courses[c].courseName
         
-        for (i in enrolledCourses){
-            // console.log(e);
-            console.log(enrolledCourses[i].courseName); // {},
-            console.log(singleCohortContainer.courseName); 
-            // var courseName = enrolledCourses[i].courseName; // works
-            // console.log(enrolledCourses[2].courseName); // introduction to python
-            // console.log(singleCohortContainer[e].courseName);
-            // console.log(singleCohortContainer);
+        request1.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200){
+            let response = JSON.parse(this.responseText);
+            let cohorts = response.cohorts;
+            teachesThisCourse = false 
             
-            if (singleCohortContainer.courseName.includes(enrolledCourses[i].courseName)){
-                //store index
-                // console.log(singleCohortContainer);
-                // console.log(enrolledCourses.courseName); //introduction to life, python,python
-                multipleCohortContainer["index"].push(i);
-                multipleCohortContainer["courseName"].push(enrolledCourses[i].courseName);
-                multipleCohortContainer["cohortName"].push(enrolledCourses[i].cohortName);
-                multipleCohortContainer["cohortSize"].push(enrolledCourses[i].cohortSize);
-                // console.log(enrolledCourses[0].courseName)
-
-            } 
-            else{ 
-                //unqiue
-                singleCohortContainer["index"].push(i);
-                singleCohortContainer["courseName"].push(enrolledCourses[i].courseName);
-                singleCohortContainer["cohortName"].push(enrolledCourses[i].cohortName);
-                singleCohortContainer["cohortSize"].push(enrolledCourses[i].cohortSize);
+            for (coh in cohorts) {
+              if (cohorts[coh].trainerName == emp_name){
+                teachesThisCourse = true
+              }
             }
-        }
-    
-        // console.log(singleCohortContainer.courseName); // return array
-        // console.log(multipleCohortContainer.courseName);
-        console.log(multipleCohortContainer);
-        // console.log(singleCohortContainer); //{index: Array(3), courseName: Array(3), cohortName: Array(3), cohortSize: Array(3)}
-        let completedContainer = {};
-        for (e in enrolledCourses){
-            // console.log(e); // 0, 1 
-            // console.log(multipleCohortContainer); //only have G3    
             
+            if (teachesThisCourse) {
+              html += `
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="panelsStayOpen-heading${counter}">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse${counter}" aria-expanded="false" aria-controls="panelsStayOpen-collapse${counter}">
+                    ${courses[c].courseName}
+                  </button>
+                </h2>
 
-            //@shathees can help me solve this part. 
-            //@here they go pass "intro to python agn" becos of first loop... -> so must prevent same courseName in multiple to go in agn. i want to make a container to check the passing of result 
-            if (enrolledCourses[e].courseName.includes(multipleCohortContainer.courseName)){
-                counter +=1;
-
-                //make use of index.
-                if(enrolledCourses[e].courseName == multipleCohortContainer.courseName){
-                console.log(enrolledCourses[e].cohortName); // G2, G3
-                html += `
-                <div class="accordion-item">
-                        <!--courseName-->
-                        <h2 class="accordion-header" id="panelsStayOpen-heading${counter}">
-                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse${counter}" aria-expanded="false" aria-controls="panelsStayOpen-collapse${counter}">
-                            <p>
-                    ${enrolledCourses[e].courseName}
-                            </p>
-                          </button>
-                        </h2>
-                        <!--cohortName-->
-                        <div id="panelsStayOpen-collapse${counter}" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading${counter}">
-                          <div class="accordion-body" id="insert">
-                          <table class="table">
-                          <thead>
-                            <tr>
-                              <th scope="col">Cohort Name</th>
-                              <th scope="col">Class Period</th>
-                              <th scope="col">Class Size</th>
-                              <th scope="col">Class List</th>
-                              <th scope="col">Section</th>
-
-                            </tr>
-                            </thead>
-                            <tr>
-                            <td>
-                          ${enrolledCourses[e].cohortName} 
-                          </td>
-                          <td>
-                          date
-                          </td>
-                          <td>
-                          ${enrolledCourses[e].cohortSize}
-                          </td>
-                          <td>
-                          <button type="button" class="btn btn-info" onclick="#";">Class Size</button>
-                          </td>
-                          <td>
-                          <button type="button" class="btn btn-primary" onclick="#">Go to Cohort Resources</button>
-                          </td>
-                          </tr>
-
-                  `
-              //loop rows of multipleCohortContainer in the same accordian
-                // for (index in multipleCohortContainer){ //only have G3 {index: '',}
-                    // console.log(multipleCohortContainer);
-                // if(enrolledCourses[e].courseName == multipleCohortContainer.courseName){
-                    html+=
-                      `
-                    <!--data rows-->
-                          <tr>
-                          <td>
-                          ${multipleCohortContainer.cohortName} 
-                          </td>
-                          <td>
-                          date
-                          </td>
-                          <td>
-                          ${multipleCohortContainer.cohortSize}
-                          </td>
-                          <td>
-                          <button type="button" class="btn btn-info" onclick="#";">Class Size</button>
-                          </td>
-                          <td>
-                          <button type="button" class="btn btn-primary" onclick="#">Go to Cohort Resources</button>
-                          </td>
-                          </tr>
-                      `
+                <div id="panelsStayOpen-collapse${counter}" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading${counter}">
+                  <div class="accordion-body">
+                    <p>Prerequisites: `   
+                if (courses[c].prerequisite[0] == '') {
+                  html += `NIL`
                 }
-          
-                html+=
-                `
-                <!--end div-->
-                          </table>
-                          
-                          </div>
-                        </div>
-                        </div>
-                `
-            }// end if 
-            
-            
-            else{
-            
-              // for (e in enrolledCourses){
-                html += `
-                <div class="accordion-item">
-                        <!--courseName-->
-                        <h2 class="accordion-header" id="panelsStayOpen-heading${counter}">
-                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse${counter}" aria-expanded="false" aria-controls="panelsStayOpen-collapse${counter}">
-                            <p>
-                    ${enrolledCourses[e].courseName}
-                            </p>
-                          </button>
-                        </h2>
-                        <!--cohortName-->
-                        <div id="panelsStayOpen-collapse${counter}" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading${counter}">
-                          <div class="accordion-body" id="insert">
-                          <table class="table">
-                          <thead>
-                            <tr>
-                              <th scope="col">Cohort Name</th>
-                              <th scope="col">Class Period</th>
-                              <th scope="col">Class Size</th>
-                              <th scope="col">Class List</th>
-                              <th scope="col">Section</th>
+                else {
+                  let temp = ''
+                  for (p in courses[c].prerequisite) {
+                    temp += `${courses[c].prerequisite[p]}, `
+                  }
+                  temp = temp.substring(0, temp.length - 2);
+                  html += temp
+                }
 
-                            </tr>
-                          </thead>
-                        <!--data rows-->
-                          <tr>
-                          <td>
-                          ${enrolledCourses[e].cohortName} 
-                          </td>
-                          <td>
-                          ${enrolledCourses[e].cohortEndDate}
-                          </td>
-                          <td>
-                          ${enrolledCourses[e].cohortSize}
-                          </td>
-                          <td>
-                          <button type="button" class="btn btn-info" onclick="#";">Class Size</button>
-                          </td>
-                          <td>
-                          <button type="button" class="btn btn-primary" onclick="#">Go to Cohort Resources</button>
-                          </td>
-                          </tr>
-
-                            <!--end div-->
-                          </table>
-                          
-                          </div>
-                        </div>
-                        </div>
-
-                `
-
+              html+=`</p>
+                <table class="table">
+                <thead>
+                  <tr>
+                    <th style="text-align:center" scope="col">Cohort</th>
+                    <th style="text-align:center" scope="col">Class Period</th>
+                    <th style="text-align:center" scope="col">Class Size</th>
+                    <th style="text-align:center" scope="col">Classlist</th>
+                    <th style="text-align:center" scope="col">View Chapters</th>
+                  </tr>
+                </thead>
+                  <tbody>`
               
-            }// end else
-    
-        } //end for
-        document.getElementById('here').innerHTML = html
-      }//200
+              for (cohort in cohorts) {
+                if (cohorts[cohort].trainerName == emp_name){
+                  html += `<tr>
+                    <td style="text-align:center">${cohorts[cohort].cohortName}</td>
+                    <td style="text-align:center">${cohorts[cohort].cohortStartDate} ${cohorts[cohort].cohortStartTime} to ${cohorts[cohort].cohortEndDate} ${cohorts[cohort].cohortEndTime}</td>
+                    <td style="text-align:center">${cohorts[cohort].cohortSize - cohorts[cohort].slotLeft}</td>
+                    <td style="text-align:center"><a href="#" style="text-decoration:underline" data-toggle="modal" data-target="#classlistModal${index}">Classlist</a></td>
+                    <td style="text-align:center"><a class="btn btn-primary rounded-2 px-4" href="#">Go into Cohort</a></td>
+                  </tr>
+                  `
+                }
+              }
 
-      else if (this.status == 404) {
-        console.log('its a 404')
+              html += ` 
+              <div class="modal fade" id="classlistModal${index}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLongTitle">Enrolled Learners</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button> 
+                    </div>
+                    <div class="modal-body">`
+
+              const request2 = new XMLHttpRequest();
+              url2 = 'http://192.168.50.80:5000/viewAllEnrolledLearners/' + courses[c].courseName + '/' + cohorts[cohort].cohortName
+              
+              request2.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200){
+                  let response = JSON.parse(this.responseText);
+                  let enrolledLearners = response.EnrolledLearners;
+
+                  if (enrolledLearners.length > 0){
+                    for (eL in enrolledLearners){
+                      html += `${enrolledLearners[eL]} <br>`
+                    }
+                  }
+                  else{
+                    html += `<i>No learners enrolled</i>`
+                  }
+                  
+                }
+
+                else if (this.status == 404) {
+                  console.log('its a 404')
+                }
+              }
+              request2.open("GET", url2, false);
+              request2.send();  
+              
+              html+= `</div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>`
+              index += 1;
+              
+
+              html+=`
+              </tbody></table></div>
+                </div>
+              </div>
+              `
+            }
+          }
+
+          else if (this.status == 404) {
+            console.log('its a 404')
+          }
+        }
+        request1.open("GET", url1, false);
+        request1.send();
+        counter += 1
       }
+      
+      
+
+      // html += `</div>`
+      document.getElementById('teachingCoursesAccord').innerHTML = html ;
     }
-    request.open("GET", url, false);
-    request.send();
 
-
-   
+    else if (this.status == 404) {
+      console.log('its a 404')
+    }
+  }
+  request.open("GET", url, false);
+  request.send();
 
   </script>
 

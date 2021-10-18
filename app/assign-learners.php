@@ -4,7 +4,7 @@
     console.log(current_designation)
     console.log(emp_name)
 
-    function myFunction() {
+    function searchFunction() {
         // Declare variables
         var input, filter, table, tr, td, i, txtValue;
         input = document.getElementById("myInput");
@@ -251,7 +251,7 @@
         
 
         html += `
-        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for learners..">
+        <input type="text" id="myInput" onkeyup="searchFunction()" placeholder="Search for learners..">
 
         <table id="myTable">
             <tr class="header">
