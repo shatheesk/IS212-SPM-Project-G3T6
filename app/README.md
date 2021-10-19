@@ -18,4 +18,7 @@ enrolled-courses.php -> view enrolled courses - both ongoing and ones that are g
 pending-courses.php -> view pending courses (LEARNER ONLY)
 completed-courses.php -> view completed courses (LEARNER ONLY)
 
-teaching-courses.php -> for trainers to see the classes they are teaching (TRAINER ONLY)
+teaching-courses.php -> for trainers to see the cohort they are teaching (TRAINER ONLY)
+view-cohort.php -> for trainers to see the individual cohort they are teaching, including chapters with materials and quizzes (TRAINER ONLY)
+create-quiz.php -> for trainers to create quiz with questions for a particular chapter or final quiz (TRAINER ONLY)
+edit-quiz.php -> for trainers to edit the quiz created
