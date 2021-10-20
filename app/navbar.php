@@ -99,7 +99,7 @@
             <ul class="dropdown">
               <li><a href="#">Profile</a></li>`
               
-        if (current_designation == 'Learner' ){
+        if (current_designation == 'Learner' || current_designation == 'trainer'){
           result +=`<li><a href="enrolled-courses.php">Enrolled Courses</a></li>
               <li><a href="pending-courses.php">Pending Courses</a></li>
               <li><a href="completed-courses.php">Completed Courses</a></li>`

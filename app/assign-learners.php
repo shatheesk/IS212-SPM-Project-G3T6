@@ -36,6 +36,7 @@
     var selectedLearners = []
 
     function handleChange(checkbox, learnerName) {
+        
         if(checkbox.checked == true){
             selectedLearners.push(learnerName.id)
             slotLeft -= 1
@@ -48,6 +49,19 @@
             slotLeft += 1
             noSelected -= 1
             learnerName.style.display = "none" 
+        }
+
+        if (slotLeft == 0){
+            var isNotChecked =  $("input:checkbox:not(:checked)")
+            for (var i = 0; i < isNotChecked.length; i++) {
+                isNotChecked[i].disabled = true
+            }
+        }
+        else {
+            var checkboxes =  $("input:checkbox")
+            for (var i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].disabled = false
+            }
         }
 
         if (noSelected == 0) {
@@ -263,7 +277,7 @@
             <tr>
                 <td style="text-align:center;">${qualifiedLearners[qL]}</td>
                 <td style="text-align:center;">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" onchange='handleChange(this, ${qualifiedLearners[qL]});'>
+                    <input  type="checkbox" value="" style = "height: 20px; width:20px;" id="flexCheckDefault" onchange='handleChange(this, ${qualifiedLearners[qL]});'>
                 </td>
             </tr>`
             html2 += `

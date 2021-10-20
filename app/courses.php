@@ -170,7 +170,7 @@
     request.open("GET", url, false);
     request.send();
 
-    if (current_designation == 'Learner'){
+    if (current_designation == 'Learner' || current_designation == 'trainer'){
       const request = new XMLHttpRequest();
       url2 = 'http://192.168.50.80:5000/viewAllBadges/' + emp_name
       
@@ -184,21 +184,68 @@
           }
 
           for (course in totalCourses) {
-            idname = 'eligibility' + course
-            prereqCheck = isTrue(prereqs[course], completedCourses)
+            if (current_designation == 'Learner') {
+              idname = 'eligibility' + course
+              prereqCheck = isTrue(prereqs[course], completedCourses)
 
-            if (completedCourses.includes(totalCourses[course].courseName)) {
-              document.getElementById(idname).innerHTML = '<h4><i>Completed</i></h4>'
+              if (completedCourses.includes(totalCourses[course].courseName)) {
+                document.getElementById(idname).innerHTML = '<h4><i>Completed</i></h4>'
+              }
+              else if (prereqs[course][0] == ''){
+                document.getElementById(idname).innerHTML = `<a href="course-single.php?cname=${totalCourses[course].courseName}" class="btn btn-primary rounded-2 px-4">Enroll In This Course</a>`
+              }
+              else if (prereqCheck) {
+                document.getElementById(idname).innerHTML = `<a href="course-single.php?cname=${totalCourses[course].courseName}" class="btn btn-primary rounded-2 px-4">Enroll In This Course</a>`
+              }
+              else {
+                document.getElementById(idname).innerHTML = '<h4><i>Ineligible to enrol</i></h4>'
+              }
             }
-            else if (prereqs[course][0] == ''){
-              document.getElementById(idname).innerHTML = `<a href="course-single.php?cname=${totalCourses[course].courseName}" class="btn btn-primary rounded-2 px-4">Enroll In This Course</a>`
+            else if(current_designation == 'trainer') {
+              var isTeacher = false
+              const request = new XMLHttpRequest();
+              url4 = 'http://192.168.50.80:5000/viewAllCohort/' + totalCourses[course].courseName
+              
+              request.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200){
+                  let response = JSON.parse(this.responseText);
+                  let cohorts = response.cohorts
+                  console.log(cohorts)
+                  
+                  for (coh in cohorts) {
+                    if (cohorts[coh].trainerName == emp_name) {
+                      isTeacher = true
+                    }
+                  }
+                }
+                else if (this.status == 404) {
+                  console.log('its a 404')
+                }
+              }
+              request.open("GET", url4, false);
+              request.send();
+
+              idname = 'eligibility' + course
+              prereqCheck = isTrue(prereqs[course], completedCourses)
+
+              if (isTeacher) {
+                document.getElementById(idname).innerHTML = '<h4><i>Currently teaching this course</i></h4>'
+              }
+              else if (completedCourses.includes(totalCourses[course].courseName)) {
+                document.getElementById(idname).innerHTML = '<h4><i>Completed</i></h4>'
+              }
+              else if (prereqs[course][0] == ''){
+                document.getElementById(idname).innerHTML = `<a href="course-single.php?cname=${totalCourses[course].courseName}" class="btn btn-primary rounded-2 px-4">Enroll In This Course</a>`
+              }
+              else if (prereqCheck) {
+                document.getElementById(idname).innerHTML = `<a href="course-single.php?cname=${totalCourses[course].courseName}" class="btn btn-primary rounded-2 px-4">Enroll In This Course</a>`
+              }
+              else {
+                document.getElementById(idname).innerHTML = '<h4><i>Ineligible to enrol</i></h4>'
+              }
             }
-            else if (prereqCheck) {
-              document.getElementById(idname).innerHTML = `<a href="course-single.php?cname=${totalCourses[course].courseName}" class="btn btn-primary rounded-2 px-4">Enroll In This Course</a>`
-            }
-            else {
-              document.getElementById(idname).innerHTML = '<h4><i>Ineligible to enrol</i></h4>'
-            }
+            
+            
           }
         }
         else if (this.status == 404) {
