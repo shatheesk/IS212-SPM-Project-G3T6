@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, json, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
@@ -166,11 +166,13 @@ class enrollment(db.Model):
     employeeName = db.Column(db.String(100), primary_key=True)
     courseNameEnrolled = db.Column(db.String(100), db.ForeignKey(cohort.courseName), nullable=False, primary_key=True)
     cohortNameEnrolled = db.Column(db.String(100), db.ForeignKey(cohort.cohortName),nullable=False, primary_key=True)
+    recent = db.column(db.Integer)
 
-    def __init__(self, employeeName, courseNameEnrolled, cohortNameEnrolled):
+    def __init__(self, employeeName, courseNameEnrolled, cohortNameEnrolled, recent):
         self.employeeName = employeeName
         self.courseNameEnrolled = courseNameEnrolled
         self.cohortNameEnrolled = cohortNameEnrolled
+        self.recent = recent
 
     def get_enrollment_info(self):
         return {
@@ -201,6 +203,111 @@ class enrollmentRequest(db.Model):
             'learnerName' : self.learnerName
         }
 
+class chapter(db.Model):
+    __tablename__ = 'chapter'
+
+    courseName = db.Column(db.String(100), primary_key=True)
+    cohortName = db.Column(db.String(100), nullable=False, primary_key=True)
+    chapterID = db.Column(db.Integer, nullable=False, primary_key=True)
+    duration = db.Column(db.Integer, nullable=False)
+    graded = db.Column(db.Integer, nullable=False)
+
+    def __init__(self, courseName, cohortName, chapterID, duration, graded):
+        self.courseName = courseName
+        self.cohortName = cohortName
+        self.chapterID = chapterID
+        self.duration = duration
+        self.graded = graded
+        
+    def get_chapter_info(self):
+        """
+        'to_dict' converts the object into a dictionary,
+        in which the keys correspond to database columns
+        """
+        columns = self.__mapper__.column_attrs.keys()
+        result = {}
+        for column in columns:
+            result[column] = getattr(self, column)
+        return result
+
+class question(db.Model):
+    __tablename__ = 'question'
+
+    courseName = db.Column(db.String(100), db.ForeignKey(chapter.courseName), primary_key=True)
+    cohortName = db.Column(db.String(100), db.ForeignKey(chapter.cohortName), primary_key=True)
+    chapterID = db.Column(db.Integer, primary_key=True)
+    questionID = db.Column(db.Integer, primary_key=True)
+    questionText = db.Column(db.String(300), nullable=False)
+
+    def __init__(self, courseName, cohortName, chapterID, questionID, questionText):
+        self.courseName = courseName
+        self.cohortName = cohortName
+        self.chapterID = chapterID
+        self.questionID = questionID
+        self.questionText = questionText
+
+    def get_question_info(self):
+        """
+        'to_dict' converts the object into a dictionary,
+        in which the keys correspond to database columns
+        """
+        columns = self.__mapper__.column_attrs.keys()
+        result = {}
+        for column in columns:
+            result[column] = getattr(self, column)
+        return result
+
+class options(db.Model):
+    __tablename__ = 'options'
+
+    courseName = db.Column(db.String(100), db.ForeignKey(question.courseName), primary_key=True)
+    cohortName = db.Column(db.String(100), db.ForeignKey(question.cohortName) , primary_key=True)
+    chapterID = db.Column(db.Integer, db.ForeignKey(question.chapterID), primary_key=True)
+    questionID = db.Column(db.Integer, db.ForeignKey(question.questionID), primary_key=True)
+    optionID = db.Column(db.Integer, primary_key=True)
+    optionText = db.Column(db.String(300), nullable=False)
+    isRight = db.Column(db.Integer, nullable=False)
+
+    def __init__(self, courseName, cohortName, chapterID, questionID, optionID, optionText, isRight):
+        self.courseName = courseName
+        self.cohortName = cohortName
+        self.chapterID = chapterID
+        self.questionID = questionID
+        self.optionID = optionID
+        self.optionText = optionText
+        self.isRight = isRight
+
+    def get_option_info(self):
+        """
+        'to_dict' converts the object into a dictionary,
+        in which the keys correspond to database columns
+        """
+        columns = self.__mapper__.column_attrs.keys()
+        result = {}
+        for column in columns:
+            result[column] = getattr(self, column)
+        return result
+
+
+class userAttempt(db.Model):
+    __tablename__ = 'userAttempt'
+
+    employeeName = db.Column(db.String(100), db.ForeignKey(employee.employeeName), primary_key=True)
+    courseName = db.Column(db.String(100), db.ForeignKey(chapter.courseName), primary_key=True)
+    cohortName = db.Column(db.String(100), db.ForeignKey(chapter.cohortName), primary_key=True)
+    chapterID = db.Column(db.Integer, db.ForeignKey(chapter.chapterID), primary_key=True)
+    choiceID = db.Column(db.Integer, nullable=False)
+    marks = db.Column(db.Integer, nullable=False)
+    checkRight = db.Column(db.Integer, nullable=False)
+
+    def __init__(self, employeeName,courseName, cohortName, chapterID, choiceID, marks, checkRight):
+        self.courseName = courseName
+        self.employeeName = employeeName
+        self.cohortName = cohortName
+        self.chapterID = chapterID
+        self.choiceID = choiceID
+        self.marks = marks
+        self.checkRight = checkRight
 
 @app.route("/currentDesignation/<string:employeeName>")
 def getCurrentDesignation(employeeName):
@@ -710,6 +817,205 @@ def viewAllEnrolledLearners(courseName, cohortName):
         }
     ), 404
 
+@app.route("/getAllChapters/<string:courseName>/<string:cohortName>")
+def getAllChapters(courseName, cohortName):
+    result = chapter.query.filter_by(courseName=courseName, cohortName=cohortName)
+
+    if result:
+        return jsonify(
+            {
+                "code": 200,
+                "chapters": [element.get_chapter_info() for element in result]
+            }
+        ), 200
+
+    return jsonify(
+        {
+            "code": 404,
+            "message": "Error occured while retrieving chapters"
+        }
+    ), 404
+
+@app.route("/createNewChapter", methods=['POST'])
+def createNewChapter():
+    data = request.get_json()
+    chapter_data = chapter(**data)
+    # add data into database
+    try:
+        db.session.add(chapter_data)
+        db.session.commit()
+
+        return jsonify(
+            {
+                "code": 200,
+                "message": "Successfully created new chapter",
+            }
+        )
+
+    except:
+        return jsonify(
+            {
+                "code": 404,
+                "message": "Error occured while creating new chapter"
+            }
+        ), 404
+
+@app.route("/createNewQuiz", methods=['POST'])
+def createNewQuiz():
+    data = request.get_json()
+    
+    # Update chapter data -> duration, graded
+    courseName = data['courseName']
+    cohortName = data['cohortName']
+    chapterID = data['chapterID']
+    try:
+        chapter_data = chapter.query.filter_by(courseName=courseName, cohortName=cohortName, chapterID=chapterID).first()
+        chapter_data.duration = data['duration']
+        chapter_data.graded = data['graded']
+
+        db.session.commit()
+    
+    except:
+        return jsonify(
+            {
+                "code": 404,
+                "message": "Invalid courseName and cohortName"
+            }
+        ), 404
+
+    # Create questions
+    questions = data['questions']
+    
+    try:
+        for element in questions:
+            questionID = element['questionID']
+            questionText = element['questionText']
+
+            question_data = question(courseName, cohortName, chapterID, questionID, questionText)
+            db.session.add(question_data)
+            db.session.commit()
+
+            # Create options
+            optionsList = element['optionsList']
+            for option in optionsList:
+                optionID = option['optionID']
+                optionText = option['optionText']
+                isRight = option['isRight']
+                
+                option_data = options(courseName, cohortName, chapterID, questionID, optionID, optionText, isRight)
+                db.session.add(option_data)
+                db.session.commit()
+
+        result = question.query.filter_by(courseName=courseName, cohortName=cohortName, chapterID=chapterID)
+        
+        return jsonify(
+            {
+                "code": 200,
+                "message": "Quiz successfully created"
+            }
+        )
+        
+    except:
+        return jsonify(
+            {
+                "code": 404,
+                "message": "Error occured while creating questions"
+            }
+        )
+
+@app.route("/viewQuiz/<string:courseName>/<string:cohortName>/<string:chapterID>")
+def viewQuiz(courseName, cohortName, chapterID):
+    try:
+        # retreive chapter info
+        chapter_info = chapter.query.filter_by(courseName=courseName, cohortName=cohortName,chapterID=chapterID).first()
+        chapter_content = chapter_info.get_chapter_info()
+        
+        question_info = question.query.filter_by(courseName=courseName, cohortName=cohortName,chapterID=chapterID)
+        
+        chapter_content['questions'] = []
+        print(chapter_content)
+        # retrieve questions info
+        for qn in question_info:
+            question_result = {}
+
+            question_content = qn.get_question_info()
+            questionID = question_content['questionID']
+            qnText = question_content['questionText']
+
+            question_result['questionID'] = questionID
+            question_result['qnText'] = qnText
+            
+            print(question_result)
+            
+            options_list = []
+            option_info = options.query.filter_by(courseName=courseName, cohortName=cohortName, chapterID=chapterID, questionID=questionID)
+            # retrieve options info
+            for option in option_info:
+                
+                option_result = {}
+                option_content = option.get_option_info()
+                
+                optionID = option_content['optionID']
+                optionText = option_content['optionText']
+                isRight = option_content['isRight']
+                
+                option_result['optionID'] = optionID
+                option_result['optionText'] = optionText
+                option_result['isRight'] = isRight
+                print(option_result)
+                options_list.append(option_result)
+            # print(option_result)
+            question_result['optionsList'] = options_list
+            chapter_content['questions'].append(question_result)
+        
+        return jsonify(
+            {
+                "code": 200,
+                "chapter_content" : chapter_content
+                
+            }
+        ), 200
+        
+    except:
+        return jsonify(
+            {
+                "code": 404,
+                "message": "Error occurred while viewing quiz"
+            }
+        ), 404
+
+@app.route("/deleteQuiz/<string:courseName>/<string:cohortName>/<string:chapterID>")
+def deleteQuiz(courseName, cohortName, chapterID):
+    
+    try:
+        # Delete options info
+        option_info = options.query.filter_by(courseName=courseName, cohortName=cohortName, chapterID=chapterID)
+        
+        for option in option_info:
+            db.session.delete(option)
+            db.session.commit()
+        
+        # Delete questions info
+        question_info = question.query.filter_by(courseName=courseName, cohortName=cohortName, chapterID=chapterID)
+
+        for element in question_info:
+            db.session.delete(element)
+            db.session.commit()
+
+        return jsonify(
+            {
+                "code": 201,
+                "message": "Successfully deleted all quiz questions and options"
+            }
+        ), 201
+
+    except:
+        return jsonify(
+            {
+                'code': 404,
+                "message": "Error occurred while deleting all quiz questions and options"
+            }
+        ), 404
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

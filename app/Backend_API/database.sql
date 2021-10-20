@@ -59,6 +59,7 @@ CREATE TABLE enrollment (
   employeeName varchar(100) NOT NULL,
   courseNameEnrolled varchar(100) NOT NULL,
   cohortNameEnrolled varchar(100) NOT NULL,
+  recent int NOT NULL,
   PRIMARY KEY (employeeName, courseNameEnrolled, cohortNameEnrolled),
   foreign key (employeeName) references employee(employeeName),
   foreign key (courseNameEnrolled, cohortNameEnrolled) references cohort(courseName, cohortName)
@@ -73,6 +74,56 @@ CREATE TABLE enrollmentRequest (
   foreign key (courseNameRequest, cohortNameRequest) references cohort(courseName, cohortName),
   foreign key (learnerName) references employee(employeeName)
 );
+
+DROP TABLE IF EXISTS chapter;
+CREATE TABLE chapter (
+  courseName varchar(100) NOT NULL,
+  cohortName varchar(100) NOT NULL,
+  chapterID int NOT NULL,
+  duration int NOT NULL,
+  graded int NOT NULL,
+  PRIMARY KEY (courseName, cohortName, chapterID),
+  foreign key (courseName, cohortName) references cohort(courseName, cohortName)
+);
+
+DROP TABLE IF EXISTS question;
+CREATE TABLE question (
+  courseName varchar(100) NOT NULL,
+  cohortName varchar(100) NOT NULL,
+  chapterID int NOT NULL,
+  questionID int NOT NULL,
+  questionText varchar(300) NOT NULL,
+  PRIMARY KEY (courseName, cohortName, chapterID, questionID),
+  foreign key (courseName, cohortName, chapterID) references chapter(courseName, cohortName, chapterID)
+);
+
+DROP TABLE IF EXISTS options;
+CREATE TABLE options (
+  courseName varchar(100) NOT NULL,
+  cohortName varchar(100) NOT NULL,
+  chapterID int NOT NULL,
+  questionID int NOT NULL,
+  optionID int NOT NULL,
+  optionText varchar(300) NOT NULL,
+  isRight int NOT NULL,
+  PRIMARY KEY (courseName, cohortName, chapterID, questionID, optionID),
+  foreign key (courseName, cohortName, chapterID, questionID) references question(courseName, cohortName, chapterID, questionID)
+);
+
+DROP TABLE IF EXISTS userAttempt;
+CREATE TABLE userAttempt (
+  employeeName varchar(100) not NULL,
+  courseName varchar(100) NOT NULL,
+  cohortName varchar(100) NOT NULL,
+  chapterID int NOT NULL,
+  choiceID int NOT NULL,
+  marks int NOT NULL,
+  checkRight int NOT NULL,
+  PRIMARY KEY (employeeName, courseName, cohortName, chapterID),
+  foreign key (courseName, cohortName, chapterID) references chapter(courseName, cohortName, chapterID),
+  foreign key (employeeName) references employee(employeeName)
+);
+
 
 INSERT INTO employee(employeeName, userName, currentDesignation, department) VALUES
 ('Alice', 'Alice_01', 'Admin', 'HR'),
@@ -121,18 +172,18 @@ INSERT INTO cohort(courseName, cohortName, enrollmentStartDate, enrollmentStartT
 ('Introduction to life', 'G1', '08 Oct 2021', '00:00', '28 Oct 2021', '23:59', '01 Nov 2021', '08:00', '30 Nov 2021', '20:00', 'Charles', '30', 25);
 
 
-INSERT INTO enrollment(employeeName, courseNameEnrolled, cohortNameEnrolled) VALUES
-('Bob','Introduction to python', 'G3'),
-('Madonna','Introduction to python', 'G3'),
-('Adele','Introduction to python', 'G3'),
-('Brandy','Introduction to python', 'G3'),
-('Britney','Introduction to python', 'G3'),
-('Shakira','Introduction to python', 'G3'),
-('Bob','Introduction to life', 'G1'),
-('Madonna','Introduction to life', 'G1'),
-('Adele','Introduction to life', 'G1'),
-('Brandy','Introduction to life', 'G1'),
-('Britney','Introduction to life', 'G1');
+INSERT INTO enrollment(employeeName, courseNameEnrolled, cohortNameEnrolled, recent) VALUES
+('Bob','Introduction to python', 'G3', 1),
+('Madonna','Introduction to python', 'G3', 1),
+('Adele','Introduction to python', 'G3', 1),
+('Brandy','Introduction to python', 'G3', 1),
+('Britney','Introduction to python', 'G3', 1),
+('Shakira','Introduction to python', 'G3', 1),
+('Bob','Introduction to life', 'G1', 1),
+('Madonna','Introduction to life', 'G1', 1),
+('Adele','Introduction to life', 'G1', 1),
+('Brandy','Introduction to life', 'G1', 1),
+('Britney','Introduction to life', 'G1', 1);
 
 INSERT INTO badges(employeeName, badges, cohortName) VALUES
 ('Teller', 'Introduction to life', 'G0'),
@@ -142,3 +193,19 @@ INSERT INTO badges(employeeName, badges, cohortName) VALUES
 
 INSERT INTO enrollmentRequest(courseNameRequest, cohortNameRequest, LearnerName) VALUES
 ('Introduction to life', 'G1', 'Shakira');
+
+INSERt into chapter(courseName, cohortName, chapterID, duration, graded) VALUES
+('Introduction to life','G1', 1, 60, 0),
+('Introduction to life','G1', 2, 60, 0),
+('Introduction to life','G1', 3, 60, 0),
+('Introduction to life','G1', 4, 60, 0),
+('Introduction to life','G1', 5, 60, 0),
+('Introduction to life','G1', -1, 60, 1);
+
+
+
+
+
+
+
+
