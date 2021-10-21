@@ -130,6 +130,8 @@ class cohort(db.Model):
     def get_slotLeft(self):
         return self.slotLeft
 
+    def get_trainerName(self):
+        return self.trainerName
 
 class badges(db.Model):
     __tablename__ = 'badges'
@@ -672,7 +674,7 @@ def setEnrollmentPeriod(courseName,cohortName, enrollmentStartDate, enrollmentSt
         }
     ), 404
 
-#Retrieve list of qualified learners
+# Retrieve list of qualified learners
 @app.route("/retrieveQualifiedLearners/<string:courseName>/<string:cohortName>")
 def retrieveQualifiedLearners(courseName,cohortName):
 
@@ -705,6 +707,14 @@ def retrieveQualifiedLearners(courseName,cohortName):
             learner = element.get_employeeName()
             enrolled_learners.append(learner)        
 
+        # list of trainers who are teaching the course
+        trainers = []
+        trainers_result = cohort.query.filter_by(courseName=courseName)
+
+        for element in trainers_result:
+            trainer = element.get_trainerName()
+            trainers.append(trainer)
+
         remove_list = set()
         
         for learner in learners:
@@ -725,6 +735,10 @@ def retrieveQualifiedLearners(courseName,cohortName):
             
             # Enrolled
             if learner in enrolled_learners:
+                remove_list.add(learner)
+
+            # Is a trainer
+            if learner in trainers:
                 remove_list.add(learner)
         
         for learner in remove_list:
