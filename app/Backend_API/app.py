@@ -1,6 +1,7 @@
 from flask import Flask, json, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from sqlalchemy.orm import relationship
 
 app = Flask(__name__)
 
@@ -12,7 +13,6 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
 db = SQLAlchemy(app)
 CORS(app)
-
 
 class course(db.Model):
     __tablename__ = 'course'
@@ -68,7 +68,7 @@ class employee(db.Model):
 class cohort(db.Model):
     __tablename__ = 'cohort'
 
-    courseName = db.Column(db.String(100), primary_key=True)
+    courseName = db.Column(db.String(100), db.ForeignKey(course.courseName), primary_key=True)
     cohortName = db.Column(db.String(100), primary_key=True)
     enrollmentStartDate = db.Column(db.String(30), nullable=False)
     enrollmentStartTime = db.Column(db.String(30), nullable=False)
@@ -97,22 +97,16 @@ class cohort(db.Model):
         self.cohortSize = cohortSize
         self.slotLeft = slotLeft
 
-    def get_cohort_info(self):
-        return {
-            'courseName': self.courseName,
-            'cohortName': self.cohortName,
-            'enrollmentStartDate': self.enrollmentStartDate,
-            'enrollmentStartTime': self.enrollmentStartTime,
-            'enrollmentEndDate': self.enrollmentEndDate,
-            'enrollmentEndTime': self.enrollmentEndTime,
-            'cohortStartDate': self.cohortStartDate,
-            'cohortStartTime': self.cohortStartTime,
-            'cohortEndDate': self.cohortEndDate,
-            'cohortEndTime': self.cohortEndTime,
-            'trainerName': self.trainerName,
-            'cohortSize': self.cohortSize,
-            'slotLeft': self.slotLeft
-        }
+    def get_dict(self):
+        """
+        'get_dict' converts the object into a dictionary,
+        in which the keys correspond to database columns
+        """
+        columns = self.__mapper__.column_attrs.keys()
+        result = {}
+        for column in columns:
+            result[column] = getattr(self, column)
+        return result
 
     def get_enrollment_info(self):
         return {
@@ -133,10 +127,19 @@ class cohort(db.Model):
     def get_trainerName(self):
         return self.trainerName
 
+    def reduce_slot(self):
+        self.slotLeft = self.slotLeft - 1
+    
+    def set_enrollment_details(self, enrollmentStartDate, enrollmentStartTime, enrollmentEndDate, enrollmentEndTime):
+        self.enrollmentStartDate = enrollmentStartDate
+        self.enrollmentStartTime = enrollmentStartTime
+        self.enrollmentEndDate = enrollmentEndDate
+        self.enrollmentEndTime = enrollmentEndTime
+
 class badges(db.Model):
     __tablename__ = 'badges'
 
-    employeeName = db.Column(db.String(100), primary_key=True)
+    employeeName = db.Column(db.String(100), db.ForeignKey(employee.employeeName), primary_key=True)
     badges = db.Column(db.String(100), db.ForeignKey(cohort.courseName), nullable=False, primary_key=True)
     cohortName = db.Column(db.String(100), db.ForeignKey(cohort.cohortName),nullable=False, primary_key=True)
 
@@ -153,19 +156,13 @@ class badges(db.Model):
             'badges': self.badges,
             'cohortName': self.cohortName
         }
-
-    def json(self):
-        return {
-            'EmployeeName': self.employeeName,
-            'badges': self.badges,
-            'cohortName': self.cohortName
-        }
+    
 
 
 class enrollment(db.Model):
     __tablename__ = 'enrollment'
 
-    employeeName = db.Column(db.String(100), primary_key=True)
+    employeeName = db.Column(db.String(100), db.ForeignKey(employee.employeeName), primary_key=True)
     courseNameEnrolled = db.Column(db.String(100), db.ForeignKey(cohort.courseName), nullable=False, primary_key=True)
     cohortNameEnrolled = db.Column(db.String(100), db.ForeignKey(cohort.cohortName),nullable=False, primary_key=True)
     recent = db.column(db.Integer)
@@ -198,12 +195,16 @@ class enrollmentRequest(db.Model):
         self.cohortNameRequest = cohortNameRequest
         self.learnerName = learnerName
 
-    def get_request_info(self):
-        return {
-            'courseNameRequest' : self.courseNameRequest,
-            'cohortNameRequest' : self.cohortNameRequest,
-            'learnerName' : self.learnerName
-        }
+    def get_dict(self):
+        """
+        'to_dict' converts the object into a dictionary,
+        in which the keys correspond to database columns
+        """
+        columns = self.__mapper__.column_attrs.keys()
+        result = {}
+        for column in columns:
+            result[column] = getattr(self, column)
+        return result
 
 class chapter(db.Model):
     __tablename__ = 'chapter'
@@ -220,8 +221,8 @@ class chapter(db.Model):
         self.chapterID = chapterID
         self.duration = duration
         self.graded = graded
-        
-    def get_chapter_info(self):
+
+    def get_dict(self):
         """
         'to_dict' converts the object into a dictionary,
         in which the keys correspond to database columns
@@ -232,14 +233,22 @@ class chapter(db.Model):
             result[column] = getattr(self, column)
         return result
 
-class question(db.Model):
+    def update_chapter_data(self, duration, graded):
+        self.duration = duration
+        self.graded = graded
+
+class question(chapter):
     __tablename__ = 'question'
 
-    courseName = db.Column(db.String(100), db.ForeignKey(chapter.courseName), primary_key=True)
-    cohortName = db.Column(db.String(100), db.ForeignKey(chapter.cohortName), primary_key=True)
+    courseName = db.Column(db.String(100), primary_key=True)
+    cohortName = db.Column(db.String(100), primary_key=True)
     chapterID = db.Column(db.Integer, primary_key=True)
     questionID = db.Column(db.Integer, primary_key=True)
     questionText = db.Column(db.String(300), nullable=False)
+
+    __mapper_args__ = {'concrete':True}
+    __table_args__ = (db.ForeignKeyConstraint([courseName, cohortName, chapterID],
+                                           [chapter.courseName, chapter.cohortName, chapter.chapterID]), {})
 
     def __init__(self, courseName, cohortName, chapterID, questionID, questionText):
         self.courseName = courseName
@@ -248,28 +257,21 @@ class question(db.Model):
         self.questionID = questionID
         self.questionText = questionText
 
-    def get_question_info(self):
-        """
-        'to_dict' converts the object into a dictionary,
-        in which the keys correspond to database columns
-        """
-        columns = self.__mapper__.column_attrs.keys()
-        result = {}
-        for column in columns:
-            result[column] = getattr(self, column)
-        return result
-
-class options(db.Model):
+class options(question):
     __tablename__ = 'options'
 
-    courseName = db.Column(db.String(100), db.ForeignKey(question.courseName), primary_key=True)
-    cohortName = db.Column(db.String(100), db.ForeignKey(question.cohortName) , primary_key=True)
-    chapterID = db.Column(db.Integer, db.ForeignKey(question.chapterID), primary_key=True)
-    questionID = db.Column(db.Integer, db.ForeignKey(question.questionID), primary_key=True)
+    courseName = db.Column(db.String(100), primary_key=True)
+    cohortName = db.Column(db.String(100), primary_key=True)
+    chapterID = db.Column(db.Integer, primary_key=True)
+    questionID = db.Column(db.Integer, primary_key=True)
     optionID = db.Column(db.Integer, primary_key=True)
     optionText = db.Column(db.String(300), nullable=False)
     isRight = db.Column(db.Integer, nullable=False)
 
+    __mapper_args__ = {'concrete':True}
+    __table_args__ = (db.ForeignKeyConstraint([courseName, cohortName, chapterID, questionID],
+                                           [question.courseName, question.cohortName, question.chapterID, question.questionID]), {})
+                                           
     def __init__(self, courseName, cohortName, chapterID, questionID, optionID, optionText, isRight):
         self.courseName = courseName
         self.cohortName = cohortName
@@ -278,18 +280,6 @@ class options(db.Model):
         self.optionID = optionID
         self.optionText = optionText
         self.isRight = isRight
-
-    def get_option_info(self):
-        """
-        'to_dict' converts the object into a dictionary,
-        in which the keys correspond to database columns
-        """
-        columns = self.__mapper__.column_attrs.keys()
-        result = {}
-        for column in columns:
-            result[column] = getattr(self, column)
-        return result
-
 
 class userAttempt(db.Model):
     __tablename__ = 'userAttempt'
@@ -393,6 +383,7 @@ def viewBadgesCohort(employeeName):
 
 
 #enrolled courses (learner view)
+# NO OTHER WAY
 @app.route("/viewAllEnrolledCourses/<string:employeeName>")
 def viewAllEnrolledCourses(employeeName):
     result = enrollment.query.filter_by(employeeName=employeeName)
@@ -425,6 +416,7 @@ def viewAllEnrolledCourses(employeeName):
 
 
 #pendin courses (learner view)
+# NO OTHER WAY
 @app.route("/viewAllRequests/<string:learnerName>")
 def viewAllRequests(learnerName):
     result = enrollmentRequest.query.filter_by(learnerName=learnerName)
@@ -432,7 +424,7 @@ def viewAllRequests(learnerName):
     if result:
         output = []
 
-        request_info = [element.get_request_info() for element in result]
+        request_info = [element.get_dict() for element in result]
         
         for element in request_info:
             courseName = element['courseNameRequest']
@@ -456,6 +448,7 @@ def viewAllRequests(learnerName):
     ), 404
 
 #view all requests (admin view)
+# NO OTHER WAY
 @app.route("/adminViewAllRequests")
 def adminViewAllRequests():
     result = enrollmentRequest.query.all()
@@ -463,7 +456,7 @@ def adminViewAllRequests():
     if result:
         output = []
 
-        request_info = [element.get_request_info() for element in result]
+        request_info = [element.get_dict() for element in result]
         
         for element in request_info:
             courseName = element['courseNameRequest']
@@ -543,7 +536,7 @@ def viewAllCohort(courseName):
         return jsonify(
             {
                 "code": 200,
-                "cohorts": [element.get_cohort_info() for element in result]
+                "cohorts": [element.get_dict() for element in result]
             }
         ), 200
 
@@ -567,10 +560,9 @@ def processRequest(learnerName, courseName, cohortName):
         if slotLeft > 0:
             try:
                 # update slot
-                slotLeft -= 1
-                cohortResult.slotLeft = slotLeft
-                db.session.commit()
-                
+                cohortResult.reduce_slot()
+                db.session.commit()   
+
                 # # # delete from request table
                 requests = enrollmentRequest.query.filter_by(learnerName = learnerName, courseNameRequest=courseName)
 
@@ -586,11 +578,10 @@ def processRequest(learnerName, courseName, cohortName):
                         db.session.commit()
 
                 # add into enrollment
-                enrollment_info = enrollment(learnerName, courseName, cohortName)
-
+                enrollment_info = enrollment(learnerName, courseName, cohortName, 1)
                 db.session.add(enrollment_info)
                 db.session.commit()
-                
+
                 return jsonify(
                     {
                         "code": 200,
@@ -645,11 +636,8 @@ def setEnrollmentPeriod(courseName,cohortName, enrollmentStartDate, enrollmentSt
     result = cohort.query.filter_by(courseName=courseName, cohortName=cohortName).first()
     if result:
         try:
-            # update 6 fields
-            result.enrollmentStartDate = enrollmentStartDate
-            result.enrollmentStartTime = enrollmentStartTime
-            result.enrollmentEndDate = enrollmentEndDate
-            result.enrollmentEndTime = enrollmentEndTime
+            # update 4 fields
+            result.set_enrollment_details(enrollmentStartDate, enrollmentStartTime, enrollmentEndDate, enrollmentEndTime)
             db.session.commit()
 
             return jsonify(
@@ -677,11 +665,9 @@ def setEnrollmentPeriod(courseName,cohortName, enrollmentStartDate, enrollmentSt
 # Retrieve list of qualified learners
 @app.route("/retrieveQualifiedLearners/<string:courseName>/<string:cohortName>")
 def retrieveQualifiedLearners(courseName,cohortName):
-
     try:
         # list of learners + badges
         learners = {}
-        
         learners_result = employee.query.all()
 
         for learner in learners_result:
@@ -839,7 +825,7 @@ def getAllChapters(courseName, cohortName):
         return jsonify(
             {
                 "code": 200,
-                "chapters": [element.get_chapter_info() for element in result]
+                "chapters": [element.get_dict() for element in result]
             }
         ), 200
 
@@ -884,9 +870,7 @@ def createNewQuiz():
     chapterID = data['chapterID']
     try:
         chapter_data = chapter.query.filter_by(courseName=courseName, cohortName=cohortName, chapterID=chapterID).first()
-        chapter_data.duration = data['duration']
-        chapter_data.graded = data['graded']
-
+        chapter_data.update_chapter_data(data['duration'], data['graded'])
         db.session.commit()
     
     except:
@@ -942,24 +926,22 @@ def viewQuiz(courseName, cohortName, chapterID):
     try:
         # retreive chapter info
         chapter_info = chapter.query.filter_by(courseName=courseName, cohortName=cohortName,chapterID=chapterID).first()
-        chapter_content = chapter_info.get_chapter_info()
+        chapter_content = chapter_info.get_dict()
         
         question_info = question.query.filter_by(courseName=courseName, cohortName=cohortName,chapterID=chapterID)
         
         chapter_content['questions'] = []
-        print(chapter_content)
+
         # retrieve questions info
         for qn in question_info:
             question_result = {}
 
-            question_content = qn.get_question_info()
+            question_content = qn.get_dict()
             questionID = question_content['questionID']
             qnText = question_content['questionText']
 
             question_result['questionID'] = questionID
-            question_result['qnText'] = qnText
-            
-            print(question_result)
+            question_result['questionText'] = qnText
             
             options_list = []
             option_info = options.query.filter_by(courseName=courseName, cohortName=cohortName, chapterID=chapterID, questionID=questionID)
@@ -967,7 +949,7 @@ def viewQuiz(courseName, cohortName, chapterID):
             for option in option_info:
                 
                 option_result = {}
-                option_content = option.get_option_info()
+                option_content = option.get_dict()
                 
                 optionID = option_content['optionID']
                 optionText = option_content['optionText']
@@ -976,9 +958,9 @@ def viewQuiz(courseName, cohortName, chapterID):
                 option_result['optionID'] = optionID
                 option_result['optionText'] = optionText
                 option_result['isRight'] = isRight
-                print(option_result)
+
                 options_list.append(option_result)
-            # print(option_result)
+
             question_result['optionsList'] = options_list
             chapter_content['questions'].append(question_result)
         
@@ -986,7 +968,7 @@ def viewQuiz(courseName, cohortName, chapterID):
             {
                 "code": 200,
                 "chapter_content" : chapter_content
-                
+
             }
         ), 200
         
