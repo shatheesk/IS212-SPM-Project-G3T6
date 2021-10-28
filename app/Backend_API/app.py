@@ -41,7 +41,6 @@ class course(db.Model):
     def get_prerequisite(self):
         return self.prerequisite.split(',')
 
-
 class employee(db.Model):
     __tablename__ = 'employee'
 
@@ -164,8 +163,8 @@ class enrollment(db.Model):
 
     employeeName = db.Column(db.String(100), db.ForeignKey(employee.employeeName), primary_key=True)
     courseNameEnrolled = db.Column(db.String(100), db.ForeignKey(cohort.courseName), nullable=False, primary_key=True)
-    cohortNameEnrolled = db.Column(db.String(100), db.ForeignKey(cohort.cohortName),nullable=False, primary_key=True)
-    recent = db.column(db.Integer)
+    cohortNameEnrolled = db.Column(db.String(100), db.ForeignKey(cohort.cohortName), nullable=False, primary_key=True)
+    recent = db.Column(db.Integer, nullable=False)
 
     def __init__(self, employeeName, courseNameEnrolled, cohortNameEnrolled, recent):
         self.employeeName = employeeName
