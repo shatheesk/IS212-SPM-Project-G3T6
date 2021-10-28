@@ -51,7 +51,7 @@
         <div class="container">
           <div class="row align-items-end">
             <div class="col-lg-7">
-              <h2 class="mb-4">Admissions</h2>
+              <h2 class="mb-4">Teaching Courses</h2>
             </div>
           </div>
         </div>
@@ -62,7 +62,7 @@
       <div class="container">
         <a href="index.php">Home</a>
         <span class="mx-3 icon-keyboard_arrow_right"></span>
-        <span class="current">Admissions</span>
+        <span class="current">Teaching Courses</span>
       </div>
     </div>
 
@@ -220,7 +220,7 @@
                     <td style="text-align:center">${cohorts[cohort].cohortStartDate} ${cohorts[cohort].cohortStartTime} to ${cohorts[cohort].cohortEndDate} ${cohorts[cohort].cohortEndTime}</td>
                     <td style="text-align:center">${cohorts[cohort].cohortSize - cohorts[cohort].slotLeft}</td>
                     <td style="text-align:center"><a href="#" style="text-decoration:underline" data-toggle="modal" data-target="#classlistModal${index}">Classlist</a></td>
-                    <td style="text-align:center"><a class="btn btn-primary rounded-2 px-4" href="#">Go into Cohort</a></td>
+                    <td style="text-align:center"><a class="btn btn-primary rounded-2 px-4" href="trainer-view-cohort.php?cname=${courses[c].courseName}&cohname=${cohorts[coh].cohortName}">Go into Cohort</a></td>
                   </tr>
                   `
                 }
