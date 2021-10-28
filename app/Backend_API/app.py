@@ -940,13 +940,7 @@ def viewQuiz(courseName, cohortName, chapterID):
             questionText = question_content['questionText']
 
             question_result['questionID'] = questionID
-<<<<<<< Updated upstream
-            question_result['questionText'] = qnText
-=======
             question_result['questionText'] = questionText
-            
-            print(question_result)
->>>>>>> Stashed changes
             
             options_list = []
             option_info = options.query.filter_by(courseName=courseName, cohortName=cohortName, chapterID=chapterID, questionID=questionID)
