@@ -430,7 +430,7 @@ def viewAllRequests(learnerName):
             cohortName = element['cohortNameRequest']
 
             result = cohort.query.filter_by(courseName=courseName, cohortName=cohortName).first()
-            output.append(result.get_cohort_info())
+            output.append(result.get_dict())
             
         return jsonify(
             {
@@ -451,7 +451,7 @@ def viewAllRequests(learnerName):
 @app.route("/adminViewAllRequests")
 def adminViewAllRequests():
     result = enrollmentRequest.query.all()
-
+    print(result)
     if result:
         output = []
 
@@ -463,7 +463,7 @@ def adminViewAllRequests():
             learnerName = element['learnerName']
 
             result = cohort.query.filter_by(courseName=courseName, cohortName=cohortName).first()
-            result = result.get_cohort_info()
+            result = result.get_dict()
             result['learnerName'] = learnerName
             output.append(result)
 
