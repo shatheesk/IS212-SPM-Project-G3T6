@@ -56,6 +56,13 @@
     request3.send();
   }
 
+  function setDateForEnd(index) {
+    console.log(document.getElementById("eEndDte"+index))
+    // $('#eEndDte'+index).datepicker({ 
+    //   startDate: 0
+    // });
+  }
+
 </script>
 
 <!DOCTYPE html>
@@ -299,7 +306,7 @@
                             <div class="modal-body">
                               <div>
                                 <label for="eStdDte">Start Date</label>
-                                <input type="date" id="eStdDte${index}" class="form-control form-control-lg">
+                                <input type="date" id="eStdDte${index}" class="form-control form-control-lg" onchange="setDateForEnd('${index}')">
 
                                 <label for="eStdTime">Start Time</label>
                                 <input type="time" id="eStdTime${index}" class="form-control form-control-lg">

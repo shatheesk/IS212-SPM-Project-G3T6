@@ -201,11 +201,3 @@ INSERt into chapter(courseName, cohortName, chapterID, duration, graded) VALUES
 ('Introduction to life','G1', 4, 60, 0),
 ('Introduction to life','G1', 5, 60, 0),
 ('Introduction to life','G1', -1, 60, 1);
-
-
-
-
-
-
-
-

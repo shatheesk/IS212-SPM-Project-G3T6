@@ -121,6 +121,7 @@
   <script>
     function login(){
       let name = document.getElementById('emp_name').value;
+      name = name.charAt(0).toUpperCase() + name.slice(1);
 
       const request = new XMLHttpRequest();
       url = 'http://192.168.50.80:5000/currentDesignation/' + name
