@@ -315,7 +315,7 @@ def getCurrentDesignation(employeeName):
     return jsonify(
         {
             "code": 404,
-            "message": "Error occured while retrieving employee's designation"
+            "message": "EmployeeName does not exist"
         }
     ), 404
 
@@ -335,7 +335,7 @@ def viewAllCourses():
     return jsonify(
         {
             "code": 404,
-            "message": "Error occured while viewing all courses"
+            "message": "Error occured while retrieving all courses"
         }
     ), 404
 
@@ -355,7 +355,7 @@ def viewAllBadges(employeeName):
     return jsonify(
         {
             "code": 404,
-            "message": "Error occured while retrieving employee's badges"
+            "message": "Invalid employeeName"
         }
     ), 404
 
@@ -376,7 +376,7 @@ def viewBadgesCohort(employeeName):
     return jsonify(
         {
             "code": 404,
-            "message": "Error occured while retrieving employee's badges"
+            "message": "Invalid employeeName"
         }
     ), 404
 
@@ -409,7 +409,7 @@ def viewAllEnrolledCourses(employeeName):
     return jsonify(
         {
             "code": 404,
-            "message": "Error occured while retrieving all enrolled courses"
+            "message": "Invalid employeeName"
         }
     ), 404
 
@@ -442,7 +442,7 @@ def viewAllRequests(learnerName):
     return jsonify(
         {
             "code": 404,
-            "message": "Error occured while retrieving all requests"
+            "message": "Invalid learnerName"
         }
     ), 404
 
@@ -451,7 +451,7 @@ def viewAllRequests(learnerName):
 @app.route("/adminViewAllRequests")
 def adminViewAllRequests():
     result = enrollmentRequest.query.all()
-    print(result)
+
     if result:
         output = []
 
@@ -487,13 +487,13 @@ def adminViewAllRequests():
     return jsonify(
         {
             "code": 404,
-            "message": "Error occured while retrieving all requests"
+            "message": "Error occured while retrieving enrollment requests"
         }
     ), 404
 
 
 #withdraw (learner), reject learner (admin)
-@app.route("/delete/<string:learnerName>/<string:courseNameRequest>/<string:cohortNameRequest>", methods=['DELETE'])
+@app.route("/delete/<string:learnerName>/<string:courseNameRequest>/<string:cohortNameRequest>")
 def delete_request(learnerName, courseNameRequest, cohortNameRequest):
 
     request = enrollmentRequest.query.filter_by(learnerName=learnerName, courseNameRequest=courseNameRequest, cohortNameRequest=cohortNameRequest).first()
@@ -521,7 +521,7 @@ def delete_request(learnerName, courseNameRequest, cohortNameRequest):
     return jsonify(
         {
             "code": 404,
-            "message": "Error occured while deleting enrollment request"
+            "message": "Enrollment request does not exist"
         }
     ), 404
 
@@ -542,13 +542,13 @@ def viewAllCohort(courseName):
     return jsonify(
         {
             "code": 404,
-            "message": "Error occured while retrieving all cohort records."
+            "message": "Invalid courseName"
         }
     ), 404
 
 
 # approve a learner's request (admin view)
-@app.route("/processRequest/<string:learnerName>/<string:courseName>/<string:cohortName>", methods=['DELETE'])
+@app.route("/processRequest/<string:learnerName>/<string:courseName>/<string:cohortName>")
 def processRequest(learnerName, courseName, cohortName):
     result = enrollmentRequest.query.filter_by(learnerName = learnerName, courseNameRequest= courseName, cohortNameRequest=cohortName).first()
 
@@ -599,7 +599,7 @@ def processRequest(learnerName, courseName, cohortName):
     return jsonify(
         {
             "code": 404,
-            "message": "Error occured while processing request."
+            "message": "Enrollment request does not exist."
         }
     ), 404
 
