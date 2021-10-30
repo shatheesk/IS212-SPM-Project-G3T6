@@ -32,7 +32,7 @@
                     True
                 </div>
                 <div class="col" style="margin-top: 5px;">
-                    <input type="radio" name="solution" value="True">
+                    <input type="radio" name="solution" value="True" style="height: 17px; width: 17px; margin-left: 25px;">
                 </div>
             </div>
             <div class="row">
@@ -40,7 +40,7 @@
                     False
                 </div>
                 <div class="col" style="margin-top: 5px;">
-                    <input type="radio" name="solution" value="False">
+                    <input type="radio" name="solution" value="False" style="height: 17px; width: 17px; margin-left: 25px;">
                 </div>
             </div>
             `
@@ -51,10 +51,10 @@
                 <div class="col-lg-6 col-md-6 mb-4">
                     Options:
                 </div>
-                <div class="col-lg-2 col-md-2 mb-4">
+                <div class="col-lg-3 col-md-2 mb-4">
                     Correct?
                 </div>
-                <div class="col-lg-2 col-md-2 mb-4">
+                <div class="col-lg-3 col-md-2 mb-4">
                     <input type="button" value="Add Option" onclick="addOptionMCQ()">
                 </div>
             </div>
@@ -68,20 +68,26 @@
     function addOptionMCQ() {
         code2 = ''
         code2 += `
-        <div class="row">
+        <div class="row" id="optionRow${indexxx}">
             <div class="col-lg-6 col-md-6 mb-4">
                 <input type="text" style="width: 100%;" name="mcqOptionValue" id="${indexxx}" value="">
             </div>
-            <div class="col-lg-2 col-md-2 mb-4" style="margin-top: 10px;">
-                <input type="radio" name="solution" value="${indexxx}">
+            <div class="col-lg-3 col-md-2 mb-4" style="margin-top: 10px;">
+                <input type="radio" name="solution" value="${indexxx}" style="height: 17px; width: 17px; margin-left: 25px;">
             </div>
-            <div class="col-lg-2 col-md-2 mb-4">
+            <div class="col-lg-3 col-md-2 mb-4" style="margin-top: 10px;">
+                <img src="images/svg/x.svg" style="cursor: pointer; height: 17px; width: 17px;" onclick="removeOptionMCQ('${indexxx}')">
             </div>
         </div>
         `
         document.getElementById('questionMode').innerHTML += code2;
         indexxx += 1
     }
+
+    // function removeOptionMCQ(ind) {
+    //     document.getElementById('optionRow' + ind).innerHTML = '';
+    //     indexxx -= 1;
+    // }
 
     function addQuestionCard() {
        
@@ -98,8 +104,8 @@
                             ${question}
                         </div>
                         <div class="col">
-                            <img src="images/svg/trash.svg" width="20" height = "20" style="float:right;" onclick="deleteQuestion('${qnCounter}')">
-                            <img src="images/svg/pencil.svg" width="20" height = "20" style="float:right; margin-right: 15px;" onclick="editQuestion('${qnCounter}')" data-toggle="modal" data-target="#questionModal">
+                            <img src="images/svg/trash.svg" width="20" height = "20" style="float:right; cursor: pointer;" onclick="deleteQuestion('${qnCounter}')">
+                            <img src="images/svg/pencil.svg" width="20" height = "20" style="float:right; margin-right: 20px; cursor: pointer;" onclick="editQuestion('${qnCounter}')" data-toggle="modal" data-target="#questionModal">
                         </div>
                     </div>
                 </div>
@@ -190,8 +196,8 @@
                             ${question}
                         </div>
                         <div class="col">
-                            <img src="images/svg/trash.svg" width="20" height = "20" style="float:right;" onclick="deleteQuestion('${qnCounter}')">
-                            <img src="images/svg/pencil.svg" width="20" height = "20" style="float:right; margin-right: 15px;" onclick="editQuestion('${qnCounter}')" data-toggle="modal" data-target="#questionModal">
+                            <img src="images/svg/trash.svg" width="20" height = "20" style="float:right; cursor: pointer;" onclick="deleteQuestion('${qnCounter}')">
+                            <img src="images/svg/pencil.svg" width="20" height = "20" style="float:right; margin-right: 20px; cursor: pointer;" onclick="editQuestion('${qnCounter}')" data-toggle="modal" data-target="#questionModal">
                         </div>
                     </div>
                 </div>
@@ -256,10 +262,13 @@
     }
 
     function deleteQuestion(qnCounter) {
-        qnCounter = Number(qnCounter)
-        var indexOfDelete = questionsList.findIndex(element => element.questionID === qnCounter);
-        questionsList.splice(indexOfDelete, 1)
-        document.getElementById('card' + qnCounter).innerHTML = '';
+        let confirmAction = confirm("Are you sure to delete this question?");
+        if (confirmAction) {
+            qnCounter = Number(qnCounter)
+            var indexOfDelete = questionsList.findIndex(element => element.questionID === qnCounter);
+            questionsList.splice(indexOfDelete, 1)
+            document.getElementById('card' + qnCounter).innerHTML = '';
+        }
     }
 
     function editQuestion(qnCounter) {
@@ -288,10 +297,10 @@
                 </div>
                 <div class="col" style="margin-top: 5px;">`
             if (question.optionsList[0].isRight == 1){
-                editCode+= `<input type="radio" name="solution" value="True" checked>`
+                editCode+= `<input type="radio" name="solution" value="True" checked style="height: 17px; width: 17px; margin-left: 25px;">`
             }
             else {
-                editCode+= `<input type="radio" name="solution" value="True">`
+                editCode+= `<input type="radio" name="solution" value="True" style="height: 17px; width: 17px; margin-left: 25px;">`
             }
             
             editCode+=`</div>
@@ -302,10 +311,10 @@
                 </div>
                 <div class="col" style="margin-top: 5px;">`
                 if (question.optionsList[1].isRight == 1){
-                    editCode+= `<input type="radio" name="solution" value="False" checked>`
+                    editCode+= `<input type="radio" name="solution" value="False" checked style="height: 17px; width: 17px; margin-left: 25px;">`
                 }
                 else {
-                    editCode+= `<input type="radio" name="solution" value="False">`
+                    editCode+= `<input type="radio" name="solution" value="False" style="height: 17px; width: 17px; margin-left: 25px;">`
                 }
 
             editCode+=`</div>
@@ -339,10 +348,10 @@
                     </div>
                     <div class="col-lg-2 col-md-2 mb-4" style="margin-top: 10px;">`
                 if (option.isRight == 1) {
-                    editCode += `<input type="radio" name="solution" value="${op}" checked>`
+                    editCode += `<input type="radio" name="solution" value="${op}" checked style="height: 17px; width: 17px; margin-left: 25px;">`
                 }
                 else {
-                    editCode += `<input type="radio" name="solution" value="${op}">`
+                    editCode += `<input type="radio" name="solution" value="${op}" style="height: 17px; width: 17px; margin-left: 25px;">`
                 }
                 editCode += `</div>
                     <div class="col-lg-2 col-md-2 mb-4">
@@ -369,8 +378,8 @@
                             ${question}
                         </div>
                         <div class="col">
-                            <img src="images/svg/trash.svg" width="20" height = "20" style="float:right;" onclick="deleteQuestion('${indexOfEdit+1}')">
-                            <img src="images/svg/pencil.svg" width="20" height = "20" style="float:right; margin-right: 15px;" onclick="editQuestion('${indexOfEdit+1}')" data-toggle="modal" data-target="#questionModal">
+                            <img src="images/svg/trash.svg" width="20" height = "20" style="float:right; cursor: pointer;" onclick="deleteQuestion('${indexOfEdit+1}')">
+                            <img src="images/svg/pencil.svg" width="20" height = "20" style="float:right; margin-right: 20px; cursor: pointer;" onclick="editQuestion('${indexOfEdit+1}')" data-toggle="modal" data-target="#questionModal">
                         </div>
                     </div>
                 </div>
@@ -460,8 +469,8 @@
                             ${question}
                         </div>
                         <div class="col">
-                            <img src="images/svg/trash.svg" width="20" height = "20" style="float:right;" onclick="deleteQuestion('${indexOfEdit+1}')">
-                            <img src="images/svg/pencil.svg" width="20" height = "20" style="float:right; margin-right: 15px;" onclick="editQuestion('${indexOfEdit+1}')" data-toggle="modal" data-target="#questionModal">
+                            <img src="images/svg/trash.svg" width="20" height = "20" style="float:right; cursor: pointer;" onclick="deleteQuestion('${indexOfEdit+1}')">
+                            <img src="images/svg/pencil.svg" width="20" height = "20" style="float:right; margin-right: 20px; cursor: pointer;" onclick="editQuestion('${indexOfEdit+1}')" data-toggle="modal" data-target="#questionModal">
                         </div>
                     </div>
                 </div>
@@ -556,13 +565,12 @@
 
         const request1 = new XMLHttpRequest();
         url1 = 'http://192.168.50.80:5000/createNewQuiz'
-
         request1.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200){
                 console.log('success')
-                location.href = `trainer-view-cohort.php?cname=${cname}&cohname=${cohname}`;            
+                console.log(payload)
+                // location.href = `trainer-view-cohort.php?cname=${cname}&cohname=${cohname}`;            
             }
-
             else if (this.status == 404) {
                 console.log('its a 404')
             }
@@ -642,9 +650,14 @@
         </div>
     </div>
 
-    <div class="site-section">
+    <div class="site-section" style="padding-top: 40px;">
         <div class="container">
             
+            <div class="row">
+                <div class="col-lg-12 col-md-12 mb-4">
+                    <button id="addQn" type="button" class="btn btn-secondary" data-toggle="modal" data-target="#questionModal" onclick="addNewQuestion()" style="float:right; width:127px;">Add Question</button>
+                </div>
+            </div>
 
             <div class="row">
                 <div id="questionPopulate">
@@ -654,17 +667,11 @@
             <br>
 
             <div class="row">
-                <div class="col-lg-12 col-md-12 mb-4">
-                    <button id="addQn" type="button" class="btn btn-secondary" data-toggle="modal" data-target="#questionModal" onclick="addNewQuestion()">Add Question</button>
-                </div>
-            </div>
-
-            <div class="row">
                 <div class="col-lg-9 col-md-9 mb-4">
                     <h4>Duration for quiz (in mins):&nbsp;&nbsp;&nbsp; <input type="number" id="duration" min="1" max="999"></h4>
                 </div>
                 <div class="col-lg-3 col-md-3 mb-4">
-                    <h3><button id="condition" type="button" class="btn btn-primary" style="float:right;" onclick="createNow()">Create/Edit</button></h3>
+                    <h3><button id="condition" type="button" class="btn btn-primary" style="float:right; width:127px;" onclick="createNow()">Create/Edit</button></h3>
                 </div>
             </div>
         
@@ -798,8 +805,8 @@
                                 ${questions[qn].questionText}
                             </div>
                             <div class="col">
-                                <img src="images/svg/trash.svg" width="20" height = "20" style="float:right;" onclick="deleteQuestion('${qnCounter}')">
-                                <img src="images/svg/pencil.svg" width="20" height = "20" style="float:right; margin-right: 15px;" onclick="editQuestion('${qnCounter}')" data-toggle="modal" data-target="#questionModal">
+                                <img src="images/svg/trash.svg" width="20" height = "20" style="float:right; cursor: pointer;" onclick="deleteQuestion('${qnCounter}')">
+                                <img src="images/svg/pencil.svg" width="20" height = "20" style="float:right; margin-right: 20px; cursor: pointer;" onclick="editQuestion('${qnCounter}')" data-toggle="modal" data-target="#questionModal">
                             </div>
                         </div>
                     </div>

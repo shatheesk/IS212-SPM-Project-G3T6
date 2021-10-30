@@ -941,7 +941,7 @@ def viewQuiz(courseName, cohortName, chapterID):
 
             question_result['questionID'] = questionID
             question_result['questionText'] = questionText
-            
+                        
             options_list = []
             option_info = options.query.filter_by(courseName=courseName, cohortName=cohortName, chapterID=chapterID, questionID=questionID)
             # retrieve options info

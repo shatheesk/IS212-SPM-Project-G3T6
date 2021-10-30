@@ -18,11 +18,30 @@
       return this.getMonthName().substr(0, 3);
   };
 
-  function setEnrollmentPeriod(courseName, cohortName, index) {
+  function setEnrollmentPeriod(courseName, cohortName, index, cohStdDte) {
     let stddte = document.getElementById('eStdDte'+index).value;
     let stdtime = document.getElementById('eStdTime'+index).value;
     let enddte = document.getElementById('eEndDte'+index).value;
     let endtime = document.getElementById('eEndTime'+index).value;
+    today1 = new Date();
+    toCompare = new Date(stddte)
+    toCompare1 = new Date(cohStdDte)
+    toCompare2 = new Date(enddte)
+
+    if (toCompare < today1) {
+      alert('Start date must be from today and onwards!')
+      return false;
+    }
+
+    if (stddte > enddte) {
+      alert('Start date cannot be after end date!')
+      return false;
+    }
+
+    if (toCompare2 >= toCompare1) {
+      alert('End date cannot be after cohort start date! The cohort start date is ' + cohStdDte)
+      return false;
+    }
 
     let SD_Y = new Date(stddte).getFullYear()
     let SD_M = new Date(stddte).getShortMonthName()
@@ -36,7 +55,7 @@
     let ED_M = new Date(enddte).getShortMonthName()
     let ED_D = new Date(enddte).getDate()
     if (ED_D < 10) {
-      ED_D = '0' + SD_D
+      ED_D = '0' + ED_D
     }
     let ED = ED_D + ' ' + ED_M + ' ' + ED_Y
 
@@ -54,13 +73,6 @@
     }
     request3.open("GET", url3, false);
     request3.send();
-  }
-
-  function setDateForEnd(index) {
-    console.log(document.getElementById("eEndDte"+index))
-    // $('#eEndDte'+index).datepicker({ 
-    //   startDate: 0
-    // });
   }
 
 </script>
@@ -306,7 +318,7 @@
                             <div class="modal-body">
                               <div>
                                 <label for="eStdDte">Start Date</label>
-                                <input type="date" id="eStdDte${index}" class="form-control form-control-lg" onchange="setDateForEnd('${index}')">
+                                <input type="date" id="eStdDte${index}" class="form-control form-control-lg">
 
                                 <label for="eStdTime">Start Time</label>
                                 <input type="time" id="eStdTime${index}" class="form-control form-control-lg">
@@ -320,7 +332,7 @@
                             </div>
                             
                             <div class="modal-footer">
-                              <button type="button" class="btn btn-primary" onClick="setEnrollmentPeriod('${courses[c].courseName}', '${cohorts[coh].cohortName}', '${index}')">Set</button>
+                              <button type="button" class="btn btn-primary" onClick="setEnrollmentPeriod('${courses[c].courseName}', '${cohorts[coh].cohortName}', '${index}', '${cohorts[coh].cohortStartDate}')">Set</button>
                               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             </div>
                           </div>

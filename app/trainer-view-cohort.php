@@ -139,16 +139,32 @@
                     <div class="card-body">`
                     if (chapters[chap].duration > 0) {
                       html += `
-                      <a href="trainer-view-quiz.php?cname=${cname}&cohname=${cohname}&chapter=${chapters[chap].chapterID}" style="text-decoration:underline; padding-right:50px;">View ungraded quiz</a>
-                      <a class="btn btn-primary rounded-2 px-4" href="#" style="padding-right:50px;">Add Chapter Materials</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      <a class="btn btn-success rounded-2 px-4" href="create-edit-quiz.php?cname=${cname}&cohname=${cohname}&chapter=${chapters[chap].chapterID}&action=edit" style="padding-right:50px;">Edit Ungraded Quiz</a>
+                      <div class="row">
+                        <div class="col-lg-4 col-md-4" style="padding-bottom:0px;">
+                          <a href="trainer-view-quiz.php?cname=${cname}&cohname=${cohname}&chapter=${chapters[chap].chapterID}" style="text-decoration:underline; padding-right:50px;">View ungraded quiz</a>
+                        </div>
+                        <div class="col-lg-4 col-md-4" style="padding-bottom:0px;">
+                          <a class="btn btn-primary rounded-2 px-4" href="#" style="padding-right:50px; width:217px;">Add Chapter Materials</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </div>
+                        <div class="col-lg-4 col-md-4" style="padding-bottom:0px;">
+                          <a class="btn btn-info rounded-2 px-4" href="create-edit-quiz.php?cname=${cname}&cohname=${cohname}&chapter=${chapters[chap].chapterID}&action=edit" style="padding-right:50px; width:217px;">Edit Ungraded Quiz</a>
+                        </div>
+                      </div>
                       `
                     }
                     else {
                       html += `
-                      <i style="padding-right:50px;">Ungraded quiz not created yet</i>
-                      <a class="btn btn-primary rounded-2 px-4" href="#" style="padding-right:50px;">Add Chapter Materials</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      <a class="btn btn-success rounded-2 px-4" href="create-edit-quiz.php?cname=${cname}&cohname=${cohname}&chapter=${chapters[chap].chapterID}&action=create" style="padding-right:50px;">Create Ungraded Quiz</a>
+                      <div class="row">
+                        <div class="col-lg-4 col-md-4" style="padding-bottom:0px;">
+                          <i style="padding-right:50px;">Ungraded quiz not created yet</i>
+                        </div>
+                        <div class="col-lg-4 col-md-4" style="padding-bottom:0px;">
+                          <a class="btn btn-primary rounded-2 px-4" href="#" style="padding-right:50px; width:217px;">Add Chapter Materials</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </div>
+                        <div class="col-lg-4 col-md-4" style="padding-bottom:0px;">
+                          <a class="btn btn-info rounded-2 px-4" href="create-edit-quiz.php?cname=${cname}&cohname=${cohname}&chapter=${chapters[chap].chapterID}&action=create" style="padding-right:50px; width:217px;">Create Ungraded Quiz</a>
+                        </div>
+                      </div>
                       `
                     }
                 html+=`</div>
@@ -167,14 +183,26 @@
                     <div class="card-body">`
                     if (chapters[chap].duration > 0) {
                         html += `
-                        <a href="#" style="text-decoration:underline; padding-right:50px;">View final quiz</a>
-                        <a class="btn btn-success rounded-2 px-4" href="create-edit-quiz.php?cname=${cname}&cohname=${cohname}&chapter=${chapters[chap].chapterID}&action=edit" style="padding-right:50px;">Edit Final Quiz</a>
+                        <div class="row">
+                          <div class="col-lg-4 col-md-4" style="padding-bottom:0px;">
+                            <a href="trainer-view-quiz.php?cname=${cname}&cohname=${cohname}&chapter=${chapters[chap].chapterID}" style="text-decoration:underline; padding-right:50px;">View final quiz</a>
+                          </div>
+                          <div class="col-lg-8 col-md-4" style="padding-bottom:0px;">
+                            <a class="btn btn-info rounded-2 px-4" href="create-edit-quiz.php?cname=${cname}&cohname=${cohname}&chapter=${chapters[chap].chapterID}&action=edit" style="padding-right:50px; width:217px;">Edit Final Quiz</a>
+                          </div>
+                        </div>
                         `
                     }
                     else {
                         html += `
-                        <i style="padding-right:50px;">Final quiz not created yet</i>
-                        <a class="btn btn-success rounded-2 px-4" href="create-edit-quiz.php?cname=${cname}&cohname=${cohname}&chapter=${chapters[chap].chapterID}&action=create" style="padding-right:50px;">Create Final Quiz</a>
+                        <div class="row">
+                          <div class="col-lg-4 col-md-4" style="padding-bottom:0px;">
+                            <i style="padding-right:50px;">Final quiz not created yet</i>
+                          </div>
+                          <div class="col-lg-8 col-md-4" style="padding-bottom:0px;">
+                            <a class="btn btn-info rounded-2 px-4" href="create-edit-quiz.php?cname=${cname}&cohname=${cohname}&chapter=${chapters[chap].chapterID}&action=create" style="padding-right:50px; width:217px;">Create Final Quiz</a>
+                          </div>
+                        </div>
                         `
                     }
 
