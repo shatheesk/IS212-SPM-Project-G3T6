@@ -773,7 +773,7 @@ def assignLearners():
 
     try:
         for learners in selectedlearners:
-            enrollment_obj = enrollment(learners, courseName, cohortName)
+            enrollment_obj = enrollment(learners, courseName, cohortName, 1)
             db.session.add(enrollment_obj)
             db.session.commit()
 
