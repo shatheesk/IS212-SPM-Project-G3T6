@@ -20,7 +20,7 @@
     }
     // requests.put(url, params={key: value}, args)
 
-    request6.open("DELETE", url6, false);
+    request6.open("GET", url6, false);
     request6.send();  
   }
 
@@ -37,7 +37,7 @@
         console.log('its a 404')
       }
     }
-    request5.open("DELETE", url5, false);
+    request5.open("GET", url5, false);
     request5.send();
   }
 
@@ -174,8 +174,8 @@
                     <tr>
                       <th scope="col">Cohort</th>
                       <th scope="col">Learner</th>
-                      <th scope="col">Reject</th>
                       <th scope="col">Approve</th>
+                      <th scope="col">Reject</th>
                     </tr>
                   </thead>
                   <tbody>`
@@ -186,8 +186,8 @@
               <tr>
                 <td>${courseRequest[course][cohort].cohortName} </td>
                 <td>${courseRequest[course][cohort].learnerName}</td>
-                <td><button type="button" class="btn btn-danger" onclick="withdraw('${courseRequest[course][index].learnerName}', '${courseRequest[course][index].courseName}', '${courseRequest[course][index].cohortName}');">Reject</button></td>
                 <td><button type="button" class="btn btn-primary" onclick="accept('${courseRequest[course][index].learnerName}', '${courseRequest[course][index].courseName}', '${courseRequest[course][index].cohortName}');">Accept</button></td>
+                <td><button type="button" class="btn btn-danger" onclick="withdraw('${courseRequest[course][index].learnerName}', '${courseRequest[course][index].courseName}', '${courseRequest[course][index].cohortName}');">Reject</button></td>
               </tr>`
             }
 
@@ -222,8 +222,8 @@
                         <tr>
                           <th scope="col">Cohort</th>
                           <th scope="col">Learner</th>
-                          <th scope="col">Reject</th>
                           <th scope="col">Approve</th>
+                          <th scope="col">Reject</th>
                         </tr>
                       </thead>
 
@@ -231,8 +231,8 @@
                         <tr>
                           <td>${courseRequest[course][index].cohortName} </td>
                           <td>${courseRequest[course][index].learnerName}</td>
-                          <td><button type="button" class="btn btn-danger" onclick="withdraw('${courseRequest[course][index].learnerName}', '${courseRequest[course][index].courseName}', '${courseRequest[course][index].cohortName}');">Reject</button></td>
                           <td><button type="button" class="btn btn-primary" onclick="accept('${courseRequest[course][index].learnerName}', '${courseRequest[course][index].courseName}', '${courseRequest[course][index].cohortName}');">Accept</button></td>
+                          <td><button type="button" class="btn btn-danger" onclick="withdraw('${courseRequest[course][index].learnerName}', '${courseRequest[course][index].courseName}', '${courseRequest[course][index].cohortName}');">Reject</button></td>
                         </tr>
                       </tbody>
                     </table>

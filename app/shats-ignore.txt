@@ -22,3 +22,10 @@ eStdDte = document.getElementById('eStdDte').value;
 eStdTime = document.getElementById('eStdTime').value
 eEndDte = document.getElementById('eEndDte').value
 eEndTime = document.getElementById('eEndTime').value
+
+
+
+    // function removeOptionMCQ(ind) {
+    //     document.getElementById('optionRow' + ind).innerHTML = '';
+    //     indexxx -= 1;
+    // }

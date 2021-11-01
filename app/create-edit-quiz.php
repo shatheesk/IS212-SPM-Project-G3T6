@@ -8,12 +8,24 @@
     var cohname = url.searchParams.get("cohname");
     var chapter = url.searchParams.get("chapter");
     var action = url.searchParams.get("action");
+    // var firstTime = 0
     html = ''
-    qnCounter = 1
+    var qnCounter = 1
     questionsList = []
     indexxx = 0
     indexOfEdit = 0;
+    listOfIndex = []
+    listOfIndex_obj = {}
+    editQnCounter;
 
+    // when user clicks on add question
+    function addNewQuestion(){
+        document.getElementById('forCreate').style.display = "block";
+        document.getElementById('forEdit').style.display = "none";
+        document.getElementById('exampleModalLongTitle').innerText = `Create Question`
+    }
+
+    // what happens inside modal when t/f or mcq is selected
     function populateQnMode() {
         var type = document.getElementById("questionType").value;
         code = ''
@@ -65,6 +77,7 @@
         indexxx = 0
     }
 
+    // for MCQ when adding options
     function addOptionMCQ() {
         code2 = ''
         code2 += `
@@ -76,21 +89,27 @@
                 <input type="radio" name="solution" value="${indexxx}" style="height: 17px; width: 17px; margin-left: 25px;">
             </div>
             <div class="col-lg-3 col-md-2 mb-4" style="margin-top: 10px;">
-                <img src="images/svg/x.svg" style="cursor: pointer; height: 17px; width: 17px;" onclick="removeOptionMCQ('${indexxx}')">
+                <img src="images/svg/x.svg" style="cursor: pointer; height: 17px; width: 17px;" onclick="removeOptionMCQ('${indexxx}', '${qnCounter}')">
             </div>
         </div>
         `
+        // console.log(indexxx)
         document.getElementById('questionMode').innerHTML += code2;
+        listOfIndex.push(indexxx)
         indexxx += 1
     }
 
-    // function removeOptionMCQ(ind) {
-    //     document.getElementById('optionRow' + ind).innerHTML = '';
-    //     indexxx -= 1;
-    // }
-
+    // to remove an MCQ option
+    function removeOptionMCQ(ind, qnCounter) {
+        temp = listOfIndex_obj[qnCounter]
+        temp1 = temp.indexOf(Number(ind))
+        listOfIndex.splice(temp1, 1)
+        listOfIndex_obj[qnCounter] = listOfIndex
+        document.getElementById('optionRow'+ind).innerHTML = ''
+    }
+    
+    // adding question as a card on webpage
     function addQuestionCard() {
-       
         code3 = ''
         question = document.getElementById('question').value;
 
@@ -183,6 +202,8 @@
             `
         }
         else {
+            listOfIndex_obj[qnCounter] = listOfIndex 
+
             var elements = document.querySelectorAll('input[name$="mcqOptionValue"]');
             var selectedIndex = document.querySelector('input[name="solution"]:checked').value
             var tempOptions = []
@@ -211,7 +232,7 @@
                         ${element.value}
                     </div>
                     <div class="col">`
-                if (i == selectedIndex){
+                if (i == listOfIndex.indexOf(Number(selectedIndex))){
                     code3 += `<img src="images/svg/check.svg" width="20" height = "20">`
                     isRightOrNot = 1
                 }
@@ -234,7 +255,11 @@
                 "questionText" : question,
                 "optionsList" : tempOptions
             })
+            listOfIndex = []
+            console.log(listOfIndex_obj)
+            indexxx = 0
         }
+
         qnCounter += 1;
         document.getElementById('questionPopulate').innerHTML += code3;
         document.getElementById('question').value = '';
@@ -249,6 +274,9 @@
         document.getElementById('questionMode').innerHTML = '';
     }
 
+
+
+    // reset and clear modal when user closes it
     function closeModal() {
         document.getElementById('question').value = '';
         document.getElementById('qnTypeSelection').innerHTML = `
@@ -261,9 +289,11 @@
         document.getElementById('questionMode').innerHTML = '';
     }
 
+    // delete a question
     function deleteQuestion(qnCounter) {
         let confirmAction = confirm("Are you sure to delete this question?");
         if (confirmAction) {
+            delete listOfIndex_obj[qnCounter];
             qnCounter = Number(qnCounter)
             var indexOfDelete = questionsList.findIndex(element => element.questionID === qnCounter);
             questionsList.splice(indexOfDelete, 1)
@@ -272,12 +302,19 @@
     }
 
     function editQuestion(qnCounter) {
+
         document.getElementById('forCreate').style.display = "none";
         document.getElementById('forEdit').style.display = "block";
-        qnCounter = Number(qnCounter)
-        indexOfEdit = questionsList.findIndex(element => element.questionID === qnCounter);
+        document.getElementById('exampleModalLongTitle').innerText = `Edit Question`
+        editQnCounter = Number(qnCounter)
+        console.log(editQnCounter)
+        console.log(questionsList)
+        indexOfEdit = questionsList.findIndex(element => element.questionID === editQnCounter);
+        console.log(indexOfEdit)
+        
         var question = questionsList[indexOfEdit];
         document.getElementById('question').value = question.questionText
+
         if (question.optionsList[0].optionText == 'True') {
             $('#questionType').val('TorF')
             editCode = ''
@@ -296,11 +333,12 @@
                     True
                 </div>
                 <div class="col" style="margin-top: 5px;">`
+
             if (question.optionsList[0].isRight == 1){
                 editCode+= `<input type="radio" name="solution" value="True" checked style="height: 17px; width: 17px; margin-left: 25px;">`
             }
             else {
-                editCode+= `<input type="radio" name="solution" value="True" style="height: 17px; width: 17px; margin-left: 25px;">`
+                editCode+= `<input type="radio" name="solution" value="True" style="height: 17px; width: 17px; margin-left: 25px;"></div>`
             }
             
             editCode+=`</div>
@@ -324,6 +362,7 @@
             document.getElementById('questionMode').innerHTML = editCode
         }
         else {
+            // indexxx = question.optionsList.length+1
             $('#questionType').val('MCQ')
             editCode = ''
             editCode += `
@@ -331,34 +370,40 @@
                 <div class="col-lg-6 col-md-6 mb-4">
                     Options:
                 </div>
-                <div class="col-lg-2 col-md-2 mb-4">
+                <div class="col-lg-3 col-md-2 mb-4">
                     Correct?
                 </div>
-                <div class="col-lg-2 col-md-2 mb-4">
+                <div class="col-lg-3 col-md-2 mb-4">
                     <input type="button" value="Add Option" onclick="addOptionMCQ()">
                 </div>
             </div>
             `
+            indexxx = 0
+            listOfIndex = []
             for (op in question.optionsList) {
                 option = question.optionsList[op]
                 editCode += `
-                <div class="row">
+                <div class="row" id="optionRow${indexxx}">
                     <div class="col-lg-6 col-md-6 mb-4">
-                        <input type="text" style="width: 100%;" name="mcqOptionValue" id="${op}" value="${option.optionText}">
+                        <input type="text" style="width: 100%;" name="mcqOptionValue" id="${indexxx}" value="${option.optionText}">
                     </div>
-                    <div class="col-lg-2 col-md-2 mb-4" style="margin-top: 10px;">`
+                    <div class="col-lg-3 col-md-2 mb-4" style="margin-top: 10px;">`
                 if (option.isRight == 1) {
-                    editCode += `<input type="radio" name="solution" value="${op}" checked style="height: 17px; width: 17px; margin-left: 25px;">`
+                    editCode += `<input type="radio" name="solution" value="${indexxx}" checked style="height: 17px; width: 17px; margin-left: 25px;">`
                 }
                 else {
-                    editCode += `<input type="radio" name="solution" value="${op}" style="height: 17px; width: 17px; margin-left: 25px;">`
+                    editCode += `<input type="radio" name="solution" value="${indexxx}" style="height: 17px; width: 17px; margin-left: 25px;">`
                 }
                 editCode += `</div>
-                    <div class="col-lg-2 col-md-2 mb-4">
+                    <div class="col-lg-3 col-md-2 mb-4">
+                        <img src="images/svg/x.svg" style="cursor: pointer; height: 17px; width: 17px; margin-top: 10px;" onclick="removeOptionMCQ('${indexxx}', '${question.questionID}')">
                     </div>
                 </div>
                 `
+                listOfIndex.push(indexxx)
+                indexxx+=1
             }
+            console.log(listOfIndex)
             document.getElementById('questionMode').innerHTML = editCode
         }
 
@@ -368,6 +413,7 @@
         var tempQuestionList = []
         editCode3 = ''
         question = document.getElementById('question').value;
+        console.log(editQnCounter)
 
         if (document.getElementById('questionType').value == 'TorF') {
             editCode3 += `
@@ -378,8 +424,8 @@
                             ${question}
                         </div>
                         <div class="col">
-                            <img src="images/svg/trash.svg" width="20" height = "20" style="float:right; cursor: pointer;" onclick="deleteQuestion('${indexOfEdit+1}')">
-                            <img src="images/svg/pencil.svg" width="20" height = "20" style="float:right; margin-right: 20px; cursor: pointer;" onclick="editQuestion('${indexOfEdit+1}')" data-toggle="modal" data-target="#questionModal">
+                            <img src="images/svg/trash.svg" width="20" height = "20" style="float:right; cursor: pointer;" onclick="deleteQuestion('${editQnCounter}')">
+                            <img src="images/svg/pencil.svg" width="20" height = "20" style="float:right; margin-right: 20px; cursor: pointer;" onclick="editQuestion('${editQnCounter}')" data-toggle="modal" data-target="#questionModal">
                         </div>
                     </div>
                 </div>
@@ -400,8 +446,10 @@
                     </div>
                 </div>`
 
+                indexOfEdit = questionsList.findIndex(element => element.questionID === editQnCounter);
+
                 questionsList[indexOfEdit] = {
-                    "questionID" : indexOfEdit+1, 
+                    "questionID" : editQnCounter, 
                     "questionText" : question,
                     "optionsList" : [
                         {
@@ -433,8 +481,10 @@
                     </div>
                 </div>`
 
+                indexOfEdit = questionsList.findIndex(element => element.questionID === editQnCounter);
+
                 questionsList[indexOfEdit] = {
-                    "questionID" : indexOfEdit+1, 
+                    "questionID" : editQnCounter, 
                     "questionText" : question,
                     "optionsList" : [
                         {
@@ -460,6 +510,9 @@
             var elements = document.querySelectorAll('input[name$="mcqOptionValue"]');
             var selectedIndex = document.querySelector('input[name="solution"]:checked').value
             var tempEditOptions = []
+            // console.log('this is a break')
+            // console.log(selectedIndex)
+            // console.log(listOfIndex)
 
             editCode3 += `
             <div class="card">
@@ -469,8 +522,8 @@
                             ${question}
                         </div>
                         <div class="col">
-                            <img src="images/svg/trash.svg" width="20" height = "20" style="float:right; cursor: pointer;" onclick="deleteQuestion('${indexOfEdit+1}')">
-                            <img src="images/svg/pencil.svg" width="20" height = "20" style="float:right; margin-right: 20px; cursor: pointer;" onclick="editQuestion('${indexOfEdit+1}')" data-toggle="modal" data-target="#questionModal">
+                            <img src="images/svg/trash.svg" width="20" height = "20" style="float:right; cursor: pointer;" onclick="deleteQuestion('${editQnCounter}')">
+                            <img src="images/svg/pencil.svg" width="20" height = "20" style="float:right; margin-right: 20px; cursor: pointer;" onclick="editQuestion('${editQnCounter}')" data-toggle="modal" data-target="#questionModal">
                         </div>
                     </div>
                 </div>
@@ -484,7 +537,7 @@
                         ${element.value}
                     </div>
                     <div class="col">`
-                if (i == selectedIndex){
+                if (i == listOfIndex.indexOf(Number(selectedIndex))){
                     editCode3 += `<img src="images/svg/check.svg" width="20" height = "20">`
                     isRightOrNot = 1
                 }
@@ -502,14 +555,18 @@
             editCode3+=`</div>
             </div>
             `
+            indexOfEdit = questionsList.findIndex(element => element.questionID === editQnCounter);
+
             questionsList[indexOfEdit] = {
-                "questionID" : indexOfEdit+1, 
+                "questionID" : editQnCounter, 
                 "questionText" : question,
                 "optionsList" : tempEditOptions
             }
+            console.log(elements)
 
         }
-        document.getElementById('card' + (indexOfEdit+1)).innerHTML = editCode3;
+        console.log('editQuestionCard: ', editQnCounter)
+        document.getElementById('card' + (editQnCounter)).innerHTML = editCode3;
         document.getElementById('question').value = '';
         document.getElementById('qnTypeSelection').innerHTML = `
         <select name="questionType" id="questionType" onchange="populateQnMode()">
@@ -522,11 +579,6 @@
         document.getElementById('questionMode').innerHTML = '';
     }
 
-    function addNewQuestion(){
-        document.getElementById('forCreate').style.display = "block";
-        document.getElementById('forEdit').style.display = "none";
-    }
-    
     function createNow() {
         if (action == 'edit') {
             const request = new XMLHttpRequest();
@@ -569,7 +621,7 @@
             if (this.readyState == 4 && this.status == 200){
                 console.log('success')
                 console.log(payload)
-                // location.href = `trainer-view-cohort.php?cname=${cname}&cohname=${cohname}`;            
+                location.href = `trainer-view-cohort.php?cname=${cname}&cohname=${cohname}`;            
             }
             else if (this.status == 404) {
                 console.log('its a 404')
@@ -792,9 +844,15 @@
             let questions = chapterContent.questions
             html = ''    
             questionsList = questions
-            
+            for(var i = 0; i < questions.length; i++) {
+                console.log(i)
+                questions[i].questionID = i+1
+            }
+            // console.log(questions)
 
             for (qn in questions) {
+                // if (questions[qn])
+                // listOfIndex_obj[qnCounter] = []
                 html += `
                 <div id="card${qnCounter}">
                 <div class="card">
@@ -813,8 +871,13 @@
                     <div class="card-body">`
 
                 optList = questions[qn].optionsList
-
+                console.log(optList)
+                tempArr = []
                 for (option in optList){
+                    if(optList[option].optionText != 'True' && optList[option].optionText != 'False') {
+                        tempArr.push(optList[option].optionID - 1)
+                    }
+
                     html += `
                     <div class="row">
                         <div class="col">
@@ -828,7 +891,11 @@
                         `
                     }
                     html += `</div>`
-                } 
+                }
+                if (tempArr.length != 0){
+                    listOfIndex_obj[qnCounter] = tempArr
+                    tempArr = []
+                }
                 
                 html+=`</div>
                 </div>
@@ -836,6 +903,7 @@
                 `
                 qnCounter+=1
             }
+            console.log(listOfIndex_obj)
             document.getElementById('questionPopulate').innerHTML = html;
             document.getElementById('duration').value = chapterContent.duration;
 

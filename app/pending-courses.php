@@ -17,7 +17,7 @@
         console.log('its a 404')
       }
     }
-    request5.open("DELETE", url5, false);
+    request5.open("GET", url5, false);
     request5.send();
   }
 </script>
