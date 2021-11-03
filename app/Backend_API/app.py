@@ -140,7 +140,7 @@ class badges(db.Model):
 
     employeeName = db.Column(db.String(100), db.ForeignKey(employee.employeeName), primary_key=True)
     badges = db.Column(db.String(100), db.ForeignKey(cohort.courseName), nullable=False, primary_key=True)
-    cohortName = db.Column(db.String(100), db.ForeignKey(cohort.cohortName),nullable=False, primary_key=True)
+    cohortName = db.Column(db.String(100), db.ForeignKey(cohort.cohortName), nullable=False, primary_key=True)
 
     def __init__(self, employeeName, badges, cohortName):
         self.employeeName = employeeName
@@ -284,21 +284,363 @@ class userAttempt(db.Model):
     __tablename__ = 'userAttempt'
 
     employeeName = db.Column(db.String(100), db.ForeignKey(employee.employeeName), primary_key=True)
-    courseName = db.Column(db.String(100), db.ForeignKey(chapter.courseName), primary_key=True)
-    cohortName = db.Column(db.String(100), db.ForeignKey(chapter.cohortName), primary_key=True)
-    chapterID = db.Column(db.Integer, db.ForeignKey(chapter.chapterID), primary_key=True)
+    courseName = db.Column(db.String(100), db.ForeignKey(question.courseName), primary_key=True)
+    cohortName = db.Column(db.String(100), db.ForeignKey(question.cohortName), primary_key=True)
+    chapterID = db.Column(db.Integer, db.ForeignKey(question.chapterID), primary_key=True)
+    questionID = db.Column(db.Integer, db.ForeignKey(question.questionID), primary_key=True)
     choiceID = db.Column(db.Integer, nullable=False)
     marks = db.Column(db.Integer, nullable=False)
-    checkRight = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, employeeName,courseName, cohortName, chapterID, choiceID, marks, checkRight):
-        self.courseName = courseName
+    def __init__(self, employeeName, courseName, cohortName, questionID, chapterID, choiceID, marks):
         self.employeeName = employeeName
+        self.courseName = courseName
         self.cohortName = cohortName
         self.chapterID = chapterID
+        self.questionID = questionID
         self.choiceID = choiceID
         self.marks = marks
-        self.checkRight = checkRight
+
+    def get_dict(self):
+        """
+        'to_dict' converts the object into a dictionary,
+        in which the keys correspond to database columns
+        """
+        columns = self.__mapper__.column_attrs.keys()
+        result = {}
+        for column in columns:
+            result[column] = getattr(self, column)
+        return result
+
+    def get_choice(self):
+        return self.choiceID
+
+class materials(chapter):
+    __tablename__ = 'materials'
+
+    courseName = db.Column(db.String(100), primary_key=True)
+    cohortName = db.Column(db.String(100), primary_key=True)
+    chapterID = db.Column(db.Integer, primary_key=True)
+    materialID = db.Column(db.Integer, primary_key=True)
+    materialURL = db.Column(db.String(100), nullable = False)
+
+    __mapper_args__ = {'concrete':True}
+    __table_args__ = (db.ForeignKeyConstraint([courseName, cohortName, chapterID],
+                                           [chapter.courseName, chapter.cohortName, chapter.chapterID]), {})
+                                           
+    def __init__(self, courseName, cohortName, chapterID, materialID, materialURL):
+        self.courseName = courseName
+        self.cohortName = cohortName
+        self.chapterID = chapterID
+        self.materialID = materialID
+        self.materialURL = materialURL
+
+    def get_url(self):
+        return self.materialURL
+
+    def get_materialID(self):
+        return self.materialID
+
+class materialStatus(materials):
+    __tablename__ = 'materialStatus'
+
+    courseName = db.Column(db.String(100), primary_key=True)
+    cohortName = db.Column(db.String(100), primary_key=True)
+    chapterID = db.Column(db.Integer, primary_key=True)
+    materialID = db.Column(db.Integer, primary_key=True)
+    employeeName = db.Column(db.String(100), db.ForeignKey(employee.employeeName), primary_key=True)
+    done = db.Column(db.Integer, nullable=False)
+
+    __mapper_args__ = {'concrete':True}
+    __table_args__ = (db.ForeignKeyConstraint([courseName, cohortName, chapterID, materialID],
+                                           [materials.courseName, materials.cohortName, materials.chapterID, materials.materialID]), {})
+
+    def __init__(self, courseName, cohortName, chapterID, materialID, employeeName, done):
+        self.courseName = courseName
+        self.cohortName = cohortName
+        self.chapterID = chapterID
+        self.materialID = materialID
+        self.employeeName = employeeName
+        self.done = done
+        
+    def get_status(self):
+        return self.done
+
+    def update_status(self):
+        self.done = 1
+        
+        
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# CF3 start
+@app.route("/viewMaterials/<string:courseName>/<string:cohortName>/<string:employeeName>")
+def viewMaterials(courseName, cohortName, employeeName):
+    try:
+        output = []
+        
+        # retrieve chapter info
+        chapter_info = chapter.query.all()
+        for section in chapter_info:
+            section_result = {}
+
+            section = section.get_dict()
+            chapterID = section['chapterID']
+
+            section_result["chapterID"] = chapterID
+            section_result['materials'] = []
+
+            # retrieve material info
+            materials_info = materials.query.filter_by(courseName=courseName, cohortName=cohortName, chapterID=chapterID)
+
+            completed_all_materials = True
+
+            for material in materials_info:
+                material_result = {}
+
+                materialID = material.get_materialID()
+                materialURL = material.get_url()
+
+                material_result['materialID'] = materialID
+                material_result['materialURL'] = materialURL
+            
+                status = materialStatus.query.filter_by(courseName=courseName, cohortName=cohortName, chapterID=chapterID, materialID=materialID, employeeName=employeeName).first()
+                
+                material_status = status.get_status()
+                material_result['done'] = material_status
+
+                if material_status == 0:
+                    completed_all_materials = False
+                
+                section_result['materials'].append(material_result)
+
+            # default status quiz not done
+            quiz_status = 0
+            
+            # learning materials not completed
+            if completed_all_materials == False:
+                quiz_status = 2
+
+            # check if they attempted the quiz
+            userAttempt_result = userAttempt.query.filter_by(courseName=courseName, cohortName=cohortName, chapterID=chapterID, employeeName=employeeName).first()
+            
+            
+            if userAttempt_result != None:
+                quiz_status = 1
+            
+            section_result['quizStatus'] = quiz_status
+            output.append(section_result)
+
+        return jsonify(
+            {
+                "code": 200,
+                "materials" : output
+
+            }
+        ), 200
+        
+    except:
+        return jsonify(
+            {
+                "code": 404,
+                "message": "Error occurred while retrieving learning materials and status"
+            }
+        ), 404
+
+@app.route("/updateMaterialStatus/<string:courseName>/<string:cohortName>/<string:chapterID>/<string:materialID>/<string:employeeName>")
+def updateMaterialStatus(courseName, cohortName, chapterID, materialID, employeeName):
+    try:
+        # retrieve material status 
+        status = materialStatus.query.filter_by(courseName=courseName, cohortName=cohortName, chapterID=chapterID, materialID=materialID, employeeName=employeeName).first()
+        status.update_status()
+
+        # update material status
+        db.session.commit()
+
+        return jsonify(
+            {
+                "code": 200,
+                "message": "Successfully updated material status."
+            }
+        ), 200
+
+    except:
+        return jsonify(
+            {
+                "code": 404,
+                "message" : "Error occurred while updating material status"
+
+            }
+        ), 404
+
+
+@app.route("/completedCourse/<string:courseName>/<string:cohortName>/<string:employeeName>")
+def completedCourse(courseName, cohortName, employeeName):
+
+    try:
+        # remove from enrollment
+        enrollment_result = enrollment.query.filter_by(employeeName=employeeName, courseNameEnrolled=courseName, cohortNameEnrolled=cohortName).first()
+        db.session.delete(enrollment_result)
+        db.session.commit()
+
+        # add to badges
+        badge = badges(employeeName=employeeName, badges=courseName, cohortName=cohortName)
+        db.session.add(badge)
+        db.session.commit()
+        
+        return jsonify(
+            {
+                "code": 200,
+                "message": "Successfully deleted the enrollment result and added the new badge for employee"
+            }
+        ), 200
+
+    except:
+        return jsonify(
+            {
+                "code": 404,
+                "message": "Error occured while adding new badge"
+            }
+        ), 404
+
+@app.route("/recordAttempt", methods = ['POST'])
+def recordAttempt():
+    data = request.get_json()
+    
+    # retrieve data from post request
+    employeeName = data['employeeName']
+    courseName = data['courseName']
+    cohortName = data['cohortName']
+    chapterID = data['chapterID']
+
+    # retrieve list of questions
+    questions_list = data['questions_list']
+
+    # delete pre existing data
+    existing_attempt_list = userAttempt.query.filter_by(employeeName=employeeName, courseName=courseName, cohortName=cohortName)
+
+    if existing_attempt_list:
+        for existing_attempt in existing_attempt_list:
+            db.session.delete(existing_attempt)
+            db.session.commit()
+
+    try:
+        for question_info in questions_list:
+
+            questionID = question_info['questionID']
+            choiceID = question_info['choiceID']
+
+            userAttemptObject = userAttempt(employeeName=employeeName, courseName=courseName, cohortName=cohortName, questionID=questionID, chapterID=chapterID, choiceID=choiceID, marks=1)
+            db.session.add(userAttemptObject)
+            db.session.commit()
+
+        return jsonify(
+            {
+                "code": 201,
+                "message": "Successfully recorded user attempt"
+            }
+        ), 201
+
+    except:
+        return jsonify(
+            {
+                "code": 404,
+                "message": "Error occured while adding new user attempt"
+            }
+        ), 404
+    
+@app.route("/retrieveQuizResult/<string:courseName>/<string:cohortName>/<string:chapterID>/<string:employeeName>")
+def retrieveQuizResult(courseName, cohortName, chapterID, employeeName):
+    # retrieve all questions
+    try:
+        # retreive chapter info
+        chapter_info = chapter.query.filter_by(courseName=courseName, cohortName=cohortName,chapterID=chapterID).first()
+        chapter_content = chapter_info.get_dict()
+        
+        question_info = question.query.filter_by(courseName=courseName, cohortName=cohortName,chapterID=chapterID)
+        
+        chapter_content['questions'] = []
+
+        marks_obtained = 0
+        marks_total = 0
+        # retrieve questions info
+        for qn in question_info:
+            marks_total += 1
+            question_result = {}
+
+            question_content = qn.get_dict()
+            questionID = question_content['questionID']
+            questionText = question_content['questionText']
+
+            question_result['questionID'] = questionID
+            question_result['questionText'] = questionText
+                        
+            options_list = []
+            option_info = options.query.filter_by(courseName=courseName, cohortName=cohortName, chapterID=chapterID, questionID=questionID)
+
+            # retrieve user choice
+            user_attempt = userAttempt.query.filter_by(courseName=courseName, cohortName=cohortName, chapterID=chapterID, questionID=questionID, employeeName=employeeName).first()
+            
+            user_choice = user_attempt.get_choice()
+            question_result['choiceID'] = user_choice
+
+            correct_option = None
+            # retrieve options info
+            for option in option_info:
+                
+                option_result = {}
+                option_content = option.get_dict()
+                
+                optionID = option_content['optionID']
+                optionText = option_content['optionText']
+                isRight = option_content['isRight']
+
+                if isRight == 1:
+                    correct_option = optionID
+                
+                option_result['optionID'] = optionID
+                option_result['optionText'] = optionText
+                option_result['isRight'] = isRight
+
+                options_list.append(option_result)
+
+            choiceRight = 0
+
+            if correct_option == user_choice:
+                choiceRight = 1
+                marks_obtained += 1
+
+            question_result['choiceRight']  = choiceRight
+            question_result['optionsList'] = options_list
+            chapter_content['questions'].append(question_result)
+        
+        chapter_content['marks'] = marks_obtained
+        chapter_content['total'] = marks_total
+
+        passingTrue = 0
+
+        # check passingTrue
+        percent = round(marks_obtained / marks_total, 3)
+
+        if percent >= 0.85:
+            passingTrue = 1
+
+        chapter_content['passingTrue'] = passingTrue
+        
+        return jsonify(
+            {
+                "code": 200,
+                "quiz_result": chapter_content
+            }
+        ), 200
+
+    except:
+        return jsonify(
+            {
+                "code": 404,
+                "message": "Error occured while retrieving quiz result"
+            }
+        ), 404
+        
+# CF3 END
 
 @app.route("/currentDesignation/<string:employeeName>")
 def getCurrentDesignation(employeeName):
