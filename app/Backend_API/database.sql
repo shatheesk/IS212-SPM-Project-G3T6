@@ -1,5 +1,5 @@
 --
--- Database: `Core feature 1`
+-- Database
 --
 
 drop database if exists cf1;
@@ -120,7 +120,7 @@ CREATE TABLE userAttempt (
   choiceID int NOT NULL,
   marks int NOT NULL,
   PRIMARY KEY (employeeName, courseName, cohortName, chapterID, questionID),
-  foreign key (courseName, cohortName, chapterID, questionID) references question(courseName, cohortName, chapterID, question),
+  foreign key (courseName, cohortName, chapterID, questionID) references question(courseName, cohortName, chapterID, questionID),
   foreign key (employeeName) references employee(employeeName)
 );
 
@@ -133,7 +133,7 @@ CREATE TABLE materials (
   materialID int NOT NULL,
   materialURL varchar(100) NOT NULL,
   PRIMARY KEY (courseName, cohortName, chapterID, materialID),
-  foreign key (courseName, cohortName, chapterID) references chapter(courseName, cohortName, chapterID),
+  foreign key (courseName, cohortName, chapterID) references chapter(courseName, cohortName, chapterID)
 );
 
 DROP TABLE IF EXISTS materialStatus;
