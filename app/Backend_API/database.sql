@@ -116,14 +116,38 @@ CREATE TABLE userAttempt (
   courseName varchar(100) NOT NULL,
   cohortName varchar(100) NOT NULL,
   chapterID int NOT NULL,
+  questionID int NOT NULL,
   choiceID int NOT NULL,
   marks int NOT NULL,
-  checkRight int NOT NULL,
-  PRIMARY KEY (employeeName, courseName, cohortName, chapterID),
-  foreign key (courseName, cohortName, chapterID) references chapter(courseName, cohortName, chapterID),
+  PRIMARY KEY (employeeName, courseName, cohortName, chapterID, questionID),
+  foreign key (courseName, cohortName, chapterID, questionID) references question(courseName, cohortName, chapterID, question),
   foreign key (employeeName) references employee(employeeName)
 );
 
+
+DROP TABLE IF EXISTS materials;
+CREATE TABLE materials (
+  courseName varchar(100) NOT NULL,
+  cohortName varchar(100) NOT NULL,
+  chapterID int NOT NULL,
+  materialID int NOT NULL,
+  materialURL varchar(100) NOT NULL,
+  PRIMARY KEY (courseName, cohortName, chapterID, materialID),
+  foreign key (courseName, cohortName, chapterID) references chapter(courseName, cohortName, chapterID),
+);
+
+DROP TABLE IF EXISTS materialStatus;
+CREATE TABLE materialStatus (
+  courseName varchar(100) NOT NULL,
+  cohortName varchar(100) NOT NULL,
+  chapterID int NOT NULL,
+  materialID int NOT NULL,
+  employeeName varchar(100) NOT NULL,
+  done int NOT NULL,
+  PRIMARY KEY (courseName, cohortName, chapterID, materialID, employeeName),
+  foreign key (courseName, cohortName, chapterID, materialID) references materials(courseName, cohortName, chapterID, materialID),
+  foreign key (employeeName) references employee(employeeName)
+);
 
 INSERT INTO employee(employeeName, userName, currentDesignation, department) VALUES
 ('Alice', 'Alice_01', 'Admin', 'HR'),
@@ -194,10 +218,26 @@ INSERT INTO badges(employeeName, badges, cohortName) VALUES
 INSERT INTO enrollmentRequest(courseNameRequest, cohortNameRequest, LearnerName) VALUES
 ('Introduction to life', 'G1', 'Shakira');
 
-INSERt into chapter(courseName, cohortName, chapterID, duration, graded) VALUES
+INSERT into chapter(courseName, cohortName, chapterID, duration, graded) VALUES
 ('Introduction to life','G1', 1, 60, 0),
 ('Introduction to life','G1', 2, 60, 0),
 ('Introduction to life','G1', 3, 60, 0),
 ('Introduction to life','G1', 4, 60, 0),
 ('Introduction to life','G1', 5, 60, 0),
 ('Introduction to life','G1', -1, 60, 1);
+
+INSERT into materials(courseName, cohortName, chapterID, materialID, materialURL) VALUES
+('Introduction to life','G1', 1, 1, 0),
+('Introduction to life','G1', 1, 2, 0),
+('Introduction to life','G1', 1, 3, 0),
+('Introduction to life','G1', 2, 1, 0),
+('Introduction to life','G1', 2, 2, 0),
+('Introduction to life','G1', -1, 0, 0);
+
+-- INSERT into materialStatus(courseName, cohortName, chapterID, materialID, employee, done) VALUES
+-- ('Introduction to life','G1', 1, 1, 'Bob'),
+-- ('Introduction to life','G1', 2, 2, 'Bob'),
+-- ('Introduction to life','G1', 3, 3, 'Bob'),
+-- ('Introduction to life','G1', 4, 4, 'Bob'),
+-- ('Introduction to life','G1', 5, 5, 'Bob'),
+-- ('Introduction to life','G1', -1, 0, 'Bob');
