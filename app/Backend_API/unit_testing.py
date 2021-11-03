@@ -1,5 +1,5 @@
 import unittest
-from app import course, employee, cohort, badges, enrollment, enrollmentRequest, chapter, question, options
+from app import course, employee, cohort, badges, enrollment, enrollmentRequest, chapter, question, options, materials, materialStatus, userAttempt
 
 class TestCourse(unittest.TestCase):
     def setUp(self):
@@ -276,6 +276,99 @@ class TestOptions(unittest.TestCase):
             "isRight":1
         })
 
+class TestMaterials(unittest.TestCase):
+    def setUp(self):
+        self.m1 = materials(
+            courseName="Introduction to life",
+            cohortName="G1",
+            chapterID=1,
+            materialID=1,
+            materialURL= "abcd"
+        )
 
+    def tearDown(self):
+        self.m1 = None
+
+    def test_get_dict(self):
+        self.assertEqual(self.m1.get_dict(), {
+            "courseName":"Introduction to life",
+            "cohortName":"G1",
+            "chapterID":1,
+            "materialID":1,
+            "materialURL":"abcd"
+        })
+
+    def test_get_url(self):
+        self.assertEqual(self.m1.get_url(), "abcd")
+
+    def test_get_materialID(self):
+        self.assertEqual(self.m1.get_materialID(), 1)
+
+class TestmaterialStatus(unittest.TestCase):
+    def setUp(self):
+        self.o1 = materialStatus(
+            courseName="Introduction to life",
+            cohortName="G1",
+            chapterID=1,
+            materialID=1,
+            employeeName='Bob',
+            done = 0
+        )
+
+    def tearDown(self):
+        self.o1 = None
+
+    def test_get_dict(self):
+        self.assertEqual(self.o1.get_dict(), {
+            "courseName":"Introduction to life",
+            "cohortName":"G1",
+            "chapterID":1,
+            "materialID":1,
+            "employeeName":"Bob",
+            "done":0
+        })
+
+    def test_status(self):
+        self.assertEqual(self.o1.get_status(), 0)
+
+    def test_update_status(self):
+        # initial status
+        self.assertEqual(self.o1.get_status(), 0)
+
+        # update status
+        self.o1.update_status()
+
+        # check status update
+        self.assertEqual(self.o1.get_status(), 1)
+
+class TestuserAttempt(unittest.TestCase):
+    def setUp(self):
+        self.m1 = userAttempt(
+            employeeName = "Bob",
+            courseName="Introduction to life",
+            cohortName="G1",
+            chapterID= 1,
+            questionID= 1,
+            choiceID= 1,
+            marks = 1
+        )
+
+    def tearDown(self):
+        self.m1 = None
+
+    def test_get_dict(self):
+        self.assertEqual(self.m1.get_dict(), {
+            "employeeName" : "Bob",
+            "courseName":"Introduction to life",
+            "cohortName":"G1",
+            "chapterID":1,
+            "questionID":1,
+            "choiceID": 1,
+            "marks": 1
+        })
+
+    def test_get_choiceID(self):
+        self.assertEqual(self.m1.get_choice(), 1)
+        
 if __name__ == "__main__":
     unittest.main()
