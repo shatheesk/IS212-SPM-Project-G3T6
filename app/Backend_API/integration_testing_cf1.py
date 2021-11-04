@@ -491,8 +491,7 @@ class TestAdminViewAllRequests(TestApp):
         enrollmentRequest2 = enrollmentRequest(courseNameRequest="Introduction to flask", cohortNameRequest="G1", learnerName="Jacob")
         enrollmentRequest3 = enrollmentRequest(courseNameRequest="Introduction to python", cohortNameRequest="G1", learnerName="Jacob")
         enrollmentRequest4 = enrollmentRequest(courseNameRequest="Introduction to flask", cohortNameRequest="G1", learnerName="Beatrice")
-        enrollmentRequest5 = enrollmentRequest(courseNameRequest="Introduction to python", cohortNameRequest="G1", learnerName="Beatrice")
-        enrollmentRequest6 = enrollmentRequest(courseNameRequest="Introduction to life", cohortNameRequest="G1", learnerName="Beatrice")
+        enrollmentRequest5 = enrollmentRequest(courseNameRequest="Introduction to life", cohortNameRequest="G1", learnerName="Beatrice")
         
         db.session.add(cohort1)
         db.session.add(cohort2)
@@ -502,14 +501,13 @@ class TestAdminViewAllRequests(TestApp):
         db.session.add(enrollmentRequest3)
         db.session.add(enrollmentRequest4)
         db.session.add(enrollmentRequest5)
-        db.session.add(enrollmentRequest6)
 
         db.session.commit()
 
         # send view all enrollment requests request
         response = self.client.get("/adminViewAllRequests",
                                    content_type='application/json')
-
+                                   
         self.assertEqual(response.json, {
             "code": 200,
             "requests": {
@@ -588,21 +586,6 @@ class TestAdminViewAllRequests(TestApp):
                     "enrollmentStartDate": "01 Sep 2021",
                     "enrollmentStartTime": "00:00",
                     "learnerName": "Jacob",
-                    "slotLeft": 25,
-                    "trainerName": "Marcus"
-                }, {
-                    "cohortEndDate": "30 Dec 2021",
-                    "cohortEndTime": "20:00",
-                    "cohortName": "G1",
-                    "cohortSize": 30,
-                    "cohortStartDate": "01 Dec 2021",
-                    "cohortStartTime": "08:00",
-                    "courseName": "Introduction to python",
-                    "enrollmentEndDate": "28 Nov 2021",
-                    "enrollmentEndTime": "23:59",
-                    "enrollmentStartDate": "01 Sep 2021",
-                    "enrollmentStartTime": "00:00",
-                    "learnerName": "Beatrice",
                     "slotLeft": 25,
                     "trainerName": "Marcus"
                 }]
