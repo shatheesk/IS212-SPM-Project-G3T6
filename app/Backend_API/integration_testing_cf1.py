@@ -521,111 +521,21 @@ class TestAdminViewAllRequests(TestApp):
                          cohortSize=30,
                          slotLeft=25)
 
-        cohort2 = cohort(courseName='Introduction to flask',
-                         cohortName="G1",
-                         enrollmentStartDate="01 Sep 2021",
-                         enrollmentStartTime="00:00",
-                         enrollmentEndDate="28 Nov 2021",
-                         enrollmentEndTime="23:59",
-                         cohortStartDate="01 Dec 2021",
-                         cohortStartTime="08:00",
-                         cohortEndDate="30 Dec 2021",
-                         cohortEndTime="20:00",
-                         trainerName="Vera",
-                         cohortSize=30,
-                         slotLeft=25)
-
-        cohort3 = cohort(courseName='Introduction to life',
-                         cohortName="G1",
-                         enrollmentStartDate="01 Sep 2021",
-                         enrollmentStartTime="00:00",
-                         enrollmentEndDate="28 Nov 2021",
-                         enrollmentEndTime="23:59",
-                         cohortStartDate="01 Dec 2021",
-                         cohortStartTime="08:00",
-                         cohortEndDate="30 Dec 2021",
-                         cohortEndTime="20:00",
-                         trainerName="Charles",
-                         cohortSize=30,
-                         slotLeft=25)
-
         # add enrollment request to database
         enrollmentRequest1 = enrollmentRequest(
             courseNameRequest="Introduction to python", cohortNameRequest="G1", learnerName="Shakira")
         enrollmentRequest2 = enrollmentRequest(
             courseNameRequest="Introduction to python", cohortNameRequest="G1", learnerName="Jacob")
-        enrollmentRequest3 = enrollmentRequest(
-            courseNameRequest="Introduction to flask", cohortNameRequest="G1", learnerName="Jacob")
-        enrollmentRequest4 = enrollmentRequest(
-            courseNameRequest="Introduction to flask", cohortNameRequest="G1", learnerName="Beatrice")
-        enrollmentRequest5 = enrollmentRequest(
-            courseNameRequest="Introduction to life", cohortNameRequest="G1", learnerName="Beatrice")
 
         db.session.add(cohort1)
-        db.session.add(cohort2)
-        db.session.add(cohort3)
         db.session.add(enrollmentRequest1)
         db.session.add(enrollmentRequest2)
-        db.session.add(enrollmentRequest3)
-        db.session.add(enrollmentRequest4)
-        db.session.add(enrollmentRequest5)
 
         db.session.commit()
 
         # send view all enrollment requests request
         response = self.client.get("/adminViewAllRequests",
                                    content_type='application/json')
-
-        self.assertEqual(response.json['requests']['Introduction to flask'], [{
-                        "cohortEndDate": "30 Dec 2021",
-                        "cohortEndTime": "20:00",
-                        "cohortName": "G1",
-                        "cohortSize": 30,
-                        "cohortStartDate": "01 Dec 2021",
-                        "cohortStartTime": "08:00",
-                        "courseName": "Introduction to flask",
-                        "enrollmentEndDate": "28 Nov 2021",
-                        "enrollmentEndTime": "23:59",
-                        "enrollmentStartDate": "01 Sep 2021",
-                        "enrollmentStartTime": "00:00",
-                        "learnerName": "Jacob",
-                        "slotLeft": 25,
-                        "trainerName": "Vera"
-                    }, {
-                        "cohortEndDate": "30 Dec 2021",
-                        "cohortEndTime": "20:00",
-                        "cohortName": "G1",
-                        "cohortSize": 30,
-                        "cohortStartDate": "01 Dec 2021",
-                        "cohortStartTime": "08:00",
-                        "courseName": "Introduction to flask",
-                        "enrollmentEndDate": "28 Nov 2021",
-                        "enrollmentEndTime": "23:59",
-                        "enrollmentStartDate": "01 Sep 2021",
-                        "enrollmentStartTime": "00:00",
-                        "learnerName": "Beatrice",
-                        "slotLeft": 25,
-                        "trainerName": "Vera"
-                    }]
-        )
-
-        self.assertEqual(response.json['requests']['Introduction to life'], [{
-                    "cohortEndDate": "30 Dec 2021",
-                    "cohortEndTime": "20:00",
-                    "cohortName": "G1",
-                    "cohortSize": 30,
-                    "cohortStartDate": "01 Dec 2021",
-                    "cohortStartTime": "08:00",
-                    "courseName": "Introduction to life",
-                    "enrollmentEndDate": "28 Nov 2021",
-                    "enrollmentEndTime": "23:59",
-                    "enrollmentStartDate": "01 Sep 2021",
-                    "enrollmentStartTime": "00:00",
-                    "learnerName": "Beatrice",
-                    "slotLeft": 25,
-                    "trainerName": "Charles"
-                }]
-        )
 
         self.assertEqual(response.json['requests']['Introduction to python'], [{
                     "cohortEndDate": "30 Dec 2021",
