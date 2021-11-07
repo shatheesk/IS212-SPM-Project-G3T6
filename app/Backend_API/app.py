@@ -515,7 +515,7 @@ def recordAttempt():
     questions_list = data['questions_list']
 
     # delete pre existing data
-    existing_attempt_list = userAttempt.query.filter_by(employeeName=employeeName, courseName=courseName, cohortName=cohortName)
+    existing_attempt_list = userAttempt.query.filter_by(employeeName=employeeName, courseName=courseName, cohortName=cohortName, chapterID=chapterID)
 
     if existing_attempt_list:
         for existing_attempt in existing_attempt_list:

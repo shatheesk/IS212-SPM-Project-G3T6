@@ -76,15 +76,13 @@
       </div> 
     
 
-    <!-- <div class="custom-breadcrumns border-bottom">
-      <div class="container">
-        <a href="index.php">Home</a>
-        <span class="mx-3 icon-keyboard_arrow_right"></span>
-        <a href="courses.php">Courses</a>
-        <span class="mx-3 icon-keyboard_arrow_right"></span>
-        <span class="current" id="cTitle1"></span>
+      <div class="custom-breadcrumns border-bottom">
+        <div class="container">
+          <a href="index.php">Home</a>
+          <span class="mx-3 icon-keyboard_arrow_right"></span>
+          <span class="current">Pending Courses</span>
+        </div>
       </div>
-    </div> -->
 
     <div class="site-section">
       <div class="container">

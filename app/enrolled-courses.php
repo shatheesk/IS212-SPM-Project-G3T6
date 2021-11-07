@@ -59,15 +59,13 @@
       </div> 
     
 
-    <!-- <div class="custom-breadcrumns border-bottom">
-      <div class="container">
-        <a href="index.php">Home</a>
-        <span class="mx-3 icon-keyboard_arrow_right"></span>
-        <a href="courses.php">Courses</a>
-        <span class="mx-3 icon-keyboard_arrow_right"></span>
-        <span class="current" id="cTitle1"></span>
+      <div class="custom-breadcrumns border-bottom">
+        <div class="container">
+          <a href="index.php">Home</a>
+          <span class="mx-3 icon-keyboard_arrow_right"></span>
+          <span class="current">Enrolled Courses</span>
+        </div>
       </div>
-    </div> -->
 
     <div class="site-section">
       <div class="container">
@@ -155,7 +153,7 @@
           <td>${enrolledCourses[c].cohortStartDate} ${enrolledCourses[c].cohortStartTime} to ${enrolledCourses[c].cohortEndDate} ${enrolledCourses[c].cohortEndTime}</td>
           <td>${enrolledCourses[c].trainerName}</td>`
           if (today >= compare1){
-            html += `<td><a href="#" class="btn btn-info rounded-2 px-4">View Course Materials</a></td>`
+            html += `<td><a href="learner-view-cohort.php?cname=${enrolledCourses[c].courseName}&cohname=${enrolledCourses[c].cohortName}" class="btn btn-info rounded-2 px-4">View Course Materials</a></td>`
           }
           else {
             html += `<td><i>course not yet started</i></td>`

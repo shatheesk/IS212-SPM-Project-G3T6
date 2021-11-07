@@ -93,7 +93,6 @@
             </div>
         </div>
         `
-        // console.log(indexxx)
         document.getElementById('questionMode').innerHTML += code2;
         listOfIndex.push(indexxx)
         indexxx += 1
@@ -256,7 +255,6 @@
                 "optionsList" : tempOptions
             })
             listOfIndex = []
-            console.log(listOfIndex_obj)
             indexxx = 0
         }
 
@@ -273,8 +271,6 @@
 
         document.getElementById('questionMode').innerHTML = '';
     }
-
-
 
     // reset and clear modal when user closes it
     function closeModal() {
@@ -302,15 +298,11 @@
     }
 
     function editQuestion(qnCounter) {
-
         document.getElementById('forCreate').style.display = "none";
         document.getElementById('forEdit').style.display = "block";
         document.getElementById('exampleModalLongTitle').innerText = `Edit Question`
         editQnCounter = Number(qnCounter)
-        console.log(editQnCounter)
-        console.log(questionsList)
         indexOfEdit = questionsList.findIndex(element => element.questionID === editQnCounter);
-        console.log(indexOfEdit)
         
         var question = questionsList[indexOfEdit];
         document.getElementById('question').value = question.questionText
@@ -403,7 +395,6 @@
                 listOfIndex.push(indexxx)
                 indexxx+=1
             }
-            console.log(listOfIndex)
             document.getElementById('questionMode').innerHTML = editCode
         }
 
@@ -413,7 +404,6 @@
         var tempQuestionList = []
         editCode3 = ''
         question = document.getElementById('question').value;
-        console.log(editQnCounter)
 
         if (document.getElementById('questionType').value == 'TorF') {
             editCode3 += `
@@ -510,9 +500,6 @@
             var elements = document.querySelectorAll('input[name$="mcqOptionValue"]');
             var selectedIndex = document.querySelector('input[name="solution"]:checked').value
             var tempEditOptions = []
-            // console.log('this is a break')
-            // console.log(selectedIndex)
-            // console.log(listOfIndex)
 
             editCode3 += `
             <div class="card">
@@ -562,10 +549,8 @@
                 "questionText" : question,
                 "optionsList" : tempEditOptions
             }
-            console.log(elements)
 
         }
-        console.log('editQuestionCard: ', editQnCounter)
         document.getElementById('card' + (editQnCounter)).innerHTML = editCode3;
         document.getElementById('question').value = '';
         document.getElementById('qnTypeSelection').innerHTML = `
@@ -845,14 +830,11 @@
             html = ''    
             questionsList = questions
             for(var i = 0; i < questions.length; i++) {
-                console.log(i)
                 questions[i].questionID = i+1
             }
-            // console.log(questions)
 
             for (qn in questions) {
-                // if (questions[qn])
-                // listOfIndex_obj[qnCounter] = []
+
                 html += `
                 <div id="card${qnCounter}">
                 <div class="card">
@@ -871,7 +853,6 @@
                     <div class="card-body">`
 
                 optList = questions[qn].optionsList
-                console.log(optList)
                 tempArr = []
                 for (option in optList){
                     if(optList[option].optionText != 'True' && optList[option].optionText != 'False') {
@@ -903,7 +884,6 @@
                 `
                 qnCounter+=1
             }
-            console.log(listOfIndex_obj)
             document.getElementById('questionPopulate').innerHTML = html;
             document.getElementById('duration').value = chapterContent.duration;
 
@@ -923,10 +903,8 @@
     else {
         document.getElementById('condition').innerText = 'Create'
     }
-
   </script>
 
 </body>
-
 
 </html>
