@@ -59,15 +59,13 @@
       </div> 
     
 
-    <!-- <div class="custom-breadcrumns border-bottom">
-      <div class="container">
-        <a href="index.php">Home</a>
-        <span class="mx-3 icon-keyboard_arrow_right"></span>
-        <a href="courses.php">Courses</a>
-        <span class="mx-3 icon-keyboard_arrow_right"></span>
-        <span class="current" id="cTitle1"></span>
+      <div class="custom-breadcrumns border-bottom">
+        <div class="container">
+          <a href="index.php">Home</a>
+          <span class="mx-3 icon-keyboard_arrow_right"></span>
+          <span class="current">Completed Courses</span>
+        </div>
       </div>
-    </div> -->
 
     <div class="site-section">
       <div class="container">
@@ -124,7 +122,7 @@
       if (this.readyState == 4 && this.status == 200){
         let response = JSON.parse(this.responseText);
         let completedCourses = response.badges_cohort
-        console.log(completedCourses)
+        console.log(response)
         html = ''
         html = `
         <h2 class="section-title-underline mb-5">
@@ -145,7 +143,7 @@
             <tr>
             <td>${completedCourses[c].badges}</td>
             <td>${completedCourses[c].cohortName}</td>
-            <td><a href="#" class="btn btn-info rounded-2 px-4">View Course Materials</a></td>
+            <td><a href="learner-view-cohort.php?cname=${completedCourses[c].badges}&cohname=${completedCourses[c].cohortName}" class="btn btn-info rounded-2 px-4">View Course Materials</a></td>
             </tr>
             `
         }

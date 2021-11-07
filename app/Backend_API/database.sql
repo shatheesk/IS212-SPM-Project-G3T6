@@ -232,12 +232,20 @@ INSERT into materials(courseName, cohortName, chapterID, materialID, materialURL
 ('Introduction to life','G1', 1, 3, 0),
 ('Introduction to life','G1', 2, 1, 0),
 ('Introduction to life','G1', 2, 2, 0),
+('Introduction to life','G1', 3, 1, 0),
+('Introduction to life','G1', 4, 1, 0),
+('Introduction to life','G1', 5, 1, 0),
+('Introduction to life','G1', 5, 2, 0),
 ('Introduction to life','G1', -1, 0, 0);
 
--- INSERT into materialStatus(courseName, cohortName, chapterID, materialID, employee, done) VALUES
--- ('Introduction to life','G1', 1, 1, 'Bob'),
--- ('Introduction to life','G1', 2, 2, 'Bob'),
--- ('Introduction to life','G1', 3, 3, 'Bob'),
--- ('Introduction to life','G1', 4, 4, 'Bob'),
--- ('Introduction to life','G1', 5, 5, 'Bob'),
--- ('Introduction to life','G1', -1, 0, 'Bob');
+INSERT into materialStatus(courseName, cohortName, chapterID, materialID, employeeName, done) VALUES
+('Introduction to life','G1', 1, 1, 'Bob', 0),
+('Introduction to life','G1', 1, 2, 'Bob', 0),
+('Introduction to life','G1', 1, 3, 'Bob', 0),
+('Introduction to life','G1', 2, 1, 'Bob', 0),
+('Introduction to life','G1', 2, 2, 'Bob', 0),
+('Introduction to life','G1', 3, 1, 'Bob', 0),
+('Introduction to life','G1', 4, 1, 'Bob', 0),
+('Introduction to life','G1', 5, 1, 'Bob', 0),
+('Introduction to life','G1', 5, 2, 'Bob', 0),
+('Introduction to life','G1', -1, 0, 'Bob', 0);
