@@ -157,7 +157,6 @@ class badges(db.Model):
         }
     
 
-
 class enrollment(db.Model):
     __tablename__ = 'enrollment'
 
@@ -180,6 +179,17 @@ class enrollment(db.Model):
 
     def get_employeeName(self):
         return self.employeeName
+        
+    def get_dict(self):
+        """
+        'to_dict' converts the object into a dictionary,
+        in which the keys correspond to database columns
+        """
+        columns = self.__mapper__.column_attrs.keys()
+        result = {}
+        for column in columns:
+            result[column] = getattr(self, column)
+        return result
 
 
 class enrollmentRequest(db.Model):
@@ -515,7 +525,7 @@ def recordAttempt():
     questions_list = data['questions_list']
 
     # delete pre existing data
-    existing_attempt_list = userAttempt.query.filter_by(employeeName=employeeName, courseName=courseName, cohortName=cohortName)
+    existing_attempt_list = userAttempt.query.filter_by(employeeName=employeeName, courseName=courseName, cohortName=cohortName, chapterID=chapterID)
 
     if existing_attempt_list:
         for existing_attempt in existing_attempt_list:
@@ -888,7 +898,6 @@ def viewAllCohort(courseName):
         }
     ), 404
 
-
 # approve a learner's request (admin view)
 @app.route("/processRequest/<string:learnerName>/<string:courseName>/<string:cohortName>")
 def processRequest(learnerName, courseName, cohortName):
@@ -922,6 +931,20 @@ def processRequest(learnerName, courseName, cohortName):
                 enrollment_info = enrollment(learnerName, courseName, cohortName, 1)
                 db.session.add(enrollment_info)
                 db.session.commit()
+                
+                # retrieve all learning materials
+                material_list = materials.query.filter_by(courseName=courseName, cohortName=cohortName)
+
+                for material in material_list:
+                    material_result = material.get_dict()
+                    del material_result['materialURL']
+                    material_result['done'] = 0
+                    material_result['employeeName'] = learnerName
+
+                    materialStatusObject = materialStatus(**material_result)
+
+                    db.session.add(materialStatusObject)
+                    db.session.commit()
 
                 return jsonify(
                     {
@@ -1119,10 +1142,24 @@ def assignLearners():
             db.session.add(enrollment_obj)
             db.session.commit()
 
+            material_list = materials.query.filter_by(courseName=courseName, cohortName=cohortName)
+
+            for material in material_list:
+                material_result = material.get_dict()
+                del material_result['materialURL']
+                material_result['done'] = 0
+                material_result['employeeName'] = learners
+
+                materialStatusObject = materialStatus(**material_result)
+
+                db.session.add(materialStatusObject)
+                db.session.commit()
+
+
         slotLeft -= number_learners
         cohortResult.slotLeft = slotLeft
         db.session.commit()
-
+        
         return jsonify(
             {
                 "code": 201,
@@ -1160,13 +1197,32 @@ def viewAllEnrolledLearners(courseName, cohortName):
 
 @app.route("/getAllChapters/<string:courseName>/<string:cohortName>")
 def getAllChapters(courseName, cohortName):
-    result = chapter.query.filter_by(courseName=courseName, cohortName=cohortName)
+    chapters = chapter.query.filter_by(courseName=courseName, cohortName=cohortName)
+    output = []
+    for section in chapters:
+        section = section.get_dict()
+        section['materials'] = []
 
-    if result:
+        # retrieve material info
+        materials_info = materials.query.filter_by(courseName=section["courseName"], cohortName=section["cohortName"], chapterID=section['chapterID'])
+
+        for material in materials_info:
+            material_result = {}
+
+            materialID = material.get_materialID()
+            materialURL = material.get_url()
+
+            material_result['materialID'] = materialID
+            material_result['materialURL'] = materialURL
+            section['materials'].append(material_result)
+
+        output.append(section)
+            
+    if output:
         return jsonify(
             {
                 "code": 200,
-                "chapters": [element.get_dict() for element in result]
+                "chapters": output
             }
         ), 200
 

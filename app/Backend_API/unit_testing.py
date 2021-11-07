@@ -1,6 +1,7 @@
 import unittest
 from app import course, employee, cohort, badges, enrollment, enrollmentRequest, chapter, question, options, materials, materialStatus, userAttempt
 
+# shi ting
 class TestCourse(unittest.TestCase):
     def setUp(self):
         self.c1 = course(courseName="Big questions", courseImage="images/course_4.jpg", courseDescription="This course introduces learners to the biggest questions in life", prerequisite="Finance and accounting")
@@ -19,6 +20,7 @@ class TestCourse(unittest.TestCase):
     def test_get_prerequisites(self):
         self.assertEqual(self.c1.get_prerequisite(), ["Finance and accounting"])
 
+# vera
 class TestEmployee(unittest.TestCase):
     def setUp(self):
         self.e1 = employee(employeeName="Alice", userName="Alice_01", currentDesignation="Admin", department="HR")
@@ -34,6 +36,7 @@ class TestEmployee(unittest.TestCase):
     def test_get_employeeName(self):
         self.assertEqual(self.e1.get_employeeName(), "Alice")
 
+# shathees
 class TestCohort(unittest.TestCase):
     def setUp(self):
         self.c2 = cohort(courseName='Introduction to life', 
@@ -138,6 +141,7 @@ class TestCohort(unittest.TestCase):
             "slotLeft": 25
         })
 
+# shathees
 class TestBadges(unittest.TestCase):
     def setUp(self):
         self.b1 = badges(employeeName="Alice", badges="Introduction to life", cohortName="G0")
@@ -154,6 +158,7 @@ class TestBadges(unittest.TestCase):
             'cohortName': "G0"
         })
 
+# marcus
 class TestEnrollment(unittest.TestCase):
     def setUp(self):
         self.e2 = enrollment(employeeName="Alice", courseNameEnrolled="Introduction to life", cohortNameEnrolled="G0", recent=1)
@@ -170,6 +175,16 @@ class TestEnrollment(unittest.TestCase):
     def test_get_employeeName(self):
         self.assertEqual(self.e2.get_employeeName(), "Alice")
 
+    def test_get_dict(self):
+        self.assertEqual(self.e2.get_dict(), {
+            'employeeName': 'Alice', 
+            'courseNameEnrolled': 
+            'Introduction to life', 
+            'cohortNameEnrolled': 'G0', 
+            'recent': 1
+        })
+
+# shi ting
 class TestEnrollmentRequest(unittest.TestCase):
     def setUp(self):
         self.e3 = enrollmentRequest(courseNameRequest="Introduction to life", cohortNameRequest="G0", learnerName="Bob")
@@ -184,6 +199,7 @@ class TestEnrollmentRequest(unittest.TestCase):
             "learnerName": "Bob"
         })
 
+# shi ting
 class TestChapter(unittest.TestCase):
     def setUp(self):
         self.c3 = chapter(
@@ -228,6 +244,7 @@ class TestChapter(unittest.TestCase):
             "graded":1
         })
 
+# vera
 class TestQuestion(unittest.TestCase):
     def setUp(self):
         self.q1 = question(
@@ -250,6 +267,7 @@ class TestQuestion(unittest.TestCase):
             "questionText":"What is the meaning of our existence?"
         })
 
+# marcus
 class TestOptions(unittest.TestCase):
     def setUp(self):
         self.o1 = options(
@@ -276,6 +294,7 @@ class TestOptions(unittest.TestCase):
             "isRight":1
         })
 
+# charles
 class TestMaterials(unittest.TestCase):
     def setUp(self):
         self.m1 = materials(
@@ -304,6 +323,7 @@ class TestMaterials(unittest.TestCase):
     def test_get_materialID(self):
         self.assertEqual(self.m1.get_materialID(), 1)
 
+# charles
 class TestmaterialStatus(unittest.TestCase):
     def setUp(self):
         self.o1 = materialStatus(
@@ -341,6 +361,7 @@ class TestmaterialStatus(unittest.TestCase):
         # check status update
         self.assertEqual(self.o1.get_status(), 1)
 
+# charles
 class TestuserAttempt(unittest.TestCase):
     def setUp(self):
         self.m1 = userAttempt(
