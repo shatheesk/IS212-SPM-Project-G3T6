@@ -576,41 +576,40 @@ class TestAdminViewAllRequests(TestApp):
         response = self.client.get("/adminViewAllRequests",
                                    content_type='application/json')
 
-        self.assertDictEqual(response.json, {
-            "code": 200,
-            "requests": {
-                "Introduction to flask": [{
-                    "cohortEndDate": "30 Dec 2021",
-                    "cohortEndTime": "20:00",
-                    "cohortName": "G1",
-                    "cohortSize": 30,
-                    "cohortStartDate": "01 Dec 2021",
-                    "cohortStartTime": "08:00",
-                    "courseName": "Introduction to flask",
-                    "enrollmentEndDate": "28 Nov 2021",
-                    "enrollmentEndTime": "23:59",
-                    "enrollmentStartDate": "01 Sep 2021",
-                    "enrollmentStartTime": "00:00",
-                    "learnerName": "Jacob",
-                    "slotLeft": 25,
-                    "trainerName": "Vera"
-                }, {
-                    "cohortEndDate": "30 Dec 2021",
-                    "cohortEndTime": "20:00",
-                    "cohortName": "G1",
-                    "cohortSize": 30,
-                    "cohortStartDate": "01 Dec 2021",
-                    "cohortStartTime": "08:00",
-                    "courseName": "Introduction to flask",
-                    "enrollmentEndDate": "28 Nov 2021",
-                    "enrollmentEndTime": "23:59",
-                    "enrollmentStartDate": "01 Sep 2021",
-                    "enrollmentStartTime": "00:00",
-                    "learnerName": "Beatrice",
-                    "slotLeft": 25,
-                    "trainerName": "Vera"
-                }],
-                "Introduction to life": [{
+        self.assertEqual(response.json['requests']['Introduction to flask'], [{
+                        "cohortEndDate": "30 Dec 2021",
+                        "cohortEndTime": "20:00",
+                        "cohortName": "G1",
+                        "cohortSize": 30,
+                        "cohortStartDate": "01 Dec 2021",
+                        "cohortStartTime": "08:00",
+                        "courseName": "Introduction to flask",
+                        "enrollmentEndDate": "28 Nov 2021",
+                        "enrollmentEndTime": "23:59",
+                        "enrollmentStartDate": "01 Sep 2021",
+                        "enrollmentStartTime": "00:00",
+                        "learnerName": "Jacob",
+                        "slotLeft": 25,
+                        "trainerName": "Vera"
+                    }, {
+                        "cohortEndDate": "30 Dec 2021",
+                        "cohortEndTime": "20:00",
+                        "cohortName": "G1",
+                        "cohortSize": 30,
+                        "cohortStartDate": "01 Dec 2021",
+                        "cohortStartTime": "08:00",
+                        "courseName": "Introduction to flask",
+                        "enrollmentEndDate": "28 Nov 2021",
+                        "enrollmentEndTime": "23:59",
+                        "enrollmentStartDate": "01 Sep 2021",
+                        "enrollmentStartTime": "00:00",
+                        "learnerName": "Beatrice",
+                        "slotLeft": 25,
+                        "trainerName": "Vera"
+                    }]
+        )
+
+        self.assertEqual(response.json['requests']['Introduction to life'], [{
                     "cohortEndDate": "30 Dec 2021",
                     "cohortEndTime": "20:00",
                     "cohortName": "G1",
@@ -625,8 +624,10 @@ class TestAdminViewAllRequests(TestApp):
                     "learnerName": "Beatrice",
                     "slotLeft": 25,
                     "trainerName": "Charles"
-                }],
-                "Introduction to python": [{
+                }]
+        )
+
+        self.assertEqual(response.json['requests']['Introduction to python'], [{
                     "cohortEndDate": "30 Dec 2021",
                     "cohortEndTime": "20:00",
                     "cohortName": "G1",
@@ -657,8 +658,7 @@ class TestAdminViewAllRequests(TestApp):
                     "slotLeft": 25,
                     "trainerName": "Marcus"
                 }]
-            }
-        })
+        )
 
 
 if __name__ == '__main__':
