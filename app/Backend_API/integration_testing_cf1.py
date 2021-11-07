@@ -576,7 +576,7 @@ class TestAdminViewAllRequests(TestApp):
         response = self.client.get("/adminViewAllRequests",
                                    content_type='application/json')
 
-        self.assertEqual(response.json, {
+        self.assertDictEqual(response.json, {
             "code": 200,
             "requests": {
                 "Introduction to flask": [{
