@@ -1576,8 +1576,8 @@ def deleteQuiz(courseName, cohortName, chapterID):
         return jsonify(
             {
                 "code": 201,
-                "message": "Successfully deleted "\
-                    "all quiz questions and options"
+                "message": "Successfully deleted "
+                "all quiz questions and options"
             }
         ), 201
 
@@ -1585,8 +1585,8 @@ def deleteQuiz(courseName, cohortName, chapterID):
         return jsonify(
             {
                 'code': 404,
-                "message": "Error occurred while deleting "\
-                    "all quiz questions and options"
+                "message": "Error occurred while deleting "
+                "all quiz questions and options"
             }
         ), 404
 
