@@ -456,7 +456,7 @@ class materialStatus(materials):
 
 # CF3 start
 @app.route("/viewMaterials/<string:courseName>/"
-        "<string:cohortName>/<string:employeeName>")
+            "<string:cohortName>/<string:employeeName>")
 def viewMaterials(courseName, cohortName, employeeName):
     try:
         output = []
@@ -542,8 +542,8 @@ def viewMaterials(courseName, cohortName, employeeName):
 
 
 @app.route("/updateMaterialStatus/<string:courseName>/"
-        "<string:cohortName>/<string:chapterID>/"
-        "<string:materialID>/<string:employeeName>")
+            "<string:cohortName>/<string:chapterID>/"
+            "<string:materialID>/<string:employeeName>")
 def updateMaterialStatus(courseName, cohortName, chapterID,
                          materialID, employeeName):
     try:
@@ -574,7 +574,7 @@ def updateMaterialStatus(courseName, cohortName, chapterID,
 
 
 @app.route("/completedCourse/<string:courseName>/"
-        "<string:cohortName>/<string:employeeName>")
+            "<string:cohortName>/<string:employeeName>")
 def completedCourse(courseName, cohortName, employeeName):
 
     try:
@@ -666,8 +666,8 @@ def recordAttempt():
 
 
 @app.route("/retrieveQuizResult/<string:courseName>/"
-        "<string:cohortName>/<string:chapterID>/"
-        "<string:employeeName>")
+            "<string:cohortName>/<string:chapterID>/"
+            "<string:employeeName>")
 def retrieveQuizResult(courseName, cohortName, chapterID, employeeName):
     # retrieve all questions
     try:
@@ -965,7 +965,7 @@ def adminViewAllRequests():
 
 # withdraw (learner), reject learner (admin)
 @app.route("/delete/<string:learnerName>/"
-        "<string:courseNameRequest>/<string:cohortNameRequest>")
+            "<string:courseNameRequest>/<string:cohortNameRequest>")
 def delete_request(learnerName, courseNameRequest, cohortNameRequest):
 
     request = enrollmentRequest.query.filter_by(
@@ -988,8 +988,8 @@ def delete_request(learnerName, courseNameRequest, cohortNameRequest):
             return jsonify(
                 {
                     "code": 404,
-                    "message": "Error occured while"\
-                        "deleting enrollment request"
+                    "message": "Error occured while"
+                    "deleting enrollment request"
                 }
             ), 404
 
@@ -1024,7 +1024,7 @@ def viewAllCohort(courseName):
 
 # approve a learner's request (admin view)
 @app.route("/processRequest/<string:learnerName>/"
-        "<string:courseName>/<string:cohortName>")
+            "<string:courseName>/<string:cohortName>")
 def processRequest(learnerName, courseName, cohortName):
     result = enrollmentRequest.query.filter_by(
             learnerName=learnerName, courseNameRequest=courseName,
@@ -1105,7 +1105,7 @@ def processRequest(learnerName, courseName, cohortName):
 
 # self-enrol request (learner)
 @app.route("/self_enrol_request/<string:courseName>/"
-        "<string:cohortName>/<string:learnerName>")
+            "<string:cohortName>/<string:learnerName>")
 def self_enrol_request(courseName, cohortName, learnerName):
     request = enrollmentRequest(courseName, cohortName, learnerName)
 
@@ -1131,10 +1131,12 @@ def self_enrol_request(courseName, cohortName, learnerName):
 # CF 2
 
 # Set enrollment period for a specific cohort under a course
+
+
 @app.route("/setEnrollmentPeriod/<string:courseName>/"
-        "<string:cohortName>/<string:enrollmentStartDate>/"
-        "<string:enrollmentStartTime>/<string:enrollmentEndDate>/"
-        "<string:enrollmentEndTime>")
+            "<string:cohortName>/<string:enrollmentStartDate>/"
+            "<string:enrollmentStartTime>/<string:enrollmentEndDate>/"
+            "<string:enrollmentEndTime>")
 def setEnrollmentPeriod(courseName, cohortName,
                         enrollmentStartDate, enrollmentStartTime,
                         enrollmentEndDate, enrollmentEndTime):
@@ -1175,7 +1177,7 @@ def setEnrollmentPeriod(courseName, cohortName,
 
 # Retrieve list of qualified learners
 @app.route("/retrieveQualifiedLearners/"
-        "<string:courseName>/<string:cohortName>")
+            "<string:courseName>/<string:cohortName>")
 def retrieveQualifiedLearners(courseName, cohortName):
     try:
         # list of learners + badges
@@ -1489,7 +1491,7 @@ def createNewQuiz():
 
 
 @app.route("/viewQuiz/<string:courseName>/"
-        "<string:cohortName>/<string:chapterID>")
+            "<string:cohortName>/<string:chapterID>")
 def viewQuiz(courseName, cohortName, chapterID):
     try:
         # retreive chapter info
