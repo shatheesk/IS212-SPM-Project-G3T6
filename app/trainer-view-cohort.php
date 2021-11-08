@@ -126,11 +126,13 @@
     request.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200){
         let response = JSON.parse(this.responseText);
+        console.log(response)
         let chapters = response.chapters
         html = ''   
         
         for (chap in chapters) {
             if (chapters[chap].chapterID != -1) {
+                let materials = chapters[chap].materials
                 html += `
                 <div class="card">
                     <div class="card-header">
@@ -151,6 +153,15 @@
                         </div>
                       </div>
                       `
+                      for (m in materials) {
+                        html += `
+                        <div class="row">
+                          <div class = "col">
+                            Chapter Material ${chapters[chap].chapterID}.${materials[m].materialID} 
+                            <a href="${materials[m].materialURL}" target="_blank"><img src="images/svg/eye.svg" height="15px" width="15px" style="margin-left: 8px; margin-bottom: 4px;"></a>
+                          </div>
+                        </div>`
+                      }
                     }
                     else {
                       html += `

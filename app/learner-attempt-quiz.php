@@ -235,12 +235,11 @@
         }
         else {
           counter +=1;
-          // console.log('hey')
+          qnList.push({
+            "questionID": questions[qn].questionID,
+            "choiceID": -1
+          })
         }
-      }
-      if (counter > 0) {
-        alert('Please answer all questions')
-        return;
       }
 
       payload = {

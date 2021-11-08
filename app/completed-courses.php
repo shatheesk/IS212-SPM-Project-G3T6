@@ -143,7 +143,7 @@
             <tr>
             <td>${completedCourses[c].badges}</td>
             <td>${completedCourses[c].cohortName}</td>
-            <td><a href="learner-view-cohort.php?cname=${completedCourses[c].badges}&cohname=${completedCourses[c].cohortName}" class="btn btn-info rounded-2 px-4">View Course Materials</a></td>
+            <td><a href="learner-view-cohort.php?cname=${completedCourses[c].badges}&cohname=${completedCourses[c].cohortName}&from=completed" class="btn btn-info rounded-2 px-4">View Course Materials</a></td>
             </tr>
             `
         }

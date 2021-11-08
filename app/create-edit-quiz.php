@@ -16,7 +16,7 @@
     indexOfEdit = 0;
     listOfIndex = []
     listOfIndex_obj = {}
-    editQnCounter;
+    editQnCounter = 0
 
     // when user clicks on add question
     function addNewQuestion(){

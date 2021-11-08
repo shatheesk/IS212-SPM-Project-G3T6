@@ -8,6 +8,7 @@
     var url = new URL(url_string);
     var cname = url.searchParams.get("cname");
     var cohname = url.searchParams.get("cohname");
+    var from = url.searchParams.get("from");
 
 </script>
 
@@ -66,7 +67,7 @@
       <div class="container">
         <a href="index.php">Home</a>
         <span class="mx-3 icon-keyboard_arrow_right"></span>
-        <a href="enrolled-courses.php">Enrolled Courses</a>
+        <span id="breadCrumb"></span>
         <span class="mx-3 icon-keyboard_arrow_right"></span>
         <span class="current" id="courseAndCohort"></span>
       </div>
@@ -109,6 +110,12 @@
 
   document.getElementById('mainTitle').innerText = cname + ' - ' + cohname
   document.getElementById('courseAndCohort').innerText = cname + ' - ' + cohname
+  if (from == 'enrolled') {
+    document.getElementById('breadCrumb').innerHTML = `<a href="enrolled-courses.php">Enrolled Courses</a>`
+  }
+  else {
+    document.getElementById('breadCrumb').innerHTML = `<a href="completed-courses.php">Completed Courses</a>`
+  }
 
   const request = new XMLHttpRequest();
   url = 'http://192.168.50.80:5000/viewMaterials/' +  cname + '/' + cohname + '/' + emp_name
