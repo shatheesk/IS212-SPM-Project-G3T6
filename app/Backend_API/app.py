@@ -88,9 +88,9 @@ class cohort(db.Model):
     slotLeft = db.Column(db.Integer, nullable=False)
 
     def __init__(self, courseName, cohortName, enrollmentStartDate,
-                enrollmentStartTime, enrollmentEndDate, enrollmentEndTime,
-                cohortStartDate, cohortStartTime, cohortEndDate,
-                cohortEndTime,trainerName, cohortSize, slotLeft):
+                 enrollmentStartTime, enrollmentEndDate, enrollmentEndTime,
+                 cohortStartDate, cohortStartTime, cohortEndDate,
+                 cohortEndTime, trainerName, cohortSize, slotLeft):
         self.courseName = courseName
         self.cohortName = cohortName
         self.enrollmentStartDate = enrollmentStartDate
@@ -157,8 +157,8 @@ class badges(db.Model):
                        db.ForeignKey(cohort.courseName),
                        nullable=False, primary_key=True)
     cohortName = db.Column(db.String(100),
-                            db.ForeignKey(cohort.cohortName),
-                            nullable=False, primary_key=True)
+                           db.ForeignKey(cohort.cohortName),
+                           nullable=False, primary_key=True)
 
     def __init__(self, employeeName, badges, cohortName):
         self.employeeName = employeeName
@@ -290,9 +290,11 @@ class question(chapter):
 
     __mapper_args__ = {'concrete': True}
     __table_args__ = (db.ForeignKeyConstraint(
-                      [courseName, cohortName, chapterID],
-                      [chapter.courseName, chapter.cohortName,
-                      chapter.chapterID]),
+                                              [courseName, cohortName,
+                                               chapterID],
+                                              [chapter.courseName,
+                                               chapter.cohortName,
+                                               chapter.chapterID]),
                       {})
 
     def __init__(self, courseName, cohortName,
@@ -317,9 +319,12 @@ class options(question):
 
     __mapper_args__ = {'concrete': True}
     __table_args__ = (db.ForeignKeyConstraint(
-                      [courseName, cohortName, chapterID, questionID],
-                      [question.courseName, question.cohortName,
-                      question.chapterID, question.questionID]),
+                                              [courseName, cohortName,
+                                               chapterID, questionID],
+                                              [question.courseName,
+                                               question.cohortName,
+                                               question.chapterID,
+                                               question.questionID]),
                       {})
 
     def __init__(self, courseName, cohortName,
@@ -390,9 +395,11 @@ class materials(chapter):
 
     __mapper_args__ = {'concrete': True}
     __table_args__ = (db.ForeignKeyConstraint(
-                      [courseName, cohortName, chapterID],
-                      [chapter.courseName, chapter.cohortName,
-                      chapter.chapterID]),
+                                              [courseName, cohortName,
+                                               chapterID],
+                                              [chapter.courseName,
+                                               chapter.cohortName,
+                                               chapter.chapterID]),
                       {})
 
     def __init__(self, courseName, cohortName, chapterID,
@@ -424,9 +431,12 @@ class materialStatus(materials):
 
     __mapper_args__ = {'concrete': True}
     __table_args__ = (db.ForeignKeyConstraint(
-                      [courseName, cohortName, chapterID, materialID],
-                      [materials.courseName, materials.cohortName,
-                      materials.chapterID, materials.materialID]),
+                                              [courseName, cohortName,
+                                               chapterID, materialID],
+                                              [materials.courseName,
+                                               materials.cohortName,
+                                               materials.chapterID,
+                                               materials.materialID]),
                       {})
 
     def __init__(self, courseName, cohortName, chapterID,
@@ -1445,9 +1455,6 @@ def createNewQuiz():
                                 optionID, optionText, isRight)
                 db.session.add(option_data)
                 db.session.commit()
-
-        # result = question.query.filter_by(
-        #         courseName=courseName, cohortName=cohortName, chapterID=chapterID)
 
         return jsonify(
             {
