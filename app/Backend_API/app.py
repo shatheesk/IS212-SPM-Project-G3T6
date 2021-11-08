@@ -14,6 +14,7 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 db = SQLAlchemy(app)
 CORS(app)
 
+
 class course(db.Model):
     __tablename__ = 'course'
 
@@ -40,6 +41,7 @@ class course(db.Model):
 
     def get_prerequisite(self):
         return self.prerequisite.split(',')
+
 
 class employee(db.Model):
     __tablename__ = 'employee'
@@ -128,12 +130,13 @@ class cohort(db.Model):
 
     def reduce_slot(self):
         self.slotLeft = self.slotLeft - 1
-    
+
     def set_enrollment_details(self, enrollmentStartDate, enrollmentStartTime, enrollmentEndDate, enrollmentEndTime):
         self.enrollmentStartDate = enrollmentStartDate
         self.enrollmentStartTime = enrollmentStartTime
         self.enrollmentEndDate = enrollmentEndDate
         self.enrollmentEndTime = enrollmentEndTime
+
 
 class badges(db.Model):
     __tablename__ = 'badges'
@@ -155,7 +158,7 @@ class badges(db.Model):
             'badges': self.badges,
             'cohortName': self.cohortName
         }
-    
+
 
 class enrollment(db.Model):
     __tablename__ = 'enrollment'
@@ -179,7 +182,7 @@ class enrollment(db.Model):
 
     def get_employeeName(self):
         return self.employeeName
-        
+
     def get_dict(self):
         """
         'to_dict' converts the object into a dictionary,
@@ -215,6 +218,7 @@ class enrollmentRequest(db.Model):
             result[column] = getattr(self, column)
         return result
 
+
 class chapter(db.Model):
     __tablename__ = 'chapter'
 
@@ -246,6 +250,7 @@ class chapter(db.Model):
         self.duration = duration
         self.graded = graded
 
+
 class question(chapter):
     __tablename__ = 'question'
 
@@ -265,6 +270,7 @@ class question(chapter):
         self.chapterID = chapterID
         self.questionID = questionID
         self.questionText = questionText
+
 
 class options(question):
     __tablename__ = 'options'
@@ -289,6 +295,7 @@ class options(question):
         self.optionID = optionID
         self.optionText = optionText
         self.isRight = isRight
+
 
 class userAttempt(db.Model):
     __tablename__ = 'userAttempt'
@@ -324,6 +331,7 @@ class userAttempt(db.Model):
     def get_choice(self):
         return self.choiceID
 
+
 class materials(chapter):
     __tablename__ = 'materials'
 
@@ -336,7 +344,7 @@ class materials(chapter):
     __mapper_args__ = {'concrete':True}
     __table_args__ = (db.ForeignKeyConstraint([courseName, cohortName, chapterID],
                                            [chapter.courseName, chapter.cohortName, chapter.chapterID]), {})
-                                           
+
     def __init__(self, courseName, cohortName, chapterID, materialID, materialURL):
         self.courseName = courseName
         self.cohortName = cohortName
@@ -349,6 +357,7 @@ class materials(chapter):
 
     def get_materialID(self):
         return self.materialID
+
 
 class materialStatus(materials):
     __tablename__ = 'materialStatus'
@@ -371,14 +380,13 @@ class materialStatus(materials):
         self.materialID = materialID
         self.employeeName = employeeName
         self.done = done
-        
+
     def get_status(self):
         return self.done
 
     def update_status(self):
         self.done = 1
-        
-        
+
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # CF3 start
@@ -386,7 +394,6 @@ class materialStatus(materials):
 def viewMaterials(courseName, cohortName, employeeName):
     try:
         output = []
-        
         # retrieve chapter info
         chapter_info = chapter.query.all()
         for section in chapter_info:
@@ -399,7 +406,8 @@ def viewMaterials(courseName, cohortName, employeeName):
             section_result['materials'] = []
 
             # retrieve material info
-            materials_info = materials.query.filter_by(courseName=courseName, cohortName=cohortName, chapterID=chapterID)
+            materials_info = materials.query.filter_by(
+                            courseName=courseName, cohortName=cohortName, chapterID=chapterID)
 
             completed_all_materials = True
 
@@ -411,31 +419,32 @@ def viewMaterials(courseName, cohortName, employeeName):
 
                 material_result['materialID'] = materialID
                 material_result['materialURL'] = materialURL
-            
-                status = materialStatus.query.filter_by(courseName=courseName, cohortName=cohortName, chapterID=chapterID, materialID=materialID, employeeName=employeeName).first()
-                
+
+                status = materialStatus.query.filter_by(courseName=courseName,
+                        cohortName=cohortName, chapterID=chapterID, materialID=materialID,
+                        employeeName=employeeName).first()
+
                 material_status = status.get_status()
                 material_result['done'] = material_status
 
                 if material_status == 0:
                     completed_all_materials = False
-                
+
                 section_result['materials'].append(material_result)
 
             # default status quiz not done
             quiz_status = 0
-            
+
             # learning materials not completed
             if completed_all_materials == False:
                 quiz_status = 2
 
             # check if they attempted the quiz
             userAttempt_result = userAttempt.query.filter_by(courseName=courseName, cohortName=cohortName, chapterID=chapterID, employeeName=employeeName).first()
-            
-            
+
             if userAttempt_result != None:
                 quiz_status = 1
-            
+
             section_result['quizStatus'] = quiz_status
             output.append(section_result)
 
@@ -446,8 +455,8 @@ def viewMaterials(courseName, cohortName, employeeName):
 
             }
         ), 200
-        
-    except:
+
+    except Exception:
         return jsonify(
             {
                 "code": 404,
@@ -455,11 +464,14 @@ def viewMaterials(courseName, cohortName, employeeName):
             }
         ), 404
 
+
 @app.route("/updateMaterialStatus/<string:courseName>/<string:cohortName>/<string:chapterID>/<string:materialID>/<string:employeeName>")
 def updateMaterialStatus(courseName, cohortName, chapterID, materialID, employeeName):
     try:
         # retrieve material status 
-        status = materialStatus.query.filter_by(courseName=courseName, cohortName=cohortName, chapterID=chapterID, materialID=materialID, employeeName=employeeName).first()
+        status = materialStatus.query.filter_by(
+                courseName=courseName, cohortName=cohortName, chapterID=chapterID, 
+                materialID=materialID, employeeName=employeeName).first()
         status.update_status()
 
         # update material status
@@ -472,12 +484,11 @@ def updateMaterialStatus(courseName, cohortName, chapterID, materialID, employee
             }
         ), 200
 
-    except:
+    except Exception:
         return jsonify(
             {
                 "code": 404,
                 "message" : "Error occurred while updating material status"
-
             }
         ), 404
 
@@ -487,15 +498,18 @@ def completedCourse(courseName, cohortName, employeeName):
 
     try:
         # remove from enrollment
-        enrollment_result = enrollment.query.filter_by(employeeName=employeeName, courseNameEnrolled=courseName, cohortNameEnrolled=cohortName).first()
+        enrollment_result = enrollment.query.filter_by(employeeName=employeeName,
+                            courseNameEnrolled=courseName, cohortNameEnrolled=cohortName).first()
         db.session.delete(enrollment_result)
         db.session.commit()
 
         # add to badges
-        badge = badges(employeeName=employeeName, badges=courseName, cohortName=cohortName)
+        badge = badges(employeeName=employeeName,
+                badges=courseName, cohortName=cohortName)
+
         db.session.add(badge)
         db.session.commit()
-        
+
         return jsonify(
             {
                 "code": 200,
@@ -503,7 +517,7 @@ def completedCourse(courseName, cohortName, employeeName):
             }
         ), 200
 
-    except:
+    except Exception:
         return jsonify(
             {
                 "code": 404,
@@ -511,10 +525,10 @@ def completedCourse(courseName, cohortName, employeeName):
             }
         ), 404
 
+
 @app.route("/recordAttempt", methods = ['POST'])
 def recordAttempt():
     data = request.get_json()
-    
     # retrieve data from post request
     employeeName = data['employeeName']
     courseName = data['courseName']
@@ -525,7 +539,9 @@ def recordAttempt():
     questions_list = data['questions_list']
 
     # delete pre existing data
-    existing_attempt_list = userAttempt.query.filter_by(employeeName=employeeName, courseName=courseName, cohortName=cohortName, chapterID=chapterID)
+    existing_attempt_list = userAttempt.query.filter_by(
+                            employeeName=employeeName, courseName=courseName, 
+                            cohortName=cohortName, chapterID=chapterID)
 
     if existing_attempt_list:
         for existing_attempt in existing_attempt_list:
@@ -538,7 +554,9 @@ def recordAttempt():
             questionID = question_info['questionID']
             choiceID = question_info['choiceID']
 
-            userAttemptObject = userAttempt(employeeName=employeeName, courseName=courseName, cohortName=cohortName, questionID=questionID, chapterID=chapterID, choiceID=choiceID, marks=1)
+            userAttemptObject = userAttempt(
+                                employeeName=employeeName, courseName=courseName, cohortName=cohortName,
+                                questionID=questionID, chapterID=chapterID, choiceID=choiceID, marks=1)
             db.session.add(userAttemptObject)
             db.session.commit()
 
@@ -549,28 +567,31 @@ def recordAttempt():
             }
         ), 201
 
-    except:
+    except Exception:
         return jsonify(
             {
                 "code": 404,
                 "message": "Error occured while adding new user attempt"
             }
         ), 404
-    
+
+
 @app.route("/retrieveQuizResult/<string:courseName>/<string:cohortName>/<string:chapterID>/<string:employeeName>")
 def retrieveQuizResult(courseName, cohortName, chapterID, employeeName):
     # retrieve all questions
     try:
         # retreive chapter info
-        chapter_info = chapter.query.filter_by(courseName=courseName, cohortName=cohortName,chapterID=chapterID).first()
-        chapter_content = chapter_info.get_dict()
-        
-        question_info = question.query.filter_by(courseName=courseName, cohortName=cohortName,chapterID=chapterID)
-        
-        chapter_content['questions'] = []
+        chapter_info = chapter.query.filter_by(
+                        courseName=courseName, cohortName=cohortName,
+                        chapterID=chapterID).first()
 
+        chapter_content = chapter_info.get_dict()
+        question_info = question.query.filter_by(
+                        courseName=courseName, cohortName=cohortName, chapterID=chapterID)
+        chapter_content['questions'] = []
         marks_obtained = 0
         marks_total = 0
+
         # retrieve questions info
         for qn in question_info:
             marks_total += 1
@@ -579,33 +600,34 @@ def retrieveQuizResult(courseName, cohortName, chapterID, employeeName):
             question_content = qn.get_dict()
             questionID = question_content['questionID']
             questionText = question_content['questionText']
-
             question_result['questionID'] = questionID
             question_result['questionText'] = questionText
-                        
+
             options_list = []
-            option_info = options.query.filter_by(courseName=courseName, cohortName=cohortName, chapterID=chapterID, questionID=questionID)
+            option_info = options.query.filter_by(
+                        courseName=courseName, cohortName=cohortName,
+                        chapterID=chapterID, questionID=questionID)
 
             # retrieve user choice
-            user_attempt = userAttempt.query.filter_by(courseName=courseName, cohortName=cohortName, chapterID=chapterID, questionID=questionID, employeeName=employeeName).first()
-            
+            user_attempt = userAttempt.query.filter_by(
+                        courseName=courseName, cohortName=cohortName, chapterID=chapterID,
+                        questionID=questionID, employeeName=employeeName).first()
+
             user_choice = user_attempt.get_choice()
             question_result['choiceID'] = user_choice
-
             correct_option = None
+
             # retrieve options info
             for option in option_info:
-                
                 option_result = {}
                 option_content = option.get_dict()
-                
                 optionID = option_content['optionID']
                 optionText = option_content['optionText']
-                isRight = option_content['isRight']
 
+                isRight = option_content['isRight']
                 if isRight == 1:
                     correct_option = optionID
-                
+
                 option_result['optionID'] = optionID
                 option_result['optionText'] = optionText
                 option_result['isRight'] = isRight
@@ -618,10 +640,10 @@ def retrieveQuizResult(courseName, cohortName, chapterID, employeeName):
                 choiceRight = 1
                 marks_obtained += 1
 
-            question_result['choiceRight']  = choiceRight
+            question_result['choiceRight'] = choiceRight
             question_result['optionsList'] = options_list
             chapter_content['questions'].append(question_result)
-        
+
         chapter_content['marks'] = marks_obtained
         chapter_content['total'] = marks_total
 
@@ -634,7 +656,7 @@ def retrieveQuizResult(courseName, cohortName, chapterID, employeeName):
             passingTrue = 1
 
         chapter_content['passingTrue'] = passingTrue
-        
+
         return jsonify(
             {
                 "code": 200,
@@ -642,15 +664,16 @@ def retrieveQuizResult(courseName, cohortName, chapterID, employeeName):
             }
         ), 200
 
-    except:
+    except Exception:
         return jsonify(
             {
                 "code": 404,
                 "message": "Error occured while retrieving quiz result"
             }
         ), 404
-        
+
 # CF3 END
+
 
 @app.route("/currentDesignation/<string:employeeName>")
 def getCurrentDesignation(employeeName):
@@ -712,7 +735,7 @@ def viewAllBadges(employeeName):
     ), 404
 
 
-# completed courses (learner view)    
+# completed courses (learner view)
 @app.route("/viewBadgesCohort/<string:employeeName>")
 def viewBadgesCohort(employeeName):
     result = badges.query.filter_by(employeeName=employeeName)
@@ -721,7 +744,8 @@ def viewBadgesCohort(employeeName):
         return jsonify(
             {
                 "code": 200,
-                "badges_cohort": [element.get_badges_cohort() for element in result]
+                "badges_cohort": [element.get_badges_cohort() 
+                                for element in result]
             }
         ), 200
 
@@ -733,7 +757,7 @@ def viewBadgesCohort(employeeName):
     ), 404
 
 
-#enrolled courses (learner view)
+# enrolled courses (learner view)
 # NO OTHER WAY
 @app.route("/viewAllEnrolledCourses/<string:employeeName>")
 def viewAllEnrolledCourses(employeeName):
@@ -741,16 +765,16 @@ def viewAllEnrolledCourses(employeeName):
 
     if result:
         output = []
-
         enrollment_info = [element.get_enrollment_info() for element in result]
-        
+
         for element in enrollment_info:
             courseName = element['courseNameEnrolled']
             cohortName = element['cohortNameEnrolled']
 
-            result = cohort.query.filter_by(courseName=courseName, cohortName=cohortName).first()
+            result = cohort.query.filter_by(
+                    courseName=courseName, cohortName=cohortName).first()
             output.append(result.get_enrollment_info())
-            
+
         return jsonify(
             {
                 "code": 200,
@@ -766,7 +790,7 @@ def viewAllEnrolledCourses(employeeName):
     ), 404
 
 
-#pendin courses (learner view)
+# pending courses (learner view)
 # NO OTHER WAY
 @app.route("/viewAllRequests/<string:learnerName>")
 def viewAllRequests(learnerName):
@@ -774,16 +798,16 @@ def viewAllRequests(learnerName):
 
     if result:
         output = []
-
         request_info = [element.get_dict() for element in result]
-        
+
         for element in request_info:
             courseName = element['courseNameRequest']
             cohortName = element['cohortNameRequest']
 
-            result = cohort.query.filter_by(courseName=courseName, cohortName=cohortName).first()
+            result = cohort.query.filter_by(
+                    courseName=courseName, cohortName=cohortName).first()
             output.append(result.get_dict())
-            
+
         return jsonify(
             {
                 "code": 200,
@@ -798,7 +822,8 @@ def viewAllRequests(learnerName):
         }
     ), 404
 
-#view all requests (admin view)
+
+# view all requests (admin view)
 # NO OTHER WAY
 @app.route("/adminViewAllRequests")
 def adminViewAllRequests():
@@ -806,15 +831,15 @@ def adminViewAllRequests():
 
     if result:
         output = []
-
         request_info = [element.get_dict() for element in result]
-        
+
         for element in request_info:
             courseName = element['courseNameRequest']
             cohortName = element['cohortNameRequest']
             learnerName = element['learnerName']
 
-            result = cohort.query.filter_by(courseName=courseName, cohortName=cohortName).first()
+            result = cohort.query.filter_by(
+                    courseName=courseName, cohortName=cohortName).first()
             result = result.get_dict()
             result['learnerName'] = learnerName
             output.append(result)
@@ -823,7 +848,7 @@ def adminViewAllRequests():
 
         for element in output:
             courseName = element['courseName']
-            
+
             if courseName not in result:
                 result[courseName] = []
 
@@ -844,17 +869,19 @@ def adminViewAllRequests():
     ), 404
 
 
-#withdraw (learner), reject learner (admin)
+# withdraw (learner), reject learner (admin)
 @app.route("/delete/<string:learnerName>/<string:courseNameRequest>/<string:cohortNameRequest>")
 def delete_request(learnerName, courseNameRequest, cohortNameRequest):
 
-    request = enrollmentRequest.query.filter_by(learnerName=learnerName, courseNameRequest=courseNameRequest, cohortNameRequest=cohortNameRequest).first()
+    request = enrollmentRequest.query.filter_by(
+                learnerName=learnerName, courseNameRequest=courseNameRequest, 
+                cohortNameRequest=cohortNameRequest).first()
 
     if request:
         try:
             db.session.delete(request)
             db.session.commit()
-            
+
             return jsonify(
                 {
                     "code": 200,
@@ -862,7 +889,7 @@ def delete_request(learnerName, courseNameRequest, cohortNameRequest):
                 }
             )
 
-        except:
+        except Exception:
             return jsonify(
                 {
                     "code": 404,
@@ -878,7 +905,7 @@ def delete_request(learnerName, courseNameRequest, cohortNameRequest):
     ), 404
 
 
-#courses page (learner)
+# courses page (learner)
 @app.route("/viewAllCohort/<string:courseName>")
 def viewAllCohort(courseName):
     result = cohort.query.filter_by(courseName=courseName)
@@ -898,42 +925,50 @@ def viewAllCohort(courseName):
         }
     ), 404
 
+
 # approve a learner's request (admin view)
 @app.route("/processRequest/<string:learnerName>/<string:courseName>/<string:cohortName>")
 def processRequest(learnerName, courseName, cohortName):
-    result = enrollmentRequest.query.filter_by(learnerName = learnerName, courseNameRequest= courseName, cohortNameRequest=cohortName).first()
+    result = enrollmentRequest.query.filter_by(
+            learnerName=learnerName, courseNameRequest=courseName, 
+            cohortNameRequest=cohortName).first()
 
     if result:
-        cohortResult = cohort.query.filter_by(courseName=courseName, cohortName=cohortName).first()
+        cohortResult = cohort.query.filter_by(
+                        courseName=courseName, cohortName=cohortName).first()
         slotLeft = cohortResult.get_slotLeft()
 
         if slotLeft > 0:
             try:
                 # update slot
                 cohortResult.reduce_slot()
-                db.session.commit()   
+                db.session.commit()
 
                 # # # delete from request table
-                requests = enrollmentRequest.query.filter_by(learnerName = learnerName, courseNameRequest=courseName)
+                requests = enrollmentRequest.query.filter_by(
+                            learnerName=learnerName, courseNameRequest=courseName)
 
-                for request in requests:
-                    db.session.delete(request)
+                for enrollment_request in requests:
+                    db.session.delete(enrollment_request)
                     db.session.commit()
 
                 if slotLeft == 0:
-                    requests = enrollmentRequest.query.filter_by(courseNameRequest=courseName, cohortNameRequest=cohortName)
+                    requests = enrollmentRequest.query.filter_by(
+                                courseNameRequest=courseName, cohortNameRequest=cohortName)
 
-                    for request in requests:
-                        db.session.delete(request)
+                    for enrollment_request in requests:
+                        db.session.delete(enrollment_request)
                         db.session.commit()
 
                 # add into enrollment
-                enrollment_info = enrollment(learnerName, courseName, cohortName, 1)
+                enrollment_info = enrollment(
+                                    learnerName, courseName, cohortName, 1)
                 db.session.add(enrollment_info)
                 db.session.commit()
-                
+
                 # retrieve all learning materials
-                material_list = materials.query.filter_by(courseName=courseName, cohortName=cohortName)
+                material_list = materials.query.filter_by(
+                                courseName=courseName, cohortName=cohortName)
 
                 for material in material_list:
                     material_result = material.get_dict()
@@ -953,7 +988,7 @@ def processRequest(learnerName, courseName, cohortName):
                     }
                 ), 200
 
-            except:
+            except Exception:
                 return jsonify(
                     {
                         "code": 404,
@@ -968,7 +1003,8 @@ def processRequest(learnerName, courseName, cohortName):
         }
     ), 404
 
-#self-enrol request (learner)
+
+# self-enrol request (learner)
 @app.route("/self_enrol_request/<string:courseName>/<string:cohortName>/<string:learnerName>")
 def self_enrol_request(courseName, cohortName, learnerName):
     request = enrollmentRequest(courseName, cohortName, learnerName)
@@ -984,8 +1020,8 @@ def self_enrol_request(courseName, cohortName, learnerName):
             }
         ), 200
 
-    except:
-        return jsonify( 
+    except Exception:
+        return jsonify(
             {
                 "code": 404,
                 "message": "Error occured while creating enrollment request."
@@ -996,12 +1032,16 @@ def self_enrol_request(courseName, cohortName, learnerName):
 
 # Set enrollment period for a specific cohort under a course
 @app.route("/setEnrollmentPeriod/<string:courseName>/<string:cohortName>/<string:enrollmentStartDate>/<string:enrollmentStartTime>/<string:enrollmentEndDate>/<string:enrollmentEndTime>")
-def setEnrollmentPeriod(courseName,cohortName, enrollmentStartDate, enrollmentStartTime, enrollmentEndDate, enrollmentEndTime):
-    result = cohort.query.filter_by(courseName=courseName, cohortName=cohortName).first()
+def setEnrollmentPeriod(courseName, cohortName, enrollmentStartDate,
+                        enrollmentStartTime, enrollmentEndDate, enrollmentEndTime):
+    result = cohort.query.filter_by(
+            courseName=courseName, cohortName=cohortName).first()
+
     if result:
         try:
             # update 4 fields
-            result.set_enrollment_details(enrollmentStartDate, enrollmentStartTime, enrollmentEndDate, enrollmentEndTime)
+            result.set_enrollment_details(enrollmentStartDate,
+                                        enrollmentStartTime, enrollmentEndDate, enrollmentEndTime)
             db.session.commit()
 
             return jsonify(
@@ -1011,7 +1051,7 @@ def setEnrollmentPeriod(courseName,cohortName, enrollmentStartDate, enrollmentSt
                 }
             ), 200
 
-        except:
+        except Exception:
             return jsonify(
                 {
                     "code": 404,
@@ -1026,9 +1066,10 @@ def setEnrollmentPeriod(courseName,cohortName, enrollmentStartDate, enrollmentSt
         }
     ), 404
 
+
 # Retrieve list of qualified learners
 @app.route("/retrieveQualifiedLearners/<string:courseName>/<string:cohortName>")
-def retrieveQualifiedLearners(courseName,cohortName):
+def retrieveQualifiedLearners(courseName, cohortName):
     try:
         # list of learners + badges
         learners = {}
@@ -1040,7 +1081,9 @@ def retrieveQualifiedLearners(courseName,cohortName):
 
             if designation['currentDesignation'] != 'Admin':
                 badges_result = badges.query.filter_by(employeeName=learner)
-                learners[learner] = [badge.get_badges() for badge in badges_result]
+
+                learners[learner] = [badge.get_badges() 
+                                    for badge in badges_result]
 
         # prerequisite of the course
         prerequisite_result = course.query.filter_by(courseName=courseName).first()
@@ -1051,11 +1094,12 @@ def retrieveQualifiedLearners(courseName,cohortName):
 
         # list of learners that are enrolled in the course
         enrolled_learners = []
-        enrolled_learners_result = enrollment.query.filter_by(courseNameEnrolled=courseName)
-        
+        enrolled_learners_result = enrollment.query.filter_by(
+                                    courseNameEnrolled=courseName)
+
         for element in enrolled_learners_result:
             learner = element.get_employeeName()
-            enrolled_learners.append(learner)        
+            enrolled_learners.append(learner)
 
         # list of trainers who are teaching the course
         trainers = []
@@ -1066,7 +1110,7 @@ def retrieveQualifiedLearners(courseName,cohortName):
             trainers.append(trainer)
 
         remove_list = set()
-        
+
         for learner in learners:
             badges_list = learners[learner]
 
@@ -1082,7 +1126,7 @@ def retrieveQualifiedLearners(courseName,cohortName):
             # Completed course
             if courseName in badges_list:
                 remove_list.add(learner)
-            
+
             # Enrolled
             if learner in enrolled_learners:
                 remove_list.add(learner)
@@ -1090,7 +1134,7 @@ def retrieveQualifiedLearners(courseName,cohortName):
             # Is a trainer
             if learner in trainers:
                 remove_list.add(learner)
-        
+
         for learner in remove_list:
             del learners[learner]
 
@@ -1105,13 +1149,14 @@ def retrieveQualifiedLearners(courseName,cohortName):
             }
         ), 200
 
-    except:
+    except Exception:
         return jsonify(
             {
                 "code": 404,
                 "message": "Error occured while retrieving the list of qualified learners."
             }
         ), 404
+
 
 # Enroll a list of selected learners into a specific cohort under a course
 @app.route("/assignLearners", methods=['POST'])
@@ -1125,7 +1170,8 @@ def assignLearners():
     # check if have sufficient slots
     number_learners = len(selectedlearners)
 
-    cohortResult = cohort.query.filter_by(courseName=courseName, cohortName=cohortName).first()
+    cohortResult = cohort.query.filter_by(
+                    courseName=courseName, cohortName=cohortName).first()
     slotLeft = cohortResult.get_slotLeft()
 
     if slotLeft < number_learners:
@@ -1142,7 +1188,8 @@ def assignLearners():
             db.session.add(enrollment_obj)
             db.session.commit()
 
-            material_list = materials.query.filter_by(courseName=courseName, cohortName=cohortName)
+            material_list = materials.query.filter_by(
+                            courseName=courseName, cohortName=cohortName)
 
             for material in material_list:
                 material_result = material.get_dict()
@@ -1155,11 +1202,10 @@ def assignLearners():
                 db.session.add(materialStatusObject)
                 db.session.commit()
 
-
         slotLeft -= number_learners
         cohortResult.slotLeft = slotLeft
         db.session.commit()
-        
+
         return jsonify(
             {
                 "code": 201,
@@ -1175,16 +1221,19 @@ def assignLearners():
             }
         ), 404
 
-#Retrieve a list of enrolled learners under a specific cohort of a course
+
+# Retrieve a list of enrolled learners under a specific cohort of a course
 @app.route("/viewAllEnrolledLearners/<string:courseName>/<string:cohortName>")
 def viewAllEnrolledLearners(courseName, cohortName):
-    result = enrollment.query.filter_by(courseNameEnrolled=courseName, cohortNameEnrolled=cohortName)
+    result = enrollment.query.filter_by(
+            courseNameEnrolled=courseName, cohortNameEnrolled=cohortName)
 
     if result:
         return jsonify(
             {
                 "code": 200,
-                "EnrolledLearners": [element.get_employeeName() for element in result]
+                "EnrolledLearners": [element.get_employeeName()
+                                    for element in result]
             }
         ), 200
 
@@ -1195,16 +1244,19 @@ def viewAllEnrolledLearners(courseName, cohortName):
         }
     ), 404
 
+
 @app.route("/getAllChapters/<string:courseName>/<string:cohortName>")
 def getAllChapters(courseName, cohortName):
-    chapters = chapter.query.filter_by(courseName=courseName, cohortName=cohortName)
+    chapters = chapter.query.filter_by(
+                courseName=courseName, cohortName=cohortName)
     output = []
     for section in chapters:
         section = section.get_dict()
         section['materials'] = []
 
         # retrieve material info
-        materials_info = materials.query.filter_by(courseName=section["courseName"], cohortName=section["cohortName"], chapterID=section['chapterID'])
+        materials_info = materials.query.filter_by(courseName=section["courseName"],
+                        cohortName=section["cohortName"], chapterID=section['chapterID'])
 
         for material in materials_info:
             material_result = {}
@@ -1217,7 +1269,7 @@ def getAllChapters(courseName, cohortName):
             section['materials'].append(material_result)
 
         output.append(section)
-            
+
     if output:
         return jsonify(
             {
@@ -1232,6 +1284,7 @@ def getAllChapters(courseName, cohortName):
             "message": "Error occured while retrieving chapters"
         }
     ), 404
+
 
 @app.route("/createNewChapter", methods=['POST'])
 def createNewChapter():
@@ -1249,7 +1302,7 @@ def createNewChapter():
             }
         )
 
-    except:
+    except Exception:
         return jsonify(
             {
                 "code": 404,
@@ -1257,20 +1310,22 @@ def createNewChapter():
             }
         ), 404
 
+
 @app.route("/createNewQuiz", methods=['POST'])
 def createNewQuiz():
     data = request.get_json()
-    
+
     # Update chapter data -> duration, graded
     courseName = data['courseName']
     cohortName = data['cohortName']
     chapterID = data['chapterID']
     try:
-        chapter_data = chapter.query.filter_by(courseName=courseName, cohortName=cohortName, chapterID=chapterID).first()
+        chapter_data = chapter.query.filter_by(
+                        courseName=courseName, cohortName=cohortName, chapterID=chapterID).first()
         chapter_data.update_chapter_data(data['duration'], data['graded'])
         db.session.commit()
-    
-    except:
+
+    except Exception:
         return jsonify(
             {
                 "code": 404,
@@ -1280,13 +1335,14 @@ def createNewQuiz():
 
     # Create questions
     questions = data['questions']
-    
+
     try:
         for element in questions:
             questionID = element['questionID']
             questionText = element['questionText']
 
-            question_data = question(courseName, cohortName, chapterID, questionID, questionText)
+            question_data = question(
+                            courseName, cohortName, chapterID, questionID, questionText)
             db.session.add(question_data)
             db.session.commit()
 
@@ -1296,21 +1352,23 @@ def createNewQuiz():
                 optionID = option['optionID']
                 optionText = option['optionText']
                 isRight = option['isRight']
-                
-                option_data = options(courseName, cohortName, chapterID, questionID, optionID, optionText, isRight)
+
+                option_data = options(
+                            courseName, cohortName, chapterID, questionID, optionID, optionText, isRight)
                 db.session.add(option_data)
                 db.session.commit()
 
-        result = question.query.filter_by(courseName=courseName, cohortName=cohortName, chapterID=chapterID)
-        
+        # result = question.query.filter_by(
+        #         courseName=courseName, cohortName=cohortName, chapterID=chapterID)
+
         return jsonify(
             {
                 "code": 200,
                 "message": "Quiz successfully created"
             }
         )
-        
-    except:
+
+    except Exception:
         return jsonify(
             {
                 "code": 404,
@@ -1318,15 +1376,16 @@ def createNewQuiz():
             }
         )
 
+
 @app.route("/viewQuiz/<string:courseName>/<string:cohortName>/<string:chapterID>")
 def viewQuiz(courseName, cohortName, chapterID):
     try:
         # retreive chapter info
-        chapter_info = chapter.query.filter_by(courseName=courseName, cohortName=cohortName,chapterID=chapterID).first()
+        chapter_info = chapter.query.filter_by(
+                        courseName=courseName, cohortName=cohortName, chapterID=chapterID).first()
         chapter_content = chapter_info.get_dict()
-        
-        question_info = question.query.filter_by(courseName=courseName, cohortName=cohortName,chapterID=chapterID)
-        
+        question_info = question.query.filter_by(
+                        courseName=courseName, cohortName=cohortName, chapterID=chapterID)
         chapter_content['questions'] = []
 
         # retrieve questions info
@@ -1336,22 +1395,22 @@ def viewQuiz(courseName, cohortName, chapterID):
             question_content = qn.get_dict()
             questionID = question_content['questionID']
             questionText = question_content['questionText']
-
             question_result['questionID'] = questionID
             question_result['questionText'] = questionText
-                        
+
             options_list = []
-            option_info = options.query.filter_by(courseName=courseName, cohortName=cohortName, chapterID=chapterID, questionID=questionID)
+            option_info = options.query.filter_by(courseName=courseName,
+                        cohortName=cohortName, chapterID=chapterID, questionID=questionID)
             # retrieve options info
             for option in option_info:
-                
+
                 option_result = {}
                 option_content = option.get_dict()
-                
+
                 optionID = option_content['optionID']
                 optionText = option_content['optionText']
                 isRight = option_content['isRight']
-                
+
                 option_result['optionID'] = optionID
                 option_result['optionText'] = optionText
                 option_result['isRight'] = isRight
@@ -1360,16 +1419,15 @@ def viewQuiz(courseName, cohortName, chapterID):
 
             question_result['optionsList'] = options_list
             chapter_content['questions'].append(question_result)
-        
+
         return jsonify(
             {
                 "code": 200,
-                "chapter_content" : chapter_content
-
+                "chapter_content": chapter_content
             }
         ), 200
-        
-    except:
+
+    except Exception:
         return jsonify(
             {
                 "code": 404,
@@ -1377,19 +1435,21 @@ def viewQuiz(courseName, cohortName, chapterID):
             }
         ), 404
 
+
 @app.route("/deleteQuiz/<string:courseName>/<string:cohortName>/<string:chapterID>")
 def deleteQuiz(courseName, cohortName, chapterID):
-    
     try:
         # Delete options info
-        option_info = options.query.filter_by(courseName=courseName, cohortName=cohortName, chapterID=chapterID)
-        
+        option_info = options.query.filter_by(
+                    courseName=courseName, cohortName=cohortName, chapterID=chapterID)
+
         for option in option_info:
             db.session.delete(option)
             db.session.commit()
-        
+
         # Delete questions info
-        question_info = question.query.filter_by(courseName=courseName, cohortName=cohortName, chapterID=chapterID)
+        question_info = question.query.filter_by(
+                        courseName=courseName, cohortName=cohortName, chapterID=chapterID)
 
         for element in question_info:
             db.session.delete(element)
@@ -1402,7 +1462,7 @@ def deleteQuiz(courseName, cohortName, chapterID):
             }
         ), 201
 
-    except:
+    except Exception:
         return jsonify(
             {
                 'code': 404,
