@@ -24,7 +24,7 @@ class course(db.Model):
     prerequisite = db.Column(db.String(500), nullable=False)
 
     def __init__(self, courseName, courseImage,
-                courseDescription, prerequisite):
+                    courseDescription, prerequisite):
         self.courseName = courseName
         self.courseImage = courseImage
         self.courseDescription = courseDescription
@@ -71,7 +71,7 @@ class cohort(db.Model):
     __tablename__ = 'cohort'
 
     courseName = db.Column(db.String(100),
-                db.ForeignKey(course.courseName), primary_key=True)
+                            db.ForeignKey(course.courseName), primary_key=True)
     cohortName = db.Column(db.String(100), primary_key=True)
     enrollmentStartDate = db.Column(db.String(30), nullable=False)
     enrollmentStartTime = db.Column(db.String(30), nullable=False)
@@ -82,14 +82,14 @@ class cohort(db.Model):
     cohortEndDate = db.Column(db.String(30), nullable=False)
     cohortEndTime = db.Column(db.String(30), nullable=False)
     trainerName = db.Column(db.String(100),
-                db.ForeignKey(employee.employeeName), nullable=False)
+                            db.ForeignKey(employee.employeeName), nullable=False)
     cohortSize = db.Column(db.Integer, nullable=False)
     slotLeft = db.Column(db.Integer, nullable=False)
 
     def __init__(self, courseName, cohortName, enrollmentStartDate,
-                enrollmentStartTime, enrollmentEndDate, enrollmentEndTime,
-                cohortStartDate, cohortStartTime, cohortEndDate, cohortEndTime,
-                trainerName, cohortSize, slotLeft):
+                    enrollmentStartTime, enrollmentEndDate, enrollmentEndTime,
+                    cohortStartDate, cohortStartTime, cohortEndDate, cohortEndTime,
+                    trainerName, cohortSize, slotLeft):
         self.courseName = courseName
         self.cohortName = cohortName
         self.enrollmentStartDate = enrollmentStartDate
@@ -138,7 +138,8 @@ class cohort(db.Model):
         self.slotLeft = self.slotLeft - 1
 
     def set_enrollment_details(self, enrollmentStartDate,
-                                enrollmentStartTime, enrollmentEndDate, enrollmentEndTime):
+                                enrollmentStartTime, enrollmentEndDate,
+                                enrollmentEndTime):
         self.enrollmentStartDate = enrollmentStartDate
         self.enrollmentStartTime = enrollmentStartTime
         self.enrollmentEndDate = enrollmentEndDate
@@ -149,11 +150,14 @@ class badges(db.Model):
     __tablename__ = 'badges'
 
     employeeName = db.Column(db.String(100),
-                    db.ForeignKey(employee.employeeName), primary_key=True)
+                                db.ForeignKey(employee.employeeName),
+                                primary_key=True)
     badges = db.Column(db.String(100),
-                    db.ForeignKey(cohort.courseName), nullable=False, primary_key=True)
+                        db.ForeignKey(cohort.courseName),
+                        nullable=False, primary_key=True)
     cohortName = db.Column(db.String(100),
-                db.ForeignKey(cohort.cohortName), nullable=False, primary_key=True)
+                            db.ForeignKey(cohort.cohortName),
+                            nullable=False, primary_key=True)
 
     def __init__(self, employeeName, badges, cohortName):
         self.employeeName = employeeName
@@ -173,12 +177,15 @@ class badges(db.Model):
 class enrollment(db.Model):
     __tablename__ = 'enrollment'
 
-    employeeName = db.Column(db.String(100), 
-                    db.ForeignKey(employee.employeeName), primary_key=True)
+    employeeName = db.Column(db.String(100),
+                            db.ForeignKey(employee.employeeName),
+                            primary_key=True)
     courseNameEnrolled = db.Column(db.String(100),
-                        db.ForeignKey(cohort.courseName), nullable=False, primary_key=True)
+                                    db.ForeignKey(cohort.courseName),
+                                    nullable=False, primary_key=True)
     cohortNameEnrolled = db.Column(db.String(100),
-                        db.ForeignKey(cohort.cohortName), nullable=False, primary_key=True)
+                                    db.ForeignKey(cohort.cohortName),
+                                    nullable=False, primary_key=True)
     recent = db.Column(db.Integer, nullable=False)
 
     def __init__(self, employeeName,
@@ -213,11 +220,14 @@ class enrollmentRequest(db.Model):
     __tablename__ = 'enrollmentRequest'
 
     courseNameRequest = db.Column(db.String(100),
-                        db.ForeignKey(cohort.courseName), nullable=False, primary_key=True)
+                                    db.ForeignKey(cohort.courseName),
+                                    nullable=False, primary_key=True)
     cohortNameRequest = db.Column(db.String(100),
-                        db.ForeignKey(cohort.cohortName), nullable=False, primary_key=True)
+                                    db.ForeignKey(cohort.cohortName),
+                                    nullable=False, primary_key=True)
     learnerName = db.Column(db.String(100),
-                    db.ForeignKey(employee.employeeName), nullable=False, primary_key=True)
+                            db.ForeignKey(employee.employeeName),
+                            nullable=False, primary_key=True)
 
     def __init__(self, courseNameRequest, cohortNameRequest, learnerName):
         self.courseNameRequest = courseNameRequest
@@ -279,12 +289,13 @@ class question(chapter):
 
     __mapper_args__ = {'concrete': True}
     __table_args__ = (db.ForeignKeyConstraint(
-                                            [courseName, cohortName, chapterID],
-                                           [chapter.courseName, chapter.cohortName, chapter.chapterID]),
-                                           {})
+                        [courseName, cohortName, chapterID],
+                        [chapter.courseName, chapter.cohortName,
+                        chapter.chapterID]),
+                        {})
 
     def __init__(self, courseName, cohortName,
-                chapterID, questionID, questionText):
+                    chapterID, questionID, questionText):
         self.courseName = courseName
         self.cohortName = cohortName
         self.chapterID = chapterID
@@ -305,10 +316,10 @@ class options(question):
 
     __mapper_args__ = {'concrete': True}
     __table_args__ = (db.ForeignKeyConstraint(
-                                            [courseName, cohortName, chapterID, questionID],
-                                            [question.courseName, question.cohortName,
-                                            question.chapterID, question.questionID]),
-                                            {})
+                        [courseName, cohortName, chapterID, questionID],
+                        [question.courseName, question.cohortName,
+                        question.chapterID, question.questionID]),
+                        {})
 
     def __init__(self, courseName, cohortName,
                 chapterID, questionID, optionID, optionText, isRight):
@@ -325,20 +336,25 @@ class userAttempt(db.Model):
     __tablename__ = 'userAttempt'
 
     employeeName = db.Column(db.String(100),
-                    db.ForeignKey(employee.employeeName), primary_key=True)
+                                db.ForeignKey(employee.employeeName),
+                                primary_key=True)
     courseName = db.Column(db.String(100),
-                db.ForeignKey(question.courseName), primary_key=True)
+                            db.ForeignKey(question.courseName),
+                            primary_key=True)
     cohortName = db.Column(db.String(100),
-                db.ForeignKey(question.cohortName), primary_key=True)
+                            db.ForeignKey(question.cohortName),
+                            primary_key=True)
     chapterID = db.Column(db.Integer,
-                db.ForeignKey(question.chapterID), primary_key=True)
+                            db.ForeignKey(question.chapterID),
+                            primary_key=True)
     questionID = db.Column(db.Integer,
-                db.ForeignKey(question.questionID), primary_key=True)
+                            db.ForeignKey(question.questionID),
+                            primary_key=True)
     choiceID = db.Column(db.Integer, nullable=False)
     marks = db.Column(db.Integer, nullable=False)
 
     def __init__(self, employeeName, courseName, cohortName,
-                questionID, chapterID, choiceID, marks):
+                    questionID, chapterID, choiceID, marks):
         self.employeeName = employeeName
         self.courseName = courseName
         self.cohortName = cohortName
@@ -373,12 +389,13 @@ class materials(chapter):
 
     __mapper_args__ = {'concrete': True}
     __table_args__ = (db.ForeignKeyConstraint(
-                                            [courseName, cohortName, chapterID],
-                                            [chapter.courseName, chapter.cohortName, chapter.chapterID]),
-                                            {})
+                        [courseName, cohortName, chapterID],
+                        [chapter.courseName, chapter.cohortName,
+                        chapter.chapterID]),
+                        {})
 
     def __init__(self, courseName, cohortName, chapterID,
-                materialID, materialURL):
+                    materialID, materialURL):
         self.courseName = courseName
         self.cohortName = cohortName
         self.chapterID = chapterID
@@ -400,14 +417,16 @@ class materialStatus(materials):
     chapterID = db.Column(db.Integer, primary_key=True)
     materialID = db.Column(db.Integer, primary_key=True)
     employeeName = db.Column(db.String(100),
-                    db.ForeignKey(employee.employeeName), primary_key=True)
+                                db.ForeignKey(employee.employeeName),
+                                primary_key=True)
     done = db.Column(db.Integer, nullable=False)
 
     __mapper_args__ = {'concrete': True}
     __table_args__ = (db.ForeignKeyConstraint(
-                                            [courseName, cohortName, chapterID, materialID],
-                                            [materials.courseName, materials.cohortName, materials.chapterID, materials.materialID]),
-                                            {})
+                        [courseName, cohortName, chapterID, materialID],
+                        [materials.courseName, materials.cohortName,
+                        materials.chapterID, materials.materialID]),
+                        {})
 
     def __init__(self, courseName, cohortName, chapterID,
                 materialID, employeeName, done):
@@ -511,7 +530,7 @@ def viewMaterials(courseName, cohortName, employeeName):
 
 @app.route("/updateMaterialStatus/<string:courseName>/<string:cohortName>/<string:chapterID>/<string:materialID>/<string:employeeName>")
 def updateMaterialStatus(courseName, cohortName, chapterID,
-                        materialID, employeeName):
+                            materialID, employeeName):
     try:
         # retrieve material status
         status = materialStatus.query.filter_by(
@@ -544,7 +563,7 @@ def completedCourse(courseName, cohortName, employeeName):
 
     try:
         # remove from enrollment
-        enrollment_result =enrollment.query.filter_by(
+        enrollment_result = enrollment.query.filter_by(
                                                         employeeName=employeeName,
                                                         courseNameEnrolled=courseName,
                                                         cohortNameEnrolled=cohortName).first()
@@ -553,7 +572,7 @@ def completedCourse(courseName, cohortName, employeeName):
 
         # add to badges
         badge = badges(employeeName=employeeName,
-                badges=courseName, cohortName=cohortName)
+                        badges=courseName, cohortName=cohortName)
 
         db.session.add(badge)
         db.session.commit()
@@ -589,7 +608,8 @@ def recordAttempt():
     # delete pre existing data
     existing_attempt_list = userAttempt.query.filter_by(
                             employeeName=employeeName, courseName=courseName,
-                            cohortName=cohortName, chapterID=chapterID)
+                            cohortName=cohortName,chapterID=chapterID)
+
 
     if existing_attempt_list:
         for existing_attempt in existing_attempt_list:
@@ -603,8 +623,12 @@ def recordAttempt():
             choiceID = question_info['choiceID']
 
             userAttemptObject = userAttempt(
-                                employeeName=employeeName, courseName=courseName, cohortName=cohortName,
-                                questionID=questionID, chapterID=chapterID, choiceID=choiceID, marks=1)
+                                employeeName=employeeName,
+                                courseName=courseName,
+                                cohortName=cohortName,
+                                questionID=questionID,
+                                chapterID=chapterID,
+                                choiceID=choiceID, marks=1)
             db.session.add(userAttemptObject)
             db.session.commit()
 
@@ -635,7 +659,9 @@ def retrieveQuizResult(courseName, cohortName, chapterID, employeeName):
 
         chapter_content = chapter_info.get_dict()
         question_info = question.query.filter_by(
-                        courseName=courseName, cohortName=cohortName, chapterID=chapterID)
+                        courseName=courseName, cohortName=cohortName,
+                        chapterID=chapterID)
+
         chapter_content['questions'] = []
         marks_obtained = 0
         marks_total = 0
@@ -658,8 +684,9 @@ def retrieveQuizResult(courseName, cohortName, chapterID, employeeName):
 
             # retrieve user choice
             user_attempt = userAttempt.query.filter_by(
-                        courseName=courseName, cohortName=cohortName, chapterID=chapterID,
-                        questionID=questionID, employeeName=employeeName).first()
+                            courseName=courseName, cohortName=cohortName,
+                            chapterID=chapterID, questionID=questionID,
+                            employeeName=employeeName).first()
 
             user_choice = user_attempt.get_choice()
             question_result['choiceID'] = user_choice
@@ -793,7 +820,7 @@ def viewBadgesCohort(employeeName):
             {
                 "code": 200,
                 "badges_cohort": [element.get_badges_cohort()
-                                for element in result]
+                                    for element in result]
             }
         ), 200
 
@@ -1002,7 +1029,8 @@ def processRequest(learnerName, courseName, cohortName):
 
                 if slotLeft == 0:
                     requests = enrollmentRequest.query.filter_by(
-                                courseNameRequest=courseName, cohortNameRequest=cohortName)
+                                courseNameRequest=courseName,
+                                cohortNameRequest=cohortName)
 
                     for enrollment_request in requests:
                         db.session.delete(enrollment_request)
@@ -1081,8 +1109,9 @@ def self_enrol_request(courseName, cohortName, learnerName):
 
 # Set enrollment period for a specific cohort under a course
 @app.route("/setEnrollmentPeriod/<string:courseName>/<string:cohortName>/<string:enrollmentStartDate>/<string:enrollmentStartTime>/<string:enrollmentEndDate>/<string:enrollmentEndTime>")
-def setEnrollmentPeriod(courseName, cohortName, enrollmentStartDate,
-                        enrollmentStartTime, enrollmentEndDate, enrollmentEndTime):
+def setEnrollmentPeriod(courseName, cohortName,
+                        enrollmentStartDate, enrollmentStartTime,
+                        enrollmentEndDate, enrollmentEndTime):
     result = cohort.query.filter_by(
             courseName=courseName, cohortName=cohortName).first()
 
@@ -1090,7 +1119,9 @@ def setEnrollmentPeriod(courseName, cohortName, enrollmentStartDate,
         try:
             # update 4 fields
             result.set_enrollment_details(enrollmentStartDate,
-                                        enrollmentStartTime, enrollmentEndDate, enrollmentEndTime)
+                                            enrollmentStartTime,
+                                            enrollmentEndDate,
+                                            enrollmentEndTime)
             db.session.commit()
 
             return jsonify(
@@ -1131,11 +1162,12 @@ def retrieveQualifiedLearners(courseName, cohortName):
             if designation['currentDesignation'] != 'Admin':
                 badges_result = badges.query.filter_by(employeeName=learner)
 
-                learners[learner] = [badge.get_badges() 
-                                    for badge in badges_result]
+                learners[learner] = [badge.get_badges()
+                                        for badge in badges_result]
 
         # prerequisite of the course
-        prerequisite_result = course.query.filter_by(courseName=courseName).first()
+        prerequisite_result = course.query.filter_by(
+                                courseName=courseName).first()
         prerequisite_list = prerequisite_result.get_prerequisite()
 
         if prerequisite_list == ['']:
@@ -1282,7 +1314,7 @@ def viewAllEnrolledLearners(courseName, cohortName):
             {
                 "code": 200,
                 "EnrolledLearners": [element.get_employeeName()
-                                    for element in result]
+                                        for element in result]
             }
         ), 200
 
@@ -1304,8 +1336,10 @@ def getAllChapters(courseName, cohortName):
         section['materials'] = []
 
         # retrieve material info
-        materials_info = materials.query.filter_by(courseName=section["courseName"],
-                        cohortName=section["cohortName"], chapterID=section['chapterID'])
+        materials_info = materials.query.filter_by(
+                            courseName=section["courseName"],
+                            cohortName=section["cohortName"],
+                            chapterID=section['chapterID'])
 
         for material in materials_info:
             material_result = {}
@@ -1370,7 +1404,8 @@ def createNewQuiz():
     chapterID = data['chapterID']
     try:
         chapter_data = chapter.query.filter_by(
-                        courseName=courseName, cohortName=cohortName, chapterID=chapterID).first()
+                        courseName=courseName, cohortName=cohortName,
+                        chapterID=chapterID).first()
         chapter_data.update_chapter_data(data['duration'], data['graded'])
         db.session.commit()
 
@@ -1391,7 +1426,8 @@ def createNewQuiz():
             questionText = element['questionText']
 
             question_data = question(
-                            courseName, cohortName, chapterID, questionID, questionText)
+                            courseName, cohortName, chapterID,
+                            questionID, questionText)
             db.session.add(question_data)
             db.session.commit()
 
@@ -1403,7 +1439,8 @@ def createNewQuiz():
                 isRight = option['isRight']
 
                 option_data = options(
-                            courseName, cohortName, chapterID, questionID, optionID, optionText, isRight)
+                                courseName, cohortName, chapterID, questionID,
+                                optionID, optionText, isRight)
                 db.session.add(option_data)
                 db.session.commit()
 
@@ -1431,10 +1468,12 @@ def viewQuiz(courseName, cohortName, chapterID):
     try:
         # retreive chapter info
         chapter_info = chapter.query.filter_by(
-                        courseName=courseName, cohortName=cohortName, chapterID=chapterID).first()
+                        courseName=courseName, cohortName=cohortName,
+                        chapterID=chapterID).first()
         chapter_content = chapter_info.get_dict()
         question_info = question.query.filter_by(
-                        courseName=courseName, cohortName=cohortName, chapterID=chapterID)
+                        courseName=courseName, cohortName=cohortName,
+                        chapterID=chapterID)
         chapter_content['questions'] = []
 
         # retrieve questions info
@@ -1449,7 +1488,8 @@ def viewQuiz(courseName, cohortName, chapterID):
 
             options_list = []
             option_info = options.query.filter_by(courseName=courseName,
-                        cohortName=cohortName, chapterID=chapterID, questionID=questionID)
+                            cohortName=cohortName, chapterID=chapterID,
+                            questionID=questionID)
             # retrieve options info
             for option in option_info:
 
@@ -1490,7 +1530,8 @@ def deleteQuiz(courseName, cohortName, chapterID):
     try:
         # Delete options info
         option_info = options.query.filter_by(
-                    courseName=courseName, cohortName=cohortName, chapterID=chapterID)
+                        courseName=courseName, cohortName=cohortName,
+                        chapterID=chapterID)
 
         for option in option_info:
             db.session.delete(option)
@@ -1498,7 +1539,8 @@ def deleteQuiz(courseName, cohortName, chapterID):
 
         # Delete questions info
         question_info = question.query.filter_by(
-                        courseName=courseName, cohortName=cohortName, chapterID=chapterID)
+                        courseName=courseName, cohortName=cohortName,
+                        chapterID=chapterID)
 
         for element in question_info:
             db.session.delete(element)
