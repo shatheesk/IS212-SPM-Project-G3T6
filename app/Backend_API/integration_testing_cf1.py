@@ -3,7 +3,7 @@ import flask_testing
 import json
 from app import app, db, course, employee, cohort, badges, enrollment, enrollmentRequest, materials, materialStatus
 
-
+# Shi ting
 class TestApp(flask_testing.TestCase):
     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite://"
     app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {}
@@ -19,7 +19,7 @@ class TestApp(flask_testing.TestCase):
         db.session.remove()
         db.drop_all()
 
-
+# Shi ting
 class TestViewAllCourses(TestApp):
     def test_viewAllCourses(self):
         course1 = course(courseName="Big questions",
@@ -75,7 +75,7 @@ class TestViewAllCourses(TestApp):
             }]
         })
 
-
+# Shi ting
 class TestViewAllCohort(TestApp):
     def test_view_all_cohort(self):
         cohort1 = cohort(courseName='Introduction to life',
@@ -146,7 +146,7 @@ class TestViewAllCohort(TestApp):
             }]
         })
 
-
+# Shi ting
 class TestProcessRequest(TestApp):
     def test_process_request(self):
         # add data to course
@@ -232,7 +232,7 @@ class TestProcessRequest(TestApp):
         self.assertEqual(materialStatus_result.get_dict(), {
                          'courseName': 'Big questions', 'cohortName': 'G1', 'chapterID': 2, 'materialID': 1, 'employeeName': 'Shakira', 'done': 0})
 
-
+# Shi ting
 class TestDeleteRequest(TestApp):
     def test_delete_request(self):
         # add data to course
@@ -273,7 +273,7 @@ class TestDeleteRequest(TestApp):
 
         self.assertEqual(result, None)
 
-
+# Shi ting
 class TestSendEnrollRequest(TestApp):
     def test_send_enroll_request(self):
         # send enroll request
@@ -289,7 +289,7 @@ class TestSendEnrollRequest(TestApp):
             "learnerName": "Shakira"
         })
 
-
+# Shi ting
 class TestViewAllBadges(TestApp):
     def test_view_all_badges(self):
         # add badges to database
@@ -315,7 +315,8 @@ class TestViewAllBadges(TestApp):
             "code": 200
         })
 
-
+# Shi Ting
+# Assumption, all employeeName are valid employees
 class TestViewBadgesCohort(TestApp):
     def test_viewBadgesCohort(self):
         # add badges to database
@@ -349,8 +350,26 @@ class TestViewBadgesCohort(TestApp):
             }],
             "code": 200
         })
+        
+    def test_viewBadgesCohort_no_enrolled_courses(self):
+        badges1 = badges(employeeName="Alice",
+                         badges="Introduction to life", cohortName="G0")
+        badges2 = badges(employeeName="Alice",
+                         badges="Introduction to python", cohortName="G0")
 
+        db.session.add(badges1)
+        db.session.add(badges2)
 
+        db.session.commit()
+        
+        # send view all badges request
+        response = self.client.get("/viewBadgesCohort/Marcus",
+                                   content_type='application/json')
+        
+        self.assertEqual(response.json, {'badges_cohort': [], 'code': 200})
+
+# Marcus Goh
+# Assumption, all employeeName are valid employees
 class TestViewAllEnrolledCourses(TestApp):
     def test_viewAllEnrolledCourses(self):
         # add cohort into database
@@ -452,8 +471,15 @@ class TestViewAllEnrolledCourses(TestApp):
                 "trainerName": "Marcus"
             }]
         })
+    
+    def test_viewAllEnrolledCourses_no_enrolled_courses(self):
+        response = self.client.get("/viewAllEnrolledCourses/Alice",
+                                   content_type='application/json')
+        
+        self.assertEqual(response.json, {'code': 200, 'enrollments': []})
 
-
+# Marcus Goh
+# Assumption, all employeeName are valid employees
 class TestViewAllRequests(TestApp):
     def test_viewAllRequests(self):
         # add cohort into database
@@ -502,8 +528,95 @@ class TestViewAllRequests(TestApp):
                 "trainerName": "Marcus"
             }]
         })
+        
+    def test_viewAllRequests_no_requests(self):
+        response = self.client.get("/viewAllRequests/Shakira",
+                                   content_type='application/json')
+        
+        self.assertEqual(response.json, {'code': 200, 'requests': []})
+        
+    def test_viewAllRequests_multiple_requests(self):
+        # add cohort into database
+        cohort1 = cohort(courseName='Introduction to python',
+                         cohortName="G1",
+                         enrollmentStartDate="01 Sep 2021",
+                         enrollmentStartTime="00:00",
+                         enrollmentEndDate="28 Nov 2021",
+                         enrollmentEndTime="23:59",
+                         cohortStartDate="01 Dec 2021",
+                         cohortStartTime="08:00",
+                         cohortEndDate="30 Dec 2021",
+                         cohortEndTime="20:00",
+                         trainerName="Marcus",
+                         cohortSize=30,
+                         slotLeft=25)
 
+        cohort2 = cohort(courseName='Introduction to flask',
+                         cohortName="G1",
+                         enrollmentStartDate="01 Sep 2021",
+                         enrollmentStartTime="00:00",
+                         enrollmentEndDate="28 Nov 2021",
+                         enrollmentEndTime="23:59",
+                         cohortStartDate="01 Dec 2021",
+                         cohortStartTime="08:00",
+                         cohortEndDate="30 Dec 2021",
+                         cohortEndTime="20:00",
+                         trainerName="Charles",
+                         cohortSize=30,
+                         slotLeft=24)
+        
+        # add enrollment request to database
+        enrollmentRequest1 = enrollmentRequest(
+            courseNameRequest="Introduction to python", cohortNameRequest="G1", learnerName="Shakira")
 
+        enrollmentRequest2 = enrollmentRequest(
+            courseNameRequest="Introduction to flask", cohortNameRequest="G1", learnerName="Shakira")
+
+        db.session.add(cohort1)
+        db.session.add(cohort2)
+        db.session.add(enrollmentRequest1)
+        db.session.add(enrollmentRequest2)
+
+        db.session.commit()
+
+        # send view all enrollment requests request
+        response = self.client.get("/viewAllRequests/Shakira",
+                                   content_type='application/json')
+                
+        self.assertEqual(response.json, {
+            "code": 200,
+            "requests": [{
+                "cohortEndDate": "30 Dec 2021",
+                "cohortEndTime": "20:00",
+                "cohortName": "G1",
+                "cohortSize": 30,
+                "cohortStartDate": "01 Dec 2021",
+                "cohortStartTime": "08:00",
+                "courseName": "Introduction to python",
+                "enrollmentEndDate": "28 Nov 2021",
+                "enrollmentEndTime": "23:59",
+                "enrollmentStartDate": "01 Sep 2021",
+                "enrollmentStartTime": "00:00",
+                "slotLeft": 25,
+                "trainerName": "Marcus"
+            }, {
+                "cohortEndDate": "30 Dec 2021",
+                "cohortEndTime": "20:00",
+                "cohortName": "G1",
+                "cohortSize": 30,
+                "cohortStartDate": "01 Dec 2021",
+                "cohortStartTime": "08:00",
+                "courseName": "Introduction to flask",
+                "enrollmentEndDate": "28 Nov 2021",
+                "enrollmentEndTime": "23:59",
+                "enrollmentStartDate": "01 Sep 2021",
+                "enrollmentStartTime": "00:00",
+                "slotLeft": 24,
+                "trainerName": "Charles"
+            }]
+        })
+
+# Marcus Goh
 class TestAdminViewAllRequests(TestApp):
     def test_adminViewAllRequests(self):
         # add cohort into database
@@ -590,6 +703,12 @@ class TestAdminViewAllRequests(TestApp):
             }
         })
 
+    def test_adminViewAllRequests_no_requests(self):
+        # send view all enrollment requests request
+        response = self.client.get("/adminViewAllRequests",
+                                   content_type='application/json')
+        
+        self.assertEqual(response.json, {'code': 200, 'requests': {}})
 
 if __name__ == '__main__':
     unittest.main()

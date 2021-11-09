@@ -846,7 +846,7 @@ def viewBadgesCohort(employeeName):
     return jsonify(
         {
             "code": 404,
-            "message": "Invalid employeeName"
+            "message": "Error occured while retrieving badges"
         }
     ), 404
 
@@ -918,11 +918,11 @@ def viewAllRequests(learnerName):
 
 
 # view all requests (admin view)
-# NO OTHER WAY
 @app.route("/adminViewAllRequests")
 def adminViewAllRequests():
     result = enrollmentRequest.query.all()
-
+    requests = {}
+    
     if result:
         output = []
         request_info = [element.get_dict() for element in result]
@@ -938,29 +938,20 @@ def adminViewAllRequests():
             result['learnerName'] = learnerName
             output.append(result)
 
-        result = {}
-
         for element in output:
             courseName = element['courseName']
 
             if courseName not in result:
-                result[courseName] = []
+                requests[courseName] = []
 
-            result[courseName].append(element)
-
-        return jsonify(
-            {
-                "code": 200,
-                "requests": result
-            }
-        ), 200
+            requests[courseName].append(element)
 
     return jsonify(
         {
-            "code": 404,
-            "message": "Error occured while retrieving enrollment requests"
+            "code": 200,
+            "requests": requests
         }
-    ), 404
+    ), 200
 
 
 # withdraw (learner), reject learner (admin)
