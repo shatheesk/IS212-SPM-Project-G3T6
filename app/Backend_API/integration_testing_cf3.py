@@ -1,7 +1,7 @@
 import unittest
 import flask_testing
 import json
-from app import app, db, course, employee, cohort, badges, enrollment, enrollmentRequest, chapter, question, options, materials, materialStatus, userAttempt
+from app import app, db, badges, enrollment, enrollmentRequest, chapter, question, options, materials, materialStatus, userAttempt
 
 class TestApp(flask_testing.TestCase):
     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite://"
@@ -18,6 +18,14 @@ class TestApp(flask_testing.TestCase):
         db.session.remove()
         db.drop_all()
 
+# Shathees
+# Assumption 1; employee is enrolled to specified course and cohort
+# Assumption 2; materialstatus is filled for all learning materials
+# Notes; 
+# quizStatus == 1: quiz attempted 
+# quizStatus == 2: learning materials for chapter not completed
+# quizStatus == 0: learning materials for chapter completed and quiz not yet attempted
+# chapterID = -1: last chapter with no learning materials; meant for graded quiz  
 class TestViewMaterials(TestApp):
     def test_view_materials(self):
         # chapter
@@ -156,6 +164,11 @@ class TestViewMaterials(TestApp):
             }]
         })
 
+# Shathees
+# Note1: update material status only checks the learning material. Learning material cannot be unchecked.
+# Note2: update material status only checks one learning material at a time.
+# Assumption 1; employee is enrolled to specified course and cohort
+# Assumption 2; materialstatus is filled for all learning materials
 class TestUpdateMaterial(TestApp):
     def test_update_material_status(self):
         # add material status
@@ -179,6 +192,9 @@ class TestUpdateMaterial(TestApp):
         materialStatusResult = materialStatus.query.filter_by(courseName="Introduction to life", cohortName="G1", chapterID=1, materialID=1, employeeName="Bob").first()
         self.assertEqual(materialStatusResult.get_status(), 1)
 
+# Shathees
+# Assumption1: employee is currently enrolled into specifed course and cohort
+# Assumption2: employee has yet to complete specified course and cohort
 class TestCompletedCourse(TestApp):
     def test_completed_course(self):
         # add data into enrollment
@@ -197,10 +213,59 @@ class TestCompletedCourse(TestApp):
         badge = badge_result.get_badges()
         self.assertEqual(badge, "Introduction to life")
 
+# Shathees
+# note1: only latest userattempt is stored
 class TestRecordAttempt(TestApp):
-    def test_record_attempt(self):
-        # create pre-existing attempt
+    def test_record_first_attempt(self):
+        # post request
+        request_body = {
+            'employeeName': "Bob",
+            "courseName": "Introduction to life", 
+            "cohortName": "G0",
+            "chapterID": 1,
+            "questions_list": [{
+                "questionID" : 1,
+                "choiceID" : 1 
+                },
+                {
+                "questionID" : 2,
+                "choiceID" : 2    
+                }
+            ]
+        }
 
+        response = self.client.post("/recordAttempt",
+                                data=json.dumps(request_body),
+                                content_type='application/json')
+                                
+        # retrieve and check userattempt 1 
+        user_attempt_result1 = userAttempt.query.filter_by(employeeName="Bob", courseName="Introduction to life", cohortName="G0", chapterID=1, questionID=1).first()
+        self.assertEqual(user_attempt_result1.get_dict(), {
+            "employeeName": "Bob",
+            "courseName": "Introduction to life",
+            "cohortName": "G0",
+            "chapterID": 1,
+            "questionID": 1,
+            "choiceID": 1,
+            "marks": 1
+        })    
+        
+        # retrieve and check userattempt 2
+        user_attempt_result2 = userAttempt.query.filter_by(employeeName="Bob", courseName="Introduction to life", cohortName="G0", chapterID=1, questionID=2).first()
+        self.assertEqual(user_attempt_result2.get_dict(), {
+            "employeeName": "Bob",
+            "courseName": "Introduction to life",
+            "cohortName": "G0",
+            "chapterID": 1,
+            "questionID": 2,
+            "choiceID": 2,
+            "marks": 1
+        })
+    
+    # Re-attempt chapterID = 1 quiz
+    # Attempted chapterID = 2 quiz
+    def test_record_attempt_second_attempt(self):
+        # create pre-existing attempt
         userAttempt1 = userAttempt(
             employeeName = "Bob",
             courseName="Introduction to life",
@@ -220,9 +285,20 @@ class TestRecordAttempt(TestApp):
             choiceID= 1,
             marks = 1
         )
-
+        
+        userAttempt3 = userAttempt(
+            employeeName = "Bob",
+            courseName="Introduction to life",
+            cohortName="G0",
+            chapterID= 2,
+            questionID= 1,
+            choiceID= 1,
+            marks = 1
+        )
+        
         db.session.add(userAttempt1)
         db.session.add(userAttempt2)
+        db.session.add(userAttempt3)
         db.session.commit()
 
         # post request
@@ -268,8 +344,23 @@ class TestRecordAttempt(TestApp):
             "questionID": 2,
             "choiceID": 2,
             "marks": 1
-        })    
+        })
         
+        # check if userattempt3 still exists
+        user_attempt_result3 = userAttempt.query.filter_by(employeeName="Bob", courseName="Introduction to life", cohortName="G0", chapterID=2, questionID=1).first()
+        self.assertEqual(user_attempt_result3.get_dict(), {
+            "employeeName": "Bob",
+            "courseName": "Introduction to life",
+            "cohortName": "G0",
+            "chapterID": 2,
+            "questionID": 1,
+            "choiceID": 1,
+            "marks": 1
+        })
+
+# Marcus Goh
+# Assumption 1; user has attempted to quiz (userAttempt database filled)
+# Note 1; pass >= 85%
 class TestRetrieveQuizResult(TestApp):
     def test_retreieve_quiz_result_fail(self):
         # add data into user attempt
@@ -576,5 +667,8 @@ class TestRetrieveQuizResult(TestApp):
             }
         })
 
+    def test_retreieve_quiz_result_pass(self):
+        pass
+    
 if __name__ == '__main__':
     unittest.main()
