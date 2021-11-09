@@ -153,7 +153,7 @@
           <td>${enrolledCourses[c].cohortStartDate} ${enrolledCourses[c].cohortStartTime} to ${enrolledCourses[c].cohortEndDate} ${enrolledCourses[c].cohortEndTime}</td>
           <td>${enrolledCourses[c].trainerName}</td>`
           if (today >= compare1){
-            html += `<td><a href="learner-view-cohort.php?cname=${enrolledCourses[c].courseName}&cohname=${enrolledCourses[c].cohortName}" class="btn btn-info rounded-2 px-4">View Course Materials</a></td>`
+            html += `<td><a href="learner-view-cohort.php?cname=${enrolledCourses[c].courseName}&cohname=${enrolledCourses[c].cohortName}&from=enrolled" class="btn btn-info rounded-2 px-4">View Course Materials</a></td>`
           }
           else {
             html += `<td><i>course not yet started</i></td>`

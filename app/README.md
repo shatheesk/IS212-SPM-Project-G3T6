@@ -1,8 +1,6 @@
 # IS212-SPM-Project
 SPM A+++++++++
 
-create-edit-course, news-single, about and contact currently not in use
-
 navbar.php -> used across website for nav
 footer.php -> used across website for footer
 login.php -> user log in
