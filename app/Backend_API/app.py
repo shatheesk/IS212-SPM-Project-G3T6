@@ -922,7 +922,7 @@ def viewAllRequests(learnerName):
 def adminViewAllRequests():
     result = enrollmentRequest.query.all()
     requests = {}
-    
+
     if result:
         output = []
         request_info = [element.get_dict() for element in result]
