@@ -941,7 +941,7 @@ def adminViewAllRequests():
         for element in output:
             courseName = element['courseName']
 
-            if courseName not in result:
+            if courseName not in requests:
                 requests[courseName] = []
 
             requests[courseName].append(element)

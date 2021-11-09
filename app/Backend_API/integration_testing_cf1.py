@@ -582,10 +582,8 @@ class TestViewAllRequests(TestApp):
         # send view all enrollment requests request
         response = self.client.get("/viewAllRequests/Shakira",
                                    content_type='application/json')
-                
-        self.assertEqual(response.json, {
-            "code": 200,
-            "requests": [{
+
+        self.assertTrue({
                 "cohortEndDate": "30 Dec 2021",
                 "cohortEndTime": "20:00",
                 "cohortName": "G1",
@@ -599,22 +597,23 @@ class TestViewAllRequests(TestApp):
                 "enrollmentStartTime": "00:00",
                 "slotLeft": 25,
                 "trainerName": "Marcus"
-            }, {
-                "cohortEndDate": "30 Dec 2021",
-                "cohortEndTime": "20:00",
-                "cohortName": "G1",
-                "cohortSize": 30,
-                "cohortStartDate": "01 Dec 2021",
-                "cohortStartTime": "08:00",
-                "courseName": "Introduction to flask",
-                "enrollmentEndDate": "28 Nov 2021",
-                "enrollmentEndTime": "23:59",
-                "enrollmentStartDate": "01 Sep 2021",
-                "enrollmentStartTime": "00:00",
-                "slotLeft": 24,
-                "trainerName": "Charles"
-            }]
-        })
+            } in response.json['requests'])
+        
+        self.assertTrue({
+            'cohortEndDate': '30 Dec 2021',
+            'cohortEndTime': '20:00',
+            'cohortName': 'G1',
+            'cohortSize': 30,
+            'cohortStartDate': '01 Dec 2021',
+            'cohortStartTime': '08:00',
+            'courseName': 'Introduction to flask',
+            'enrollmentEndDate': '28 Nov 2021',
+            'enrollmentEndTime': '23:59',
+            'enrollmentStartDate': '01 Sep 2021',
+            'enrollmentStartTime': '00:00',
+            'slotLeft': 24,
+            'trainerName': 'Charles'
+            } in response.json['requests'])
 
 # Marcus Goh
 class TestAdminViewAllRequests(TestApp):
@@ -703,11 +702,80 @@ class TestAdminViewAllRequests(TestApp):
             }
         })
 
+    def test_adminViewAllRequests_multiple_requests_under_one_course(self):
+        # add cohort into database
+        cohort1 = cohort(courseName='Introduction to python',
+                         cohortName="G1",
+                         enrollmentStartDate="01 Sep 2021",
+                         enrollmentStartTime="00:00",
+                         enrollmentEndDate="28 Nov 2021",
+                         enrollmentEndTime="23:59",
+                         cohortStartDate="01 Dec 2021",
+                         cohortStartTime="08:00",
+                         cohortEndDate="30 Dec 2021",
+                         cohortEndTime="20:00",
+                         trainerName="Marcus",
+                         cohortSize=30,
+                         slotLeft=25)
+
+        # add enrollment request to database
+        enrollmentRequest1 = enrollmentRequest(
+            courseNameRequest="Introduction to python", cohortNameRequest="G1", learnerName="Shakira")
+        enrollmentRequest2 = enrollmentRequest(
+            courseNameRequest="Introduction to python", cohortNameRequest="G1", learnerName="Jacob")
+        
+        db.session.add(cohort1)
+        db.session.add(enrollmentRequest1)
+        db.session.add(enrollmentRequest2)
+
+        db.session.commit()
+
+        # send view all enrollment requests request
+        response = self.client.get("/adminViewAllRequests",
+                                   content_type='application/json')
+        
+        # check for first request
+        self.assertTrue({
+            "cohortEndDate": "30 Dec 2021",
+            "cohortEndTime": "20:00",
+            "cohortName": "G1",
+            "cohortSize": 30,
+            "cohortStartDate": "01 Dec 2021",
+            "cohortStartTime": "08:00",
+            "courseName": "Introduction to python",
+            "enrollmentEndDate": "28 Nov 2021",
+            "enrollmentEndTime": "23:59",
+            "enrollmentStartDate": "01 Sep 2021",
+            "enrollmentStartTime": "00:00",
+            "learnerName": "Shakira",
+            "slotLeft": 25,
+            "trainerName": "Marcus"
+        } in response.json['requests']['Introduction to python'])
+
+        # check for second request
+        self.assertTrue({
+            "cohortEndDate": "30 Dec 2021",
+            "cohortEndTime": "20:00",
+            "cohortName": "G1",
+            "cohortSize": 30,
+            "cohortStartDate": "01 Dec 2021",
+            "cohortStartTime": "08:00",
+            "courseName": "Introduction to python",
+            "enrollmentEndDate": "28 Nov 2021",
+            "enrollmentEndTime": "23:59",
+            "enrollmentStartDate": "01 Sep 2021",
+            "enrollmentStartTime": "00:00",
+            "learnerName": "Jacob",
+            "slotLeft": 25,
+            "trainerName": "Marcus"
+        } in response.json['requests']['Introduction to python'])
+        
     def test_adminViewAllRequests_no_requests(self):
         # send view all enrollment requests request
         response = self.client.get("/adminViewAllRequests",
                                    content_type='application/json')
         
+        # check for empty requests dictionary
         self.assertEqual(response.json, {'code': 200, 'requests': {}})
 
 if __name__ == '__main__':
