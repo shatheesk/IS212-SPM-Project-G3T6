@@ -118,7 +118,7 @@
   }
 
   const request = new XMLHttpRequest();
-  url = 'http://192.168.50.80:5000/viewMaterials/' +  cname + '/' + cohname + '/' + emp_name
+  url = 'http://10.124.2.10:5000/viewMaterials/' +  cname + '/' + cohname + '/' + emp_name
   
   var html = '';
   var counter = 0;
@@ -244,7 +244,7 @@
             //completed
             else if (chapters[chapter].quizStatus == 1) {
               const request1 = new XMLHttpRequest();
-              url1 = 'http://192.168.50.80:5000/retrieveQuizResult/' + cname + '/' + cohname + '/' + chapters[chapter].chapterID + '/' + emp_name
+              url1 = 'http://10.124.2.10:5000/retrieveQuizResult/' + cname + '/' + cohname + '/' + chapters[chapter].chapterID + '/' + emp_name
 
               request1.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200){
@@ -297,13 +297,13 @@
   function updateMaterialStatus(chapname, materialname) {
     document.getElementById('checkbox'+ chapname+materialname).disabled = true;
     const request1 = new XMLHttpRequest();
-    url1 = 'http://192.168.50.80:5000/updateMaterialStatus/' + cname + '/' + cohname + '/' + chapname + '/' + materialname + '/' + emp_name
+    url1 = 'http://10.124.2.10:5000/updateMaterialStatus/' + cname + '/' + cohname + '/' + chapname + '/' + materialname + '/' + emp_name
 
     
     request1.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200){
         const request2 = new XMLHttpRequest();
-        url2 = 'http://192.168.50.80:5000/viewMaterials/' +  cname + '/' + cohname + '/' + emp_name
+        url2 = 'http://10.124.2.10:5000/viewMaterials/' +  cname + '/' + cohname + '/' + emp_name
 
         request2.onreadystatechange = function () {
           if (this.readyState == 4 && this.status == 200){

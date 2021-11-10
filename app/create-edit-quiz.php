@@ -567,7 +567,7 @@
     function createNow() {
         if (action == 'edit') {
             const request = new XMLHttpRequest();
-            url = 'http://192.168.50.80:5000/deleteQuiz/' + cname + '/' + cohname + '/' + chapter
+            url = 'http://10.124.2.10:5000/deleteQuiz/' + cname + '/' + cohname + '/' + chapter
             
             request.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200){
@@ -601,7 +601,7 @@
         }
 
         const request1 = new XMLHttpRequest();
-        url1 = 'http://192.168.50.80:5000/createNewQuiz'
+        url1 = 'http://10.124.2.10:5000/createNewQuiz'
         request1.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200){
                 console.log('success')
@@ -820,7 +820,7 @@
 
     if (action == 'edit') {
         const request = new XMLHttpRequest();
-        url = 'http://192.168.50.80:5000/viewQuiz/' + cname + '/' + cohname + '/' + chapter
+        url = 'http://10.124.2.10:5000/viewQuiz/' + cname + '/' + cohname + '/' + chapter
         
         request.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200){

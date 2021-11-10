@@ -150,7 +150,7 @@
   <script>
 
   const request = new XMLHttpRequest();
-  url = 'http://192.168.50.80:5000/viewAllCourses' 
+  url = 'http://10.124.2.10:5000/viewAllCourses' 
   
   request.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200){
@@ -162,7 +162,7 @@
       
       for (c in courses) {
         const request1 = new XMLHttpRequest();
-        url1 = 'http://192.168.50.80:5000/viewAllCohort/' + courses[c].courseName
+        url1 = 'http://10.124.2.10:5000/viewAllCohort/' + courses[c].courseName
         
         request1.onreadystatechange = function () {
           if (this.readyState == 4 && this.status == 200){
@@ -239,7 +239,7 @@
                     <div class="modal-body">`
 
               const request2 = new XMLHttpRequest();
-              url2 = 'http://192.168.50.80:5000/viewAllEnrolledLearners/' + courses[c].courseName + '/' + cohorts[cohort].cohortName
+              url2 = 'http://10.124.2.10:5000/viewAllEnrolledLearners/' + courses[c].courseName + '/' + cohorts[cohort].cohortName
               
               request2.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200){

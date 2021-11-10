@@ -461,7 +461,10 @@ def viewMaterials(courseName, cohortName, employeeName):
     try:
         output = []
         # retrieve chapter info
-        chapter_info = chapter.query.all()
+        chapter_info = chapter.query.filter_by(
+                             courseName=courseName,
+                             cohortName=cohortName)
+
         for section in chapter_info:
             section_result = {}
 

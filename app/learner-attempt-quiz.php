@@ -138,7 +138,7 @@
     }
 
     const request = new XMLHttpRequest();
-    url = 'http://192.168.50.80:5000/viewQuiz/' + cname + '/' + cohname + '/' + chapter
+    url = 'http://10.124.2.10:5000/viewQuiz/' + cname + '/' + cohname + '/' + chapter
     
     request.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200){
@@ -251,7 +251,7 @@
       }
 
       const request1 = new XMLHttpRequest();
-        url1 = 'http://192.168.50.80:5000/recordAttempt'
+        url1 = 'http://10.124.2.10:5000/recordAttempt'
         request1.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 201){
                 console.log('success')
