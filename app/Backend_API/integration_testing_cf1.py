@@ -75,6 +75,14 @@ class TestViewAllCourses(TestApp):
             }]
         })
 
+# added done
+    def test_viewAllCourses_emptyresult(self):
+
+        response = self.client.get("/viewAllCourses",
+                                   content_type='application/json')
+        
+        self.assertEqual(response.json, {'code': 404, 'message': 'Error occured while retrieving all courses'})
+
 # Shi ting
 class TestViewAllCohort(TestApp):
     def test_view_all_cohort(self):
@@ -145,6 +153,31 @@ class TestViewAllCohort(TestApp):
                 "trainerName": "Charles"
             }]
         })
+
+#added done
+
+    def test_view_all_cohort_emptyresult(self):
+        cohort3 = cohort(courseName='Physics',
+                         cohortName="G1",
+                         enrollmentStartDate='08 Oct 2021',
+                         enrollmentStartTime="00:00",
+                         enrollmentEndDate="28 Oct 1998",
+                         enrollmentEndTime="23:59",
+                         cohortStartDate="01 Nov 1998",
+                         cohortStartTime="08:00",
+                         cohortEndDate="30 Nov 1998",
+                         cohortEndTime="20:00",
+                         trainerName="Charles",
+                         cohortSize=30,
+                         slotLeft=25)
+
+        db.session.add(cohort3)
+        response = self.client.get("/viewAllCohort/Law",
+                                   content_type='application/json')
+        #empty white interface
+        self.assertEqual(response.json, {'code': 200, 'cohorts': []})
+        
+
 
 # Shi ting
 class TestProcessRequest(TestApp):
@@ -232,6 +265,15 @@ class TestProcessRequest(TestApp):
         self.assertEqual(materialStatus_result.get_dict(), {
                          'courseName': 'Big questions', 'cohortName': 'G1', 'chapterID': 2, 'materialID': 1, 'employeeName': 'Shakira', 'done': 0})
 
+#added done
+    def test_process_request_does_not_exist(self):
+  
+        response = self.client.get("/processRequest/lisa/Introduction to python/G1",
+                                   content_type='application/json')
+        
+        self.assertEqual(response.json, {'code': 404, 'message': 'Enrollment request does not exist.'})
+
+
 # Shi ting
 class TestDeleteRequest(TestApp):
     def test_delete_request(self):
@@ -273,14 +315,48 @@ class TestDeleteRequest(TestApp):
 
         self.assertEqual(result, None)
 
+#added done
+    def test_failed_delete_non_existence(self):
+      # add data to course
+        course1 = course(courseName="Big questions", courseImage="images/course_4.jpg",
+                         courseDescription="This course introduces learners to the biggest questions in life", prerequisite="Finance and accounting")
+
+        # add cohort into course
+        cohort1 = cohort(courseName='Big questions',
+                         cohortName="G1",
+                         enrollmentStartDate="01 Sep 2021",
+                         enrollmentStartTime="00:00",
+                         enrollmentEndDate="28 Nov 2021",
+                         enrollmentEndTime="23:59",
+                         cohortStartDate="01 Dec 2021",
+                         cohortStartTime="08:00",
+                         cohortEndDate="30 Dec 2021",
+                         cohortEndTime="20:00",
+                         trainerName="Marcus",
+                         cohortSize=30,
+                         slotLeft=25)
+
+        # add data the enrollment request
+        enrollmentRequest1 = enrollmentRequest(
+            courseNameRequest="Big questions", cohortNameRequest="G1", learnerName="Shakira")
+
+        db.session.add(course1)
+        db.session.add(cohort1)
+        db.session.add(enrollmentRequest1)
+        db.session.commit()
+
+        response = self.client.get("/delete/shakira/big question/g2",
+                                   content_type='application/json')
+        
+        self.assertEqual(response.json, {'code': 404, 'message': 'Enrollment request does not exist'})
+
+
 # Shi ting
 class TestSendEnrollRequest(TestApp):
     def test_send_enroll_request(self):
-        # send enroll request
         response = self.client.get("/self_enrol_request/Big questions/G1/Shakira",
-                                   content_type='application/json')
-
-        # check for enrollment request
+                content_type='application/json')
+       # check for enrollment request
         result = enrollmentRequest.query.filter_by(
             courseNameRequest="Big questions", cohortNameRequest="G1", learnerName="Shakira").first()
         self.assertEqual(result.get_dict(), {
@@ -288,6 +364,15 @@ class TestSendEnrollRequest(TestApp):
             "cohortNameRequest": "G1",
             "learnerName": "Shakira"
         })
+
+#added done
+    def test_send_enroll_failedrequest(self):
+        response = self.client.get("/self_enrol_request/Big questions/G1/shathees",
+                content_type='application/json')
+       # check for enrollment request
+        result = enrollmentRequest.query.filter_by(
+            courseNameRequest="Big questions", cohortNameRequest="G1", learnerName="Sarah").first()
+        self.assertEqual(result, None )
 
 # Shi ting
 class TestViewAllBadges(TestApp):
@@ -315,7 +400,32 @@ class TestViewAllBadges(TestApp):
             "code": 200
         })
 
-# Shi Ting
+#added done
+    def test_view_all_badges_empty_badges(self):
+      
+        # add badges to database
+        badges1 = badges(employeeName="Alice",
+                         badges="Introduction to life", cohortName="G0")
+        badges2 = badges(employeeName="Alice",
+                         badges="Introduction to python", cohortName="G0")
+        badges3 = badges(employeeName="Alice",
+                         badges="Introduction to HTML", cohortName="G0")
+
+        db.session.add(badges1)
+        db.session.add(badges2)
+        db.session.add(badges3)
+
+        db.session.commit()
+
+        response = self.client.get("/viewAllBadges/James",
+                                   content_type='application/json')
+
+        self.assertEqual(response.json, {
+           'badges': [], 'code': 200
+        })
+
+
+# Marcus
 # Assumption, all employeeName are valid employees
 class TestViewBadgesCohort(TestApp):
     def test_viewBadgesCohort(self):
