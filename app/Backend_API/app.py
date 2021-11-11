@@ -454,7 +454,6 @@ class materialStatus(materials):
         self.done = 1
 
 
-# CF3 start
 @app.route("/viewMaterials/<string:courseName>/"
            "<string:cohortName>/<string:employeeName>")
 def viewMaterials(courseName, cohortName, employeeName):
@@ -769,8 +768,6 @@ def retrieveQuizResult(courseName, cohortName, chapterID, employeeName):
             }
         ), 404
 
-# CF3 END
-
 
 @app.route("/currentDesignation/<string:employeeName>")
 def getCurrentDesignation(employeeName):
@@ -855,7 +852,6 @@ def viewBadgesCohort(employeeName):
 
 
 # enrolled courses (learner view)
-# NO OTHER WAY
 @app.route("/viewAllEnrolledCourses/<string:employeeName>")
 def viewAllEnrolledCourses(employeeName):
     result = enrollment.query.filter_by(employeeName=employeeName)
@@ -888,7 +884,6 @@ def viewAllEnrolledCourses(employeeName):
 
 
 # pending courses (learner view)
-# NO OTHER WAY
 @app.route("/viewAllRequests/<string:learnerName>")
 def viewAllRequests(learnerName):
     result = enrollmentRequest.query.filter_by(learnerName=learnerName)
@@ -1122,11 +1117,7 @@ def self_enrol_request(courseName, cohortName, learnerName):
             }
         ), 404
 
-# CF 2
-
 # Set enrollment period for a specific cohort under a course
-
-
 @app.route("/setEnrollmentPeriod/<string:courseName>/"
            "<string:cohortName>/<string:enrollmentStartDate>/"
            "<string:enrollmentStartTime>/<string:enrollmentEndDate>/"

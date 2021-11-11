@@ -138,6 +138,10 @@ class TestViewMaterials(TestApp):
         self.assertEqual(response.json, {
             "code": 200,
             "materials": [{
+                "chapterID": -1,
+                "materials": [],
+                "quizStatus": 0
+            }, {
                 "chapterID": 1,
                 "materials": [{
                     "done": 1,
@@ -157,10 +161,6 @@ class TestViewMaterials(TestApp):
                     "materialURL": "url_3"
                 }],
                 "quizStatus": 2
-            }, {
-                "chapterID": -1,
-                "materials": [],
-                "quizStatus": 0
             }]
         })
 
