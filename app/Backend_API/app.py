@@ -278,7 +278,7 @@ class chapter(db.Model):
         self.graded = graded
 
 
-class question(chapter):
+class question(db.Model):
     __tablename__ = 'question'
 
     courseName = db.Column(db.String(100), primary_key=True)
@@ -304,8 +304,19 @@ class question(chapter):
         self.questionID = questionID
         self.questionText = questionText
 
+    def get_dict(self):
+        """
+        'get_dict' converts the object into a dictionary,
+        in which the keys correspond to database columns
+        """
+        columns = self.__mapper__.column_attrs.keys()
+        result = {}
+        for column in columns:
+            result[column] = getattr(self, column)
+        return result
 
-class options(question):
+
+class options(db.Model):
     __tablename__ = 'options'
 
     courseName = db.Column(db.String(100), primary_key=True)
@@ -335,6 +346,17 @@ class options(question):
         self.optionID = optionID
         self.optionText = optionText
         self.isRight = isRight
+
+    def get_dict(self):
+        """
+        'get_dict' converts the object into a dictionary,
+        in which the keys correspond to database columns
+        """
+        columns = self.__mapper__.column_attrs.keys()
+        result = {}
+        for column in columns:
+            result[column] = getattr(self, column)
+        return result
 
 
 class userAttempt(db.Model):
@@ -383,7 +405,7 @@ class userAttempt(db.Model):
         return self.choiceID
 
 
-class materials(chapter):
+class materials(db.Model):
     __tablename__ = 'materials'
 
     courseName = db.Column(db.String(100), primary_key=True)
@@ -415,8 +437,19 @@ class materials(chapter):
     def get_materialID(self):
         return self.materialID
 
+    def get_dict(self):
+        """
+        'get_dict' converts the object into a dictionary,
+        in which the keys correspond to database columns
+        """
+        columns = self.__mapper__.column_attrs.keys()
+        result = {}
+        for column in columns:
+            result[column] = getattr(self, column)
+        return result
 
-class materialStatus(materials):
+
+class materialStatus(db.Model):
     __tablename__ = 'materialStatus'
 
     courseName = db.Column(db.String(100), primary_key=True)

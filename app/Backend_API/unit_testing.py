@@ -338,16 +338,6 @@ class TestmaterialStatus(unittest.TestCase):
     def tearDown(self):
         self.o1 = None
 
-    def test_get_dict(self):
-        self.assertEqual(self.o1.get_dict(), {
-            "courseName":"Introduction to life",
-            "cohortName":"G1",
-            "chapterID":1,
-            "materialID":1,
-            "employeeName":"Bob",
-            "done":0
-        })
-
     def test_status(self):
         self.assertEqual(self.o1.get_status(), 0)
 
