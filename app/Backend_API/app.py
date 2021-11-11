@@ -1117,6 +1117,7 @@ def self_enrol_request(courseName, cohortName, learnerName):
             }
         ), 404
 
+
 # Set enrollment period for a specific cohort under a course
 @app.route("/setEnrollmentPeriod/<string:courseName>/"
            "<string:cohortName>/<string:enrollmentStartDate>/"
