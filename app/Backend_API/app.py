@@ -486,6 +486,17 @@ class materialStatus(db.Model):
     def update_status(self):
         self.done = 1
 
+    def get_dict(self):
+        """
+        'get_dict' converts the object into a dictionary,
+        in which the keys correspond to database columns
+        """
+        columns = self.__mapper__.column_attrs.keys()
+        result = {}
+        for column in columns:
+            result[column] = getattr(self, column)
+        return result
+
 
 @app.route("/viewMaterials/<string:courseName>/"
            "<string:cohortName>/<string:employeeName>")
