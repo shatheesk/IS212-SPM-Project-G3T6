@@ -6,7 +6,7 @@
 
   function accept(learnerName, courseName, cohortName) {
     const request6 = new XMLHttpRequest();
-    url6 = 'http://10.124.2.10:5000/processRequest/' + learnerName + '/' + courseName + '/' + cohortName
+    url6 = 'http://192.168.50.80:5000/processRequest/' + learnerName + '/' + courseName + '/' + cohortName
 
     
     request6.onreadystatechange = function () {
@@ -26,7 +26,7 @@
 
   function withdraw(learnerName, courseName, cohortName) {
     const request5 = new XMLHttpRequest();
-    url5 = 'http://10.124.2.10:5000/delete/' + learnerName + '/' + courseName + '/' + cohortName
+    url5 = 'http://192.168.50.80:5000/delete/' + learnerName + '/' + courseName + '/' + cohortName
     
     request5.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200){
@@ -141,7 +141,7 @@
   <script>
   const request = new XMLHttpRequest();
     // let cName= "Introduction to python";
-    url = 'http://10.124.2.10:5000/adminViewAllRequests' 
+    url = 'http://192.168.50.80:5000/adminViewAllRequests' 
     
     request.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200){

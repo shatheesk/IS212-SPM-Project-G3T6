@@ -139,7 +139,7 @@
     }
 
     const request = new XMLHttpRequest();
-    url = 'http://10.124.2.10:5000/retrieveQuizResult/' + cname + '/' + cohname + '/' + chapter + '/' + emp_name
+    url = 'http://192.168.50.80:5000/retrieveQuizResult/' + cname + '/' + cohname + '/' + chapter + '/' + emp_name
     console.log(url)
     request.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200){
@@ -219,7 +219,7 @@
         else {
           html += `<h5 style = "float: right; margin-top: 20px;">Congratulations, you have passed the course with a score of ${percentage *100}%!</h5>`
           const request1 = new XMLHttpRequest();
-          url1 = 'http://10.124.2.10:5000/completedCourse/' + cname + '/' + cohname + '/' + emp_name
+          url1 = 'http://192.168.50.80:5000/completedCourse/' + cname + '/' + cohname + '/' + emp_name
 
           request1.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200){

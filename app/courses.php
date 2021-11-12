@@ -111,7 +111,7 @@
     var totalCourses = ''
     var prereqs = []
     const request = new XMLHttpRequest();
-    url = 'http://10.124.2.10:5000/viewAllCourses'
+    url = 'http://192.168.50.80:5000/viewAllCourses'
     
     request.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200){
@@ -172,7 +172,7 @@
 
     if (current_designation == 'Learner' || current_designation == 'trainer'){
       const request = new XMLHttpRequest();
-      url2 = 'http://10.124.2.10:5000/viewAllBadges/' + emp_name
+      url2 = 'http://192.168.50.80:5000/viewAllBadges/' + emp_name
       
       request.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200){
@@ -204,7 +204,7 @@
             else if(current_designation == 'trainer') {
               var isTeacher = false
               const request = new XMLHttpRequest();
-              url4 = 'http://10.124.2.10:5000/viewAllCohort/' + totalCourses[course].courseName
+              url4 = 'http://192.168.50.80:5000/viewAllCohort/' + totalCourses[course].courseName
               
               request.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200){
@@ -258,7 +258,7 @@
 
     if (current_designation == 'Learner'){
       const request = new XMLHttpRequest();
-      url3 = 'http://10.124.2.10:5000/viewAllEnrolledCourses/' + emp_name
+      url3 = 'http://192.168.50.80:5000/viewAllEnrolledCourses/' + emp_name
       
       request.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200){

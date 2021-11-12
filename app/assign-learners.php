@@ -253,7 +253,7 @@
     document.getElementById('noSelected').innerText = 'No of learners selected: ' + noSelected
 
     const request = new XMLHttpRequest();
-    url = 'http://10.124.2.10:5000/retrieveQualifiedLearners/' + cname + '/' + cohname
+    url = 'http://192.168.50.80:5000/retrieveQualifiedLearners/' + cname + '/' + cohname
     
     request.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200){
@@ -301,7 +301,7 @@
 
     function assignNow() {
         const request1 = new XMLHttpRequest();
-        url1 = 'http://10.124.2.10:5000/assignLearners'
+        url1 = 'http://192.168.50.80:5000/assignLearners'
 
         request1.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 201){

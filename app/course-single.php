@@ -6,7 +6,7 @@
 
   function enroll(courseName, cohortName) {
     const request4 = new XMLHttpRequest();
-    url4 = 'http://10.124.2.10:5000/self_enrol_request/' + courseName + '/' + cohortName + '/' + emp_name
+    url4 = 'http://192.168.50.80:5000/self_enrol_request/' + courseName + '/' + cohortName + '/' + emp_name
     
     request4.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200){
@@ -23,7 +23,7 @@
 
   function withdraw(courseName, cohortName) {
     const request5 = new XMLHttpRequest();
-    url5 = 'http://10.124.2.10:5000/delete/' + emp_name + '/' + courseName + '/' + cohortName
+    url5 = 'http://192.168.50.80:5000/delete/' + emp_name + '/' + courseName + '/' + cohortName
     
     request5.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200){
@@ -160,7 +160,7 @@
     document.getElementById('cTitle1').innerText = cname
 
     const request = new XMLHttpRequest();
-    url = 'http://10.124.2.10:5000/viewAllCourses'
+    url = 'http://192.168.50.80:5000/viewAllCourses'
     
     request.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200){
@@ -211,7 +211,7 @@
 
 
     const request1 = new XMLHttpRequest();
-    url2 = 'http://10.124.2.10:5000/viewAllCohort/' + cname
+    url2 = 'http://192.168.50.80:5000/viewAllCohort/' + cname
     
     request1.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200){
@@ -258,7 +258,7 @@
             }
             else{
               const request2 = new XMLHttpRequest();
-              url3 = 'http://10.124.2.10:5000/viewAllRequests/' + emp_name
+              url3 = 'http://192.168.50.80:5000/viewAllRequests/' + emp_name
 
               request2.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200){

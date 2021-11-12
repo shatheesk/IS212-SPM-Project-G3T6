@@ -9,6 +9,8 @@ Wong Shi Ting
 
 All-In-One Learning Management System
 
+Please visit our system: http://54.224.128.218
+
 Users & Roles:
 Learner - Drake, Beyonce, Adele
 Trainer - Charles 
@@ -40,7 +42,7 @@ Admin - Alice
 5) Click on Assign 
 6) Eligible learners for the course are shown. You are able to search for a learner by name.
 7) Select Beyonce and click on Assign to enrol her into the course.
-8) After redirection to the admissions page, click on introduction to python > classlist to view all learners enrolled in that particular cohort.
+8) After redirection to the assign page, click on introduction to python > classlist to view all learners enrolled in that particular cohort.
 
 
 
