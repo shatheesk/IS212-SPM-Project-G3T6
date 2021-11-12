@@ -18,6 +18,8 @@ class TestApp(flask_testing.TestCase):
         db.session.remove()
         db.drop_all()
 
+
+# Charles Yap
 class TestSetEnrollmentPeriod(TestApp):
     def test_set_enrollment_period(self):
 
@@ -61,6 +63,8 @@ class TestSetEnrollmentPeriod(TestApp):
 
         })
 
+
+# Charles Yap
 class TestRetrieveQualifiedLearners(TestApp):
     def test_retrieve_qualified_learners(self):
         course1 = course (
@@ -125,6 +129,7 @@ class TestRetrieveQualifiedLearners(TestApp):
         })
 
 
+# Charles Yap
 class TestAssignLearners(TestApp):
     def test_assign_learners(self):
         # add data to materials
@@ -225,6 +230,7 @@ class TestAssignLearners(TestApp):
         self.assertEqual(materialStatus_result.get_dict(), {'courseName': 'Introduction to HTML', 'cohortName': 'G1', 'chapterID': 2, 'materialID': 1, 'employeeName': 'Vera', 'done': 0})
 
 
+# Charles Yap
 class TestViewAllEnrolledLearners(TestApp):
     def test_view_all_enrolled_learners(self):
         enrollment1 = enrollment (

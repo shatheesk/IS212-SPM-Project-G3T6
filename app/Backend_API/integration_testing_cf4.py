@@ -20,6 +20,7 @@ class TestApp(flask_testing.TestCase):
         db.drop_all()
 
 
+# Vera Keh
 class TestGetAllChapters(TestApp):
     def test_getAllChapters(self):
         chapter1 = chapter(
@@ -90,6 +91,7 @@ class TestGetAllChapters(TestApp):
         })
 
 
+# Vera Keh
 class TestCreateNewChapter(TestApp):
     def test_createNewChapter(self):
         request_body = {
@@ -119,6 +121,7 @@ class TestCreateNewChapter(TestApp):
         })
 
 
+# Vera Keh
 class TestViewQuiz(TestApp):
     def test_viewQuiz(self):
         chapter1 = chapter(
@@ -237,6 +240,7 @@ class TestViewQuiz(TestApp):
         })
 
 
+# Vera Keh
 class TestDeleteQuiz(TestApp):
     def test_deleteQuiz(self):
         chapter1 = chapter(
